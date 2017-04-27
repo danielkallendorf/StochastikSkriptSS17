@@ -1,0 +1,205 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage{luatex85}
+\def\pgfsysdriver{pgfsys-pdftex.def}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage{fontenc}
+\usepackage[utf8]{luainputenc}
+
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{tikz,pgf}
+\usetikzlibrary{cd}
+\usetikzlibrary{babel}
+\usepackage{mathrsfs}
+\usepackage{framed}
+\usepackage[hidelinks]{hyperref}
+\usepackage{ulem}
+
+
+\newcommand{\N}{\ensuremath{\mathbb{N}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbb{Q}}}
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\F}{\ensuremath{\mathbb{F}}}
+\newcommand{\AF}{\ensuremath{\mathbb{A}}}
+
+\newcommand{\la}{\ensuremath{\lambda}}
+\newcommand{\al}{\ensuremath{\alpha}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+\newcommand{\todomark}[1]{\fbox{\Large Hier könnte \sout{Ihre Werbung} #1 stehen}}
+\newcommand{\norm}[1]{\left|#1\right|}
+\newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
+\newcommand{\potset}{\mathscr P}
+\newcommand{\Prb}{\mathbb P}
+
+
+\newcounter{thm}[section]
+\renewcommand{\thethm}{\arabic{section}.\arabic{thm}}
+\renewcommand{\thesubsection}{\arabic{section}.\arabic{thm}}
+
+\let\oldsubsection\subsection
+\renewcommand{\subsection}{\stepcounter{thm}\oldsubsection}
+
+\theoremstyle{definition}
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{prop}[thm]{Proposition}
+
+\theoremstyle{plain}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{kor}[thm]{Korollar}
+\newtheorem{satz}[thm]{Satz}
+\newtheorem{theorem}[thm]{Theorem}
+
+\theoremstyle{remark}
+\newtheorem{bem}[thm]{Bemerkung}
+\newtheorem*{bem*}{Bemerkung}
+\newtheorem{rem}[thm]{Erinnerung}
+\newtheorem{exm}[thm]{Beispiel}
+\newtheorem*{exm*}{Beispiel}
+
+\title{Einführung in die Stochastik}
+\author{}
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	
+%VL 24.04.2017
+	\setcounter{section}{1}
+	\setcounter{thm}{10}
+	\subsection{Beispiel}
+	\paragraph*{a) Einfache Irrfahrt} Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
+	Also ist $|\Omega_N|=(2d)^N$, Setze $p(\omega=\frac{1}{(2d)^N})\forall\omega\in\Omega$.
+	\subsubsection*{Fragestellungen:}
+	\begin{enumerate}
+		\item $A_N:=\{(x_1,...,x_N)\}\in\Omega_N:\exists j>0$ mit $x_j=0\}$. (``Rückkehr zum Startpunkt'').\\
+		Es ist klar, dass $\Prb(A_N)\ge\frac{1}{2d}>0$, falls $N\ge 2$.\\
+		Es ist leicht zu zeigen, dass $N\mapsto\mathbb{P}(A_N)$ wächst monoton.\\
+		\begin{description}
+			\item[Knifflig:] Was ist $\lim\limits_{N\to\infty}$? $<1$? $=1$?
+			\item[Antwort:] $=1$ für $d\leq 2$, $<1$ für $d\geq 3$.
+		\end{description}
+		\item $B_n,\al:=\left\{\omega=(x_0,x_1,...,x_N)\in\Omega_N:|x_N|\ge N^\alpha\right\}$ für $0<\alpha\leq 1$
+		\begin{description}
+			\item[Frage:] $\lim\limits_{N\to\inf}\Prb(B_{n,\al})$?
+			\item[Antwort:] $0$, falls $\alpha>\frac{1}{2}$\\
+			$1$, falls $\alpha< \frac{1}{2}$\\
+			Für $\alpha=\frac{1}{2}$ gilt 
+			\[\lim\limits_{N\to\infty}\Prb(B_{n,\al})=\frac{V_k(d)}{(2\pi)^{\frac{d}{2}}}\int_{1}^{\infty}r^{d-1}\exp(\frac{1}{2}r^2)dr\]
+			(dabei ist $V_k(d)$ das Volumen der $d$-Dimensionalen Einheitskugel).
+		\end{description}
+	\end{enumerate}
+	\paragraph*{b) Selbstvermeidende Irrfahrt}Dimension $d$, $N$ Schritte.
+	\begin{enumerate}
+		\item $\Omega_N^0=\left\{(x_0,x_1,...,x_N)\in\Omega_N:x_i\neq x_j\text{ falls }i\neq j\right\}$
+		Dann gilt für die Anzahl der Pfade:
+		\[|\Omega_N^0|=\begin{cases}
+		2,&\text{falls $d=1$}\\??,&\text{falls $d>1$}
+		\end{cases}\]
+		und es ist $p(\omega)=\frac{1}{|\Omega_N^0|\forall\omega\in\Omega_N^0}$.
+		\item Wie in a)2. 
+		\begin{description}
+			\item[Frage] Was ist $\lim\limits_{N\to\infty}\Prb(B_{N,\al}^0)$.
+			\item[Bekannt] $\exists\al_c>0$ mit \[\lim\limits_{N\to\infty}\mathbb{ P(B_{n,\al}^0)}=\begin{cases}
+			0,&\text{falls $\al>\al_c$}\\1,&\text{falls $\al<\al_c$}
+			\end{cases}\]
+			\item[Bekannte Werte:]
+			\begin{description}
+				\item[$d=1$] $\al_c=1$
+				\item[$d=2$] $\al_c=\frac{3}{4}$, falls SLE-Conjecture stimmt
+				\item[$d=3$] $\al_c\approx 0,5876$ (Numerik)
+				\item[$d\ge 4$] $\al_c=\frac{1}{2}$
+			\end{description}
+		\end{description}
+	\end{enumerate}
+	\subsection{Beispiel}
+	Auswählen einer Zufälligen rellen Zahl in $[0,1]$, alle Zahlen sollen di gleich Wahrscheinlichkeit haben:\\
+	$[0,1]$ ist nicht endlich, also ist Gleiche Wahrscheinlichkeit für alle Zahlen unmöglich.\\
+	$[0,1)$ ist nicht abzählbar, also scheitert der bisherige Ansatz mit der Zähldichte.\\
+	\paragraph*{Ein möglicher Ausweg} Definiere $\Prb([a,b])=\Prb((a,b))=\Prb([a,b))=\Prb((a,b])$.\\
+	Die Erweiterung, sodass $\forall A\in\potset([0,1])$ $\Prb(A)$ definiert ist, ist nicht möglich.
+	\paragraph*{Lösung:} Definiere $\Prb$ nicht auf allen Mengen $\potset([0,1])$.
+	
+	\begin{definition}
+		Sei $\Omega$ eine nichtleere Menge.\\
+		Ein Mengensystem $\mathscr F\subset \potset(\Omega)$heißt \textbf{$\sigma$-Algebra}, falls
+		\begin{enumerate}
+			\item $\Omega\in\mathscr F$
+			\item Falls $A\in\mathscr F$, dann auch $A^C\in\mathscr F$.
+			\item Falls $A_1,A_2,...\in\mathscr F$, dann auch $\bigcap A_i\in\mathscr F$.
+		\end{enumerate}
+	$(\Omega,\mathscr F)$ heißt dann \textbf{messbarer Raum} oder \textbf{Ereignisraum}.
+	\end{definition}
+
+	\begin{bem}
+		$\mathscr F$ ist ``die Menge aller Teilmengen von $\Omega$, für die die zugehörige Ja-Nein-Frage beantwortbar ist''.\\
+		Daher meint
+		\begin{enumerate}
+			\item ``Ist $\omega\in\Omega$'' muss beantwortbar sein.
+			\item Falls ``Ist $\omega\in A?$'' beantwortbar, so ist auch ``Ist $\omega\notin A?$'' beantwortbar.
+			\item Falls ``Ist $\omega\in A_i?$'' beantwortbar für alle $i$, dann ist auch ``Ist $\omega$ in irgendeinem $A_i$?'' beantwortbar.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{exm}
+		Sei $\Omega=[0,1)$, dann ist \begin{enumerate}
+			\item $\mathscr F_0:=\{\emptyset,\Omega\}$
+			\item $\mathscr F_1:=\{\emptyset,[0,\frac{1}{3}),[\frac{1}{3},1),\Omega\}$.\\
+			Die Frage ``Ist $\omega\ge \frac{1}{2}$'' ist hier \underline{nicht} beantwortbar!
+			\item $A_{j,n}:=\left[\frac{j}{n},\frac{j+1}{n}\right)$, $n$ ist fest, $j\ge n$.\\
+			$\mathscr F_2=\left\{\bigcup_{k=1}^{n}B_{k,n}:B_{k,n}\in\{\emptyset,A_{k,n}\}\right\}$
+			\item $\mathscr F_3=\potset(\Omega)$ ist ebenfalls eine $\sigma$-Algebra.
+		\end{enumerate}
+	\end{exm}
+	
+	\begin{satz}
+		Sei $\mathscr G\subset\potset(\Omega)$ ein Mengensystem. Sei $\Sigma:=\{\mathscr A\subset \potset(\Omega):\text{$\mathscr A$ ist $\sigma$-Algebra und $\mathscr G\subset\mathscr A$}$.\\
+		Dann ist auch $\bigcap_{\mathscr A\in\Sigma}\mathscr A$ eine $\sigma$-Algebra.
+	\end{satz}
+	%TODO counter
+	\addtocounter{thm}{-1}
+	\begin{definition}
+		$\sigma(\mathscr G):= \bigcap_{\mathscr A\in\Sigma}\mathscr A$ heißt \textbf{die von $\mathscr G$ erzeugt $\sigma$-Algebra}.
+	\end{definition}
+
+	\begin{definition}
+		Sei $\Omega=\R$, $\mathscr G:=\{[a,b]:a,b\in\R,a<b\}$.\\
+		$\mathscr B:=\sigma(\mathscr G)$ heiß \textbf{Borel-$\sigma$-Algebra}.
+	\end{definition}
+
+	\begin{bem}
+		\begin{enumerate}
+			\item $\mathscr B$ enthält alle offenen Mengen, alle abbgeschlossen Mengen und alle halboffenen Intervalle.
+			\item $\mathscr B\subsetneqq \potset (\Omega)$.
+			\item $\mathscr B$kann nicht abzählbar konstruiert werden.
+			\item $\mathscr B=\sigma(\{(-\infty,c]\}:c\in\R)$.
+			\item Falls $\Omega_o
+			0\subset\R$, $\Omega_0\neq \emptyset$, dann ist
+			\[\mathscr B_{\Omega_0}:=\{ A\cap\Omega_0:A\in \mathscr B(\R)\}\]
+		eine $\sigma$-Algebra, die \textbf{Einschränkung} von $\mathscr B$ auf $\Omega_0$.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{definition}
+		Seien $E_1,E_2,...,E_N$ Mengen, $N\leq \infty$.\\
+		$\mathscr E_i$ seien $\sigma$-Algebren auf $E_i$ und es sei
+		\[\Omega=\operatornamewithlimits{X}_{i=1}^NE_i=\left\{(e_1,...,e_N):e_i\in E_i\forall i\leq N\right\}\]
+		Eine Menge der Form
+		\[A_{j,B_j}=\left\{(e_1,...,e_N):e_j\in B_j,\text{ andere $e_k$ beliebig}\right\}\]
+		mit $B_j\in\mathscr E_j,j\leq N$ heißt \textbf{Zylindermenge}.\\
+	\end{definition}
+	%TODO COUNTER
+	\addtocounter{thm}{-1}
+	\begin{definition}
+		Die $\sigma$-Algebra in $\Omega$ die von allen Zylindermengen Erzeugt wird heißt \textbf{Produkt-$\sigma$-Algebra}.
+		Man nennt $\mathscr Z$ das System der Zylindermenge und $\mathscr E_1\otimes\mathscr E_2\otimes...\otimes \mathscr E_N:=\sigma(\mathscr Z)$.
+	\end{definition}
+\end{document}
