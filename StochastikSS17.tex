@@ -18,8 +18,13 @@
 \usetikzlibrary{babel}
 \usepackage{mathrsfs}
 \usepackage{framed}
-\usepackage[hidelinks]{hyperref}
 \usepackage{ulem}
+\usepackage{tabularx}
+\usepackage{csquotes}
+\usepackage{dsfont}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
 
 
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
@@ -39,31 +44,37 @@
 \newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
 \newcommand{\potset}{\mathscr P}
 \newcommand{\Prb}{\mathbb P}
-
-
-\newcounter{thm}[section]
-\renewcommand{\thethm}{\arabic{section}.\arabic{thm}}
-\renewcommand{\thesubsection}{\arabic{section}.\arabic{thm}}
-
-\let\oldsubsection\subsection
-\renewcommand{\subsection}{\stepcounter{thm}\oldsubsection}
+\newcommand{\Bor}{\mathscr B}
+\newcommand{\Idop}{\mathds{1}}
 
 \theoremstyle{definition}
-\newtheorem{definition}[thm]{Definition}
-\newtheorem{prop}[thm]{Proposition}
+\newtheorem{definition}[subsection]{Definition}
+\newtheorem{prop}[subsection]{Proposition}
 
 \theoremstyle{plain}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{kor}[thm]{Korollar}
-\newtheorem{satz}[thm]{Satz}
-\newtheorem{theorem}[thm]{Theorem}
+\newtheorem{lem}[subsection]{Lemma}
+\newtheorem{kor}[subsection]{Korollar}
+\newtheorem{satz}[subsection]{Satz}
+\newtheorem{theorem}[subsection]{Theorem}
+\newtheorem{rem}[subsection]{Erinnerung}
+\newtheorem*{rem*}{Erinnerung}
 
 \theoremstyle{remark}
-\newtheorem{bem}[thm]{Bemerkung}
+\newtheorem{bem}[subsection]{Bemerkung}
 \newtheorem*{bem*}{Bemerkung}
-\newtheorem{rem}[thm]{Erinnerung}
-\newtheorem{exm}[thm]{Beispiel}
+\newtheorem{exm}[subsection]{Beispiel}
 \newtheorem*{exm*}{Beispiel}
+
+\newcounter{exmlistitem}
+\newenvironment{exmlist}
+	{\let\oldss\thesubsection
+	\renewcommand{\thesubsection}{\oldss.\arabic{exmlistitem}}
+	\stepcounter{subsection}
+	\let\oldexm\exm
+	\let\oldendexm\endexm
+	\renewenvironment{exm}{\addtocounter{subsection}{-1}\stepcounter{exmlistitem}\oldexm}{\oldendexm}}
+	{\setcounter{exmlistitem}{0}}
+
 
 \title{Einführung in die Stochastik}
 \author{}
@@ -71,63 +82,143 @@
 \begin{document}
 	\maketitle
 	\tableofcontents
+	\newpage
+%VL 18.04.2017
 	
+	\section{Grundlagen}
+	\begin{rem}Naive Grundidee der Modellierung des Zufalls:\\
+		\\
+	\begin{tabularx}{\textwidth}{X|c|c}
+		Konzept & mathematisches Objekt & Symbol\\ \hline
+		\enquote{Alle denkbaren Ergebnisse eines zufälligen Geschehens} & Menge & $\Omega$\\
+		Wahrscheinlichkeit,dass $\omega\in\Omega$ beobachtet wird & Abbildung $\Omega\to[0,1]$ &\\
+		Alle denkbaren Ja-Nein-Fragen, die zum zufälligen Geschehen gestellt werden können & Potenzmenge von $\Omega$ & $\potset(\Omega)$\\
+		Wahrscheinlichkeit, dass die zu $a\in\potset(\Omega)$ gehörige Frage mit ``ja'' beantwortet wird. & Abbildung $\potset(\Omega)\to [0,1]$ & $\Prb$
+	\end{tabularx}
+	\end{rem}
+	
+	\begin{exmlist}
+		\begin{exm}[6-Seitiger Würfel]
+			$\Omega=\{1,2,3,4,5,6\}$ und $\foreach \i in {1,...,6} {p(\i)=}\frac{1}{6}$.\\
+			Ein Beispiel für eine Ja-Nein-Frage: \enquote{Ist die gewürfelte Zahl durch $3$ teilbar?} dann ist $A\in\potset(\Omega):A=\{3,6\}$ und $\Prb(A)=\frac{1}{3}$.
+		\end{exm}
+		\begin{exm}
+			Speziell zufälllige natürliche Zahl: $\Omega=\N$, $p(1)=\frac{1}{2},p(2)=\frac{1}{4},...,p(n)=2^{-n}$.\\
+			Dann gilt $\sum_{\omega=1}^{\infty}p(\omega)=1$.
+			\begin{enumerate}
+				\item Ja-Nein-Frage: \enquote{Ist die Zahl gerade?}\\
+				Zugelassenen Menge: $A=\{2,3,6,...\}$
+				\[\Prb(A)=\sum_{j=1}^{\infty}p(2j)=\sum_{j=1}^{\infty}2^{-2j}=\frac{1}{1-\frac{1}{4}}-1=\frac{1}{3}\]
+				\item Ja-Nein-Frage: \enquote{Ist die Zahl Primzahl?}\\
+				Zugelassene Menge: $B=\{n\in\N\mid\text{$n$ ist prim}\}$
+				\[\Prb(B)=\sum_{j\in B}p(j)=???\]
+				Abschätzung $\Prb(B)\leq 1-\Prb(A)+\Prb(\{2\})\leq \frac{2}{3}+\frac{1}{4}$
+			\end{enumerate}
+		\end{exm}
+	\end{exmlist}
+	
+	\begin{definition}
+		Sei $\Omega$ eine abzählbare Menge.\\
+		Eine Abbildung $p:\Omega\to[0,1]$ mit $\sum_{\omega\in\Omega}p(\omega)=1$ heißt \textbf{Zähldichte} oder \textbf{Wahrscheinlichkeitsdichte} auf $\Omega$.
+	\end{definition}
+
+	\begin{definition}
+		Man nennt dann $\Omega$ den \enquote{Ergebnisraum}, die \enquote{Grundmenge} oder \enquote{Grundgesamtheit}.\\
+		Ein spezielles $A\in\potset(\Omega)$ nennt man \enquote{Ergebnis} und falls $A=\{\omega\}$ \textbf{Elementarereignis}.
+	\end{definition}
+
+	\begin{definition}
+		Sei $\Omega$ eine abzählbare Menge und $\potset(\Omega)$ die Potenzmenge, $p$ sei eine Zähldichte.\\
+		Dann heißt die Abbildung 
+		\[\Prb:\potset(\Omega)\to[0,1],A\mapsto \sum_{\omega\in A}p(\omega)\]
+		 das von $p$ erzeugte \textbf{Wahrscheinlichkeitsmaß} (kurz W-Maß).
+	\end{definition}
+	
+	\begin{bem}
+		Beachte: $p$ wird in der Notation unterdrückt. Alternativ schreibe $\Prb_p$.\\
+		Außerdem: Statt $\Prb(\{\omega\})$ wird oft $\Prb(\omega)$ geschrieben.
+	\end{bem}
+	
+	\begin{lem}
+		Sei $p$ eine Zähldichte auf $\Omega$. Das von $p$ erzeugte Wahrscheinlichkeitsmaß hat folgende Eigenschaften:
+		\begin{enumerate}
+			\item $\Prb(\Omega)=1$
+			\item Falls $(A_n)_{n\in\N}$ eine Folge von paarweise disjunkten Ereignissen ist, dann ist $\Prb(\bigcap_{n=1}^\infty A_n)=\sum_{n=1}^{\infty}\Prb(A_n)$.
+		\end{enumerate}
+	\end{lem}
+	\begin{proof}
+		Sei $p$ Zähldichte auf $\Omega$.
+		\begin{enumerate}
+			\item Nach Definition: $\Prb(\Omega)=\sum_{\omega\in\Omega}p(\omega)=1$
+			\item 
+		\end{enumerate}
+	\end{proof}
+%TODO
+
 %VL 24.04.2017
 	\setcounter{section}{1}
-	\setcounter{thm}{10}
-	\subsection{Beispiel}
-	\paragraph*{a) Einfache Irrfahrt} Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
-	Also ist $|\Omega_N|=(2d)^N$, Setze $p(\omega=\frac{1}{(2d)^N})\forall\omega\in\Omega$.
-	\subsubsection*{Fragestellungen:}
-	\begin{enumerate}
-		\item $A_N:=\{(x_1,...,x_N)\}\in\Omega_N:\exists j>0$ mit $x_j=0\}$. (``Rückkehr zum Startpunkt'').\\
-		Es ist klar, dass $\Prb(A_N)\ge\frac{1}{2d}>0$, falls $N\ge 2$.\\
-		Es ist leicht zu zeigen, dass $N\mapsto\mathbb{P}(A_N)$ wächst monoton.\\
-		\begin{description}
-			\item[Knifflig:] Was ist $\lim\limits_{N\to\infty}$? $<1$? $=1$?
-			\item[Antwort:] $=1$ für $d\leq 2$, $<1$ für $d\geq 3$.
-		\end{description}
-		\item $B_n,\al:=\left\{\omega=(x_0,x_1,...,x_N)\in\Omega_N:|x_N|\ge N^\alpha\right\}$ für $0<\alpha\leq 1$
-		\begin{description}
-			\item[Frage:] $\lim\limits_{N\to\inf}\Prb(B_{n,\al})$?
-			\item[Antwort:] $0$, falls $\alpha>\frac{1}{2}$\\
-			$1$, falls $\alpha< \frac{1}{2}$\\
-			Für $\alpha=\frac{1}{2}$ gilt 
-			\[\lim\limits_{N\to\infty}\Prb(B_{n,\al})=\frac{V_k(d)}{(2\pi)^{\frac{d}{2}}}\int_{1}^{\infty}r^{d-1}\exp(\frac{1}{2}r^2)dr\]
-			(dabei ist $V_k(d)$ das Volumen der $d$-Dimensionalen Einheitskugel).
-		\end{description}
-	\end{enumerate}
-	\paragraph*{b) Selbstvermeidende Irrfahrt}Dimension $d$, $N$ Schritte.
-	\begin{enumerate}
-		\item $\Omega_N^0=\left\{(x_0,x_1,...,x_N)\in\Omega_N:x_i\neq x_j\text{ falls }i\neq j\right\}$
-		Dann gilt für die Anzahl der Pfade:
-		\[|\Omega_N^0|=\begin{cases}
-		2,&\text{falls $d=1$}\\??,&\text{falls $d>1$}
-		\end{cases}\]
-		und es ist $p(\omega)=\frac{1}{|\Omega_N^0|\forall\omega\in\Omega_N^0}$.
-		\item Wie in a)2. 
-		\begin{description}
-			\item[Frage] Was ist $\lim\limits_{N\to\infty}\Prb(B_{N,\al}^0)$.
-			\item[Bekannt] $\exists\al_c>0$ mit \[\lim\limits_{N\to\infty}\mathbb{ P(B_{n,\al}^0)}=\begin{cases}
-			0,&\text{falls $\al>\al_c$}\\1,&\text{falls $\al<\al_c$}
-			\end{cases}\]
-			\item[Bekannte Werte:]
-			\begin{description}
-				\item[$d=1$] $\al_c=1$
-				\item[$d=2$] $\al_c=\frac{3}{4}$, falls SLE-Conjecture stimmt
-				\item[$d=3$] $\al_c\approx 0,5876$ (Numerik)
-				\item[$d\ge 4$] $\al_c=\frac{1}{2}$
-			\end{description}
-		\end{description}
-	\end{enumerate}
-	\subsection{Beispiel}
-	Auswählen einer Zufälligen rellen Zahl in $[0,1]$, alle Zahlen sollen di gleich Wahrscheinlichkeit haben:\\
-	$[0,1]$ ist nicht endlich, also ist Gleiche Wahrscheinlichkeit für alle Zahlen unmöglich.\\
-	$[0,1)$ ist nicht abzählbar, also scheitert der bisherige Ansatz mit der Zähldichte.\\
-	\paragraph*{Ein möglicher Ausweg} Definiere $\Prb([a,b])=\Prb((a,b))=\Prb([a,b))=\Prb((a,b])$.\\
-	Die Erweiterung, sodass $\forall A\in\potset([0,1])$ $\Prb(A)$ definiert ist, ist nicht möglich.
-	\paragraph*{Lösung:} Definiere $\Prb$ nicht auf allen Mengen $\potset([0,1])$.
+	\setcounter{subsection}{10}
 	
+	\begin{exmlist}
+		\begin{exm}[Einfache Irrfahrt] Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
+			Also ist $|\Omega_N|=(2d)^N$, Setze $p(\omega=\frac{1}{(2d)^N})\forall\omega\in\Omega$.\\\\
+			Fragestellungen:
+			\begin{enumerate}
+				\item $A_N:=\{(x_1,...,x_N)\}\in\Omega_N:\exists j>0$ mit $x_j=0\}$. (``Rückkehr zum Startpunkt'').\\
+				Es ist klar, dass $\Prb(A_N)\ge\frac{1}{2d}>0$, falls $N\ge 2$.\\
+				Es ist leicht zu zeigen, dass $N\mapsto\mathbb{P}(A_N)$ wächst monoton.\\
+				\begin{description}
+					\item[Knifflig:] Was ist $\lim\limits_{N\to\infty}$? $<1$? $=1$?
+					\item[Antwort:] $=1$ für $d\leq 2$, $<1$ für $d\geq 3$.
+				\end{description}
+				\item $B_n,\al:=\left\{\omega=(x_0,x_1,...,x_N)\in\Omega_N:|x_N|\ge N^\alpha\right\}$ für $0<\alpha\leq 1$
+				\begin{description}
+					\item[Frage:] $\lim\limits_{N\to\inf}\Prb(B_{n,\al})$?
+					\item[Antwort:] $0$, falls $\alpha>\frac{1}{2}$\\
+					$1$, falls $\alpha< \frac{1}{2}$\\
+					Für $\alpha=\frac{1}{2}$ gilt 
+					\[\lim\limits_{N\to\infty}\Prb(B_{n,\al})=\frac{V_k(d)}{(2\pi)^{\frac{d}{2}}}\int_{1}^{\infty}r^{d-1}\exp(\frac{1}{2}r^2)dr\]
+					(dabei ist $V_k(d)$ das Volumen der $d$-Dimensionalen Einheitskugel).
+				\end{description}
+			\end{enumerate}
+		\end{exm}
+		\begin{exm}[Selbstvermeidende Irrfahrt] Dimension $d$, $N$ Schritte.
+			\begin{enumerate}
+				\item $\Omega_N^0=\left\{(x_0,x_1,...,x_N)\in\Omega_N:x_i\neq x_j\text{ falls }i\neq j\right\}$
+				Dann gilt für die Anzahl der Pfade:
+				\[|\Omega_N^0|=\begin{cases}
+				2,&\text{falls $d=1$}\\??,&\text{falls $d>1$}
+				\end{cases}\]
+				und es ist $p(\omega)=\frac{1}{|\Omega_N^0|\forall\omega\in\Omega_N^0}$.
+				\item Wie in a)2. 
+				\begin{description}
+					\item[Frage] Was ist $\lim\limits_{N\to\infty}\Prb(B_{N,\al}^0)$.
+					\item[Bekannt] $\exists\al_c>0$ mit \[\lim\limits_{N\to\infty}\mathbb{ P(B_{n,\al}^0)}=\begin{cases}
+					0,&\text{falls $\al>\al_c$}\\1,&\text{falls $\al<\al_c$}
+					\end{cases}\]
+					\item[Bekannte Werte:]
+					\begin{description}
+						\item[$d=1$] $\al_c=1$
+						\item[$d=2$] $\al_c=\frac{3}{4}$, falls SLE-Conjecture stimmt
+						\item[$d=3$] $\al_c\approx 0,5876$ (Numerik)
+						\item[$d\ge 4$] $\al_c=\frac{1}{2}$
+					\end{description}
+				\end{description}
+			\end{enumerate}
+		\end{exm}
+	\end{exmlist}
+
+	\begin{exm}
+		Auswählen einer Zufälligen rellen Zahl in $[0,1]$, alle Zahlen sollen di gleich Wahrscheinlichkeit haben:\\
+		$[0,1]$ ist nicht endlich, also ist Gleiche Wahrscheinlichkeit für alle Zahlen unmöglich.\\
+		$[0,1)$ ist nicht abzählbar, also scheitert der bisherige Ansatz mit der Zähldichte.\\
+		\begin{description}
+			\item[Ein möglicher Ausweg]
+			Definiere $\Prb([a,b])=\Prb((a,b))=\Prb([a,b))=\Prb((a,b])$.\\
+			Die Erweiterung, sodass $\forall A\in\potset([0,1])$ $\Prb(A)$ definiert ist, ist nicht möglich.
+			\item[Lösung] Definiere $\Prb$ nicht auf allen Mengen $\potset([0,1])$.
+		\end{description}
+	\end{exm}
 	\begin{definition}
 		Sei $\Omega$ eine nichtleere Menge.\\
 		Ein Mengensystem $\mathscr F\subset \potset(\Omega)$heißt \textbf{$\sigma$-Algebra}, falls
@@ -165,7 +256,7 @@
 		Dann ist auch $\bigcap_{\mathscr A\in\Sigma}\mathscr A$ eine $\sigma$-Algebra.
 	\end{satz}
 	%TODO counter
-	\addtocounter{thm}{-1}
+	\addtocounter{subsection}{-1}
 	\begin{definition}
 		$\sigma(\mathscr G):= \bigcap_{\mathscr A\in\Sigma}\mathscr A$ heißt \textbf{die von $\mathscr G$ erzeugt $\sigma$-Algebra}.
 	\end{definition}
@@ -197,9 +288,162 @@
 		mit $B_j\in\mathscr E_j,j\leq N$ heißt \textbf{Zylindermenge}.\\
 	\end{definition}
 	%TODO COUNTER
-	\addtocounter{thm}{-1}
+	\addtocounter{subsection}{-1}
 	\begin{definition}
 		Die $\sigma$-Algebra in $\Omega$ die von allen Zylindermengen Erzeugt wird heißt \textbf{Produkt-$\sigma$-Algebra}.
 		Man nennt $\mathscr Z$ das System der Zylindermenge und $\mathscr E_1\otimes\mathscr E_2\otimes...\otimes \mathscr E_N:=\sigma(\mathscr Z)$.
 	\end{definition}
+
+%VL 02.05.2017
+\setcounter{subsection}{26}
+
+	\begin{definition}
+		Die Abbildung $\la:\Bor(\R^n)\to[0,\infty], A\mapsto\int_{\R^n}\chi_A(x)~dx=\la(A)$ heißt \textbf{Lebesgue-Maß}
+	\end{definition}
+	
+	\begin{exm}\label{0128exm}
+			Sei $\varrho:\R^n\to[0,\infty)$ Borel-messbar und $\int\varrho(x)~dx=1$.\\
+			Dann ist die Abbildung $\Prb_p\varrho:\Bor(\R^n)\to[0,1],A\mapsto\int_A\varrho(x)~dx=\int\chi_A(y)\varrho(x)~dx$ ein Wahrscheinlichkeitsmaß.
+	\end{exm}
+
+	\begin{definition}
+		Sei $\varrho:\R^n\to[0,\infty)$ Borel-messbar und $\int\varrho(x)~dx=1$, (=\ref{0128exm}) dann heißt $\varrho$ \textbf{Dichte} von $\Prb_p\varrho$.
+	\end{definition}
+
+	\begin{exm}
+		Sei $\varrho$ eine Dichte, $x\in\R$. Dann hat $\Prb:=\frac{1}{3}\Prb_p\varrho+\frac{2}{3}\delta_x$ keine Dichte (siehe \ref{0121exm})
+	\end{exm}
+
+	\begin{bem*}
+		Wenn $\varrho$ Dichte ist schreibt man auch $\Prb_p\varrho\equiv\varrho(x)~dx$
+	\end{bem*}
+
+	\begin{definition}
+		Sei $\Omega\in\Bor(\R^n)$ mit $\la(\Omega)<\infty$. Das Wahrscheinlichkeitsmaß auf $\Omega$ mit Dichte $\varrho(y)=\frac{1}{\la(\Omega)}$ heißt \textbf{Gleichverteilung} auf $\Omega$.\\
+		Man fasst dann $\tilde\varrho(x)=\frac{1}{\la(\Omega)}\chi_A\Omega(x)$ als Einbettung in den $\R^n$ auf.
+	\end{definition}
+
+	\begin{rem*}[Zufallsvariable]
+		Der Begriff \enquote{Zufallsvariable} ist historisch gewachsen. (Keine Variable einer Funktion).
+		\begin{description}
+			\item[Problemstellung] Von einem komplizierten Zufälligen Geschehen will man nur gewisse Aspekte betrachten.
+		\end{description}
+	\end{rem*}
+
+	\begin{exmlist}
+		\begin{exm}[2 mal Würfeln, Würfelsumme]
+			Sei $\Omega:\{1,2,3,4,5,6\}\times\{1,2,4,5,6\}$. $\omega=(\omega_1,\omega_2)$. Der zu betrachtende Aspekt: $S(\omega_1,\omega_2)=\omega_1+\omega_2\in\{2,3,...,12\}\neq \Omega$.
+		\end{exm}
+		\begin{exm}
+			Sei $\Omega=\Omega_N$(siehe \ref{0111aexm}, einfache Irrfahrt).\\
+			$\omega=(\omega_1,\omega_2,...\omega_N)\in(\Z^d)^N$.\begin{description}
+				\item[Aspekt 1] Position nach $N$ Schritten.\\
+				Modell: $X_N\big((\omega_1,...,\omega_N)\big)=\omega_N\in\Z^d\neq \Omega$
+				\item[Aspekt 2] Maximaler Abstand vom Ursprung bis zum Schritt $N$.\\
+				Modell $M_N\big((\omega_1,...,\omega_N)\big)=\max\{|\omega_j|,j\le N\}$.
+			\end{description} 
+		\end{exm}
+		\begin{exm}
+			Sei $\Omega=[0,1]$, $\F\in\Bor([0,1])$, $\omega=x\in[0,1]$.
+			\begin{description}
+				\item[Aspekt 1] Erste Ziffer nach dem Komma?\\
+				Modell: $y_1(x)=\left\lfloor10x\right\rfloor$
+				\item[Aspekt 2] Fläche des Quadrates mit Kantenlänge $x$\\
+				Modell: $Q(x)=x^2\in[0,1]$.
+			\end{description}
+		\end{exm}
+	Fazit: Modellierung durch Abbildungen.
+	\end{exmlist}
+
+	\begin{definition}
+		Seine $(\Omega,\F)$ und $(\Omega',\F')$ Ereignisräume.\\
+		eine Abbildung $X:\Omega\to\Omega'$ heißt \textbf{Zufallsvariable} (ZV) [oder messbare Abbildung, zufälliges Element von $\Omega'$], falls gilt:\\
+		$\forall A'\in\F'$ ist $X^{-1}(A')\in\F$.\\
+		Hierbei ist $X^{-1}$ das Urbild von $A'$ unter $X$.
+	\end{definition}
+
+	\begin{bem}
+		Die Urbild-Abbildung bilte Mengen in $\F'$ (d.h.erlaube Ja-Nein-Fragen) auf Mengen  in $\potset(\Omega)$ (d.h. Ja-Nein-Fragen) ab.
+	\end{bem}
+
+	\begin{exm*}
+		In 1.32.1 \ref{0132a} ist $S^{-1}(\{4\})=\{(1,3),(2,2),(3,1)\}$.\\
+		In 1.32.1 \ref{0132a} ist $Y_1^{-1}(\{3,7\})=[0,3,0,4)\cup[0,7,0,8)$ %TODO ???
+	\end{exm*}
+
+	\begin{bem*}
+		Die Bedingung (*) bedeutet, dass für alle durch $A\in\F'$ erzeugte erlaubten Ja-Nein-Fragen auch die Frage \enquote{Liegt $X(\omega)$ in $A'$?} erlaubt ist.
+	\end{bem*}
+	\begin{bem*}
+		Oft nimmar  man nur $\Omega$ und $(\Omega',\F')$ als gegeben.\\
+		Dann ist $X^{-1}(\F'):=\{X^{-1}(A')\mid A'\in \F'\}$ die von $X$ erzeugt $\sigma$-Algebra.
+	\end{bem*}
+	\begin{bem*}
+		Falls $\F=\potset(\Omega)$, dann ist jede Abbildung eine Zufallsvariable.
+	\end{bem*}
+
+	\begin{lem}\label{0135lem}
+		Seine $(\Omega,\F)$ und $(\Omega',\F')$ Ereignisräume, $X:\Omega\to\Omega'$ und sei $\mathscr G'$ ein Mengensystem mit $\F'=\sigma(G')$. Dann ist $X$ genau dann Zufallsvariable, wenn $X^{-1}(A')\in\F\forall A'\in \mathscr G'$.
+	\end{lem}
+	\begin{proof}
+		\begin{description}
+			\item[\enquote{$\Rightarrow$}] ist klar, da $\mathscr G'\subset \F'$
+			\item[\enquote{$\Leftarrow$}] Sei $\mathscr A':=\{A'\in\Omega'\mid X^{-1}(A')\in\F\}$ ist eine $\sigma$-Algebra und $\mathscr A'\supset\mathscr G'$ nach Annahme.\\
+			Daher ist $\F'=\sigma(\mathscr G')\subset\mathscr A'$, sodass $X^{-1}(A')\in\F\forall A\in\F$.
+		\end{description}
+	\end{proof}
+
+	\begin{exmlist}
+		\begin{exm}
+			Sei $(\Omega',\F')=(\R,\R)$. Nach \ref{0135lem} gilt:\\
+			$X:\Omega\to\Omega'$ ist genau dann Zufallsvariable, wenn $X^{-1}\big((-\infty,c)\big)\in\F\forall c\in\R$
+			Für $\Omega'=\R$ heißt $X$ \textbf{relle Zufallsvariable}
+		\end{exm}
+		\begin{exm}
+			Es ist $\ol{\R}:=[-\infty,\infty]$ mit $\sigma$-Algebra $\Bor(\ol{\R})=\sigma\big(\{[-\infty-c]:c\in\ol{\R}\}\big)$.\\
+			Die Abbildung $X:\Omega\to\ol{\R}$ ist genau dann Zufallsvariable, wenn $X^{-1}\big([-\infty,c]\big)\in\F\forall c$.\\
+			Dann heißt $X$ \textbf{numerische Zufallsvariable}
+		\end{exm}
+	\end{exmlist}
+
+	\begin{theorem}
+		Sei $(\Omega,\F,\Prb)$ ein Wahrscheinlichkeitsraum, $(\Omega',\F')$ ein Ereignisraum, $X:\Omega\to\Omega'$ eine Zufallsvariable.\\
+		Dann ist die Abbildung
+		\[\Prb':\F'\to[0,1],\quad A'\mapsto\Prb'(A'):=\Prb(X^{-1}('A))\] 
+		ein Wahrscheinlichkeitsmaß auf $(\Omega',\F')$.  
+	\end{theorem}
+	%TODO COUNTER
+	\addtocounter{subsection}{-1}
+	\begin{definition}
+		$\Prb'$ heißt \textbf{Bildmaß von $\Prb$ unter $X$} oder \textbf{Verteilung von $X$ unter $\Prb$}.\\
+		Man schreibt $\Prb'=\Prb\circ X^{-1}$ oder $\Prb'=\Prb_X$
+	\end{definition}
+	\begin{proof}
+		Da $X$ eine Zufallsvariable ist, ist $X^{-1}(A')\in\F\forall A'\in\F'$, daher im Definitionsbereich von $\Prb$.\\
+		Also ist $\Prb'$ wohldefiniert. Prüfe Definition 1.20 \ref{0112def}.
+		\begin{enumerate}[label=\alph*)]
+			\item $\Prb'(\Omega')=\Prb(X^{-1}(\Omega'))=\Prb(\Omega)=1$
+			\item $A_1',A_2',...\in \F'$ seien paarweise disjunkt. Dann sind $X^{-1}(A_1'),X^{-1}(A_2'),...$ auch paarweise disjunkt.
+			\begin{align*}
+			\Prb'\left(\bigcup_{i=1}^\infty A_i'\right)&=\Prb\left( X^{-1}\left(\bigcup_{i=1}^\infty A_i'\right)\right)\\
+			&=\Prb\left(\bigcup_{i=1}^\infty X^{-1}(A_i')\right)\\
+			&=\sum_{i=1}\infty\Prb(X^{-1}(A_i'))\\
+			&=\sum_{i=1}\infty\Prb'(A_i')
+			\end{align*}
+		\end{enumerate}
+	\end{proof}
+
+	\begin{definition}
+		Seien $(\Omega_1,\F_1,\Prb_1)$ und $(\Omega_2,\F_2,\Prb_2)$ Wahrscheinlichkeitsräume, $X_1:\Omega_1\to\Omega'_1$, $X_2:\Omega_2\to\Omega'_2$ Zufallsvariablen.\\
+		Falls $\Prb_1(X^{-1}_1(A'))=\Prb_2(X_2^{-1}(A'))\forall A'\in\F'$, dann heißen $X_1$ und $X_2$ identisch verteilt.
+	\end{definition}
+
+	\begin{bem}[Notation]
+		Man schreibt oft:
+		\begin{itemize}
+			\item $\{X\in A'\}$ statt $X^{-1}(A')$
+			\item $\Prb(\{X\in A'\})$ oder $\Prb(X\in A')$ statt $\Prb(X^{-1}(A'))$
+			\item $\Prb_X$ statt $\Prb\circ X^{-1}$.
+		\end{itemize}
+	\end{bem}
 \end{document}
