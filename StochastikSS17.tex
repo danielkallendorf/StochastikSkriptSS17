@@ -2,10 +2,8 @@
 
 \usepackage{luatex85}
 \def\pgfsysdriver{pgfsys-pdftex.def}
-
-%\usepackage[utf8]{inputenc}
-%\usepackage{fontenc}
 \usepackage[utf8]{luainputenc}
+\usepackage{fontspec}
 
 \usepackage[german]{babel}
 \usepackage{amsmath}
@@ -23,17 +21,18 @@
 \usepackage{csquotes}
 \usepackage{dsfont}
 \usepackage{enumitem}
+\usepackage{wrapfig}
 \usepackage[hidelinks]{hyperref}
 
-
+\setlist[enumerate,1]{label=\alph*)}
+\setlist[enumerate,2]{label=(\roman*)}
 
 \newcommand{\N}{\ensuremath{\mathbb{N}}}
 \newcommand{\Z}{\ensuremath{\mathbb{Z}}}
 \newcommand{\Q}{\ensuremath{\mathbb{Q}}}
 \newcommand{\R}{\ensuremath{\mathbb{R}}}
 \newcommand{\C}{\ensuremath{\mathbb{C}}}
-\newcommand{\F}{\ensuremath{\mathbb{F}}}
-\newcommand{\AF}{\ensuremath{\mathbb{A}}}
+
 
 \newcommand{\la}{\ensuremath{\lambda}}
 \newcommand{\al}{\ensuremath{\alpha}}
@@ -42,37 +41,58 @@
 \newcommand{\todomark}[1]{\fbox{\Large Hier könnte \sout{Ihre Werbung} #1 stehen}}
 \newcommand{\norm}[1]{\left|#1\right|}
 \newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
+\newcommand{\Bor}{\mathscr B}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\newcommand{\bigtimes}{\operatornamewithlimits{\times}}
+
+
 \newcommand{\potset}{\mathscr P}
 \newcommand{\Prb}{\mathbb P}
-\newcommand{\Bor}{\mathscr B}
-\newcommand{\Idop}{\mathds{1}}
+\newcommand{\Epv}{\ensuremath{\mathbb{E}}}
+\newcommand{\Var}{\mathbb{V}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Kor}{\rho}
 
-\theoremstyle{definition}
-\newtheorem{definition}[subsection]{Definition}
-\newtheorem{prop}[subsection]{Proposition}
+\newcommand{\scA}{\mathscr A}
+\newcommand{\scB}{\mathscr B}
+\newcommand{\scE}{\mathscr E}
+\newcommand{\scF}{\ensuremath{\mathscr{F}}}
+\newcommand{\scG}{\mathscr G}
+\newcommand{\scL}{\mathscr L}
+
+
+\newcommand{\Poi}{\operatorname{Poi}}
+\newcommand{\Exp}{\operatorname{Exp}}
+\newcommand{\Nv}{\mathscr N}
 
 \theoremstyle{plain}
-\newtheorem{lem}[subsection]{Lemma}
-\newtheorem{kor}[subsection]{Korollar}
-\newtheorem{satz}[subsection]{Satz}
-\newtheorem{theorem}[subsection]{Theorem}
-\newtheorem{rem}[subsection]{Erinnerung}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lem}[theorem]{Lemma}
+\newtheorem{kor}[theorem]{Korollar}
+\newtheorem{satz}[theorem]{Satz}
+\newtheorem{rem}[theorem]{Erinnerung}
 \newtheorem*{rem*}{Erinnerung}
 
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{prop}[theorem]{Proposition}
+
 \theoremstyle{remark}
-\newtheorem{bem}[subsection]{Bemerkung}
+\newtheorem{bem}[theorem]{Bemerkung}
 \newtheorem*{bem*}{Bemerkung}
-\newtheorem{exm}[subsection]{Beispiel}
+\newtheorem{exm}[theorem]{Beispiel}
 \newtheorem*{exm*}{Beispiel}
+
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
 
 \newcounter{exmlistitem}
 \newenvironment{exmlist}
-	{\let\oldss\thesubsection
-	\renewcommand{\thesubsection}{\oldss.\arabic{exmlistitem}}
-	\stepcounter{subsection}
+	{\let\oldtheorem\thetheorem
+	\renewcommand{\thetheorem}{\oldtheorem.\arabic{exmlistitem}}
+	\stepcounter{theorem}
 	\let\oldexm\exm
 	\let\oldendexm\endexm
-	\renewenvironment{exm}{\addtocounter{subsection}{-1}\stepcounter{exmlistitem}\oldexm}{\oldendexm}}
+	\renewenvironment{exm}{\addtocounter{theorem}{-1}\stepcounter{exmlistitem}\oldexm}{\oldendexm}}
 	{\setcounter{exmlistitem}{0}}
 
 
@@ -83,7 +103,7 @@
 	\maketitle
 	\tableofcontents
 	\newpage
-%VL 18.04.2017
+%TODO VL 18.04.2017
 	
 	\section{Grundlagen}
 	\begin{rem}Naive Grundidee der Modellierung des Zufalls:\\
@@ -149,20 +169,44 @@
 	\begin{proof}
 		Sei $p$ Zähldichte auf $\Omega$.
 		\begin{enumerate}
-			\item Nach Definition: $\Prb(\Omega)=\sum_{\omega\in\Omega}p(\omega)=1$
-			\item 
+			\item Nach Definition \ref{0105def}: $\Prb(\Omega)=\sum_{\omega\in\Omega}p(\omega)=1$
+			\item Es gilt:
+			\[\tag{1}
+			\Prb\left(\bigcap_{n=1}^\infty A_n\right)=\Prb\big(\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}\big)
+			=\sum_{\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}} p(\omega)
+			\]
+			Sei nun $N(\omega)=\sum_{n=1}^{\infty}\chi_{A_n}(\omega)=$\enquote{Anzahl der $A_n$ die  $\omega$ enthalten}. Dann ist 
+			\begin{align*}
+			\sum_{n=1}^\infty\Prb(A_n)=\sum_{n=1}^\infty\sum_{\omega\in A_n}	\tag{2} p(\omega)=\sum_{\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}}p(\omega)N(\omega)\\
+			\end{align*}
+			Da aber die $A_n$ paarweise disjunkt sind ist $N(\omega)=1$ für alle $\omega\in{\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}}$, ist ist (1)=(2).\qedhere
 		\end{enumerate}
 	\end{proof}
-%TODO
 
-%VL 24.04.2017
-	\setcounter{section}{1}
-	\setcounter{subsection}{10}
+	\begin{definition}
+		Für $A\subseteq\Omega$ heißt 
+		\[\chi_A:\Omega\to\{0,1\},\quad \omega\mapsto\begin{cases}
+		1&\omega\in A\\0&\text{sonst}
+		\end{cases}\]
+		die \textbf{Charakteristische Funktion} oder \textbf{Indikator} von $A$. Man schreibt auch $\mathds{1}_A$.
+	\end{definition}
 	
+	\begin{exm}
+		Sei $\Omega=\N$, $(a_n)_{n\in N}$ eine Folge mit $a_n\ge 0$, $a:=\sum_{n=1}^\infty a_n\le \infty$ und $a>0$.\\
+		Dann ist $p:\Omega\to[0,1]$, $n\mapsto p(n):=\frac{a_n}{a}$ eine Zähldichte.\\
+		Es gilt sogar die Isomorphie: 
+		\[\{\text{Zähldichte auf $\N$}\}\cong \{\text{Nicht negative Folgen mit $\sum_{n=1}^{\infty}a_n=1$}\}\cong\{\text{Nichtnegative summierbare Folgen $\neq 0$}\}\]
+	\end{exm}
+	
+	\begin{bem}[Notation]
+		Sei $\Omega$ eine Menge .$|\Omega|\le\infty$ bezeichne tdie Anzahl der Elemente von $\Omega$ \enquote{Mächtigkeit der Menge}.
+	\end{bem}
+
+%TODO VL 24.04.2017
 	\begin{exmlist}
 		\begin{exm}[Einfache Irrfahrt] Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
 			Also ist $|\Omega_N|=(2d)^N$, Setze $p(\omega=\frac{1}{(2d)^N})\forall\omega\in\Omega$.\\\\
-			Fragestellungen:
+			Man kann nu folgende Fragestellungen formulieren:
 			\begin{enumerate}
 				\item $A_N:=\{(x_1,...,x_N)\}\in\Omega_N:\exists j>0$ mit $x_j=0\}$. (``Rückkehr zum Startpunkt'').\\
 				Es ist klar, dass $\Prb(A_N)\ge\frac{1}{2d}>0$, falls $N\ge 2$.\\
@@ -173,7 +217,7 @@
 				\end{description}
 				\item $B_n,\al:=\left\{\omega=(x_0,x_1,...,x_N)\in\Omega_N:|x_N|\ge N^\alpha\right\}$ für $0<\alpha\leq 1$
 				\begin{description}
-					\item[Frage:] $\lim\limits_{N\to\inf}\Prb(B_{n,\al})$?
+					\item[Frage:] $\lim\limits_{N\to\infty}\Prb(B_{n,\al})$?
 					\item[Antwort:] $0$, falls $\alpha>\frac{1}{2}$\\
 					$1$, falls $\alpha< \frac{1}{2}$\\
 					Für $\alpha=\frac{1}{2}$ gilt 
@@ -209,7 +253,7 @@
 	\end{exmlist}
 
 	\begin{exm}
-		Auswählen einer Zufälligen rellen Zahl in $[0,1]$, alle Zahlen sollen di gleich Wahrscheinlichkeit haben:\\
+		Auswählen einer Zufälligen reellen Zahl in $[0,1]$, alle Zahlen sollen di gleich Wahrscheinlichkeit haben:\\
 		$[0,1]$ ist nicht endlich, also ist Gleiche Wahrscheinlichkeit für alle Zahlen unmöglich.\\
 		$[0,1)$ ist nicht abzählbar, also scheitert der bisherige Ansatz mit der Zähldichte.\\
 		\begin{description}
@@ -256,7 +300,7 @@
 		Dann ist auch $\bigcap_{\mathscr A\in\Sigma}\mathscr A$ eine $\sigma$-Algebra.
 	\end{satz}
 	%TODO counter
-	\addtocounter{subsection}{-1}
+	\addtocounter{theorem}{-1}
 	\begin{definition}
 		$\sigma(\mathscr G):= \bigcap_{\mathscr A\in\Sigma}\mathscr A$ heißt \textbf{die von $\mathscr G$ erzeugt $\sigma$-Algebra}.
 	\end{definition}
@@ -288,14 +332,56 @@
 		mit $B_j\in\mathscr E_j,j\leq N$ heißt \textbf{Zylindermenge}.\\
 	\end{definition}
 	%TODO COUNTER
-	\addtocounter{subsection}{-1}
+	\addtocounter{theorem}{-1}
 	\begin{definition}
 		Die $\sigma$-Algebra in $\Omega$ die von allen Zylindermengen Erzeugt wird heißt \textbf{Produkt-$\sigma$-Algebra}.
 		Man nennt $\mathscr Z$ das System der Zylindermenge und $\mathscr E_1\otimes\mathscr E_2\otimes...\otimes \mathscr E_N:=\sigma(\mathscr Z)$.
 	\end{definition}
 
-%VL 02.05.2017
-\setcounter{subsection}{26}
+%TODO VL 25.04.2017
+	\begin{definition}
+		Sei $\Omega,\scF$ ein messabere Raum. Eine Abbildung $\Prb:\scF\to [0,1]$ heiß \textbf{Wahrscheinlichkeitsmaß} (W-Maß) auf $\scF$ (teilweise auch \enquote{auf $\Omega$}), falls
+		\begin{enumerate}[label=\alph*)]
+			\item $\Prb(\Omega)=1$
+			\item Für paarweise disjunkte $A_n\in\scF$ gilt $\Prb(\bigcap_{i=1}^\infty)=\sum_{i=1}^\infty \Prb(A_i)$ (\enquote{$\sigma$-Additivität}).
+		\end{enumerate}
+	Dann heißt $\Omega,\scF,\Prb$ \textbf{Wahrscheinlichkeitsraum}.
+	\end{definition}
+
+	\begin{exm}
+		Sei $(\Omega,\scF,\P)=(\R,\Bor(\R),\delta_x)$. Dabei ist $\Prb(A)=\begin{cases}
+		1;&\text{falls $x\in A$}\\0,&\text{sonst}.
+		\end{cases}$ ein Wahrscheinlichkeitsmaß auf $\Bor(\R)$. \\
+		Es Modelliert ein \enquote{Zufalls}-Experiment, welches sicher $x$ ergibt.
+	\end{exm}
+
+	\begin{satz}[Eigenschaften von Wahrscheinlichkeitsmaßen]
+	Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und $A,B,A_1,A_2,...\in\scF$. Dann ist
+	\begin{enumerate}[label=\alph*)]
+		\item $\Prb(\emptyset)=0$
+		\item $ẞ\Prb(A\cup B)=\Prb(A)+\Prb(B)-\Prb(A\cap B)$
+		\subitem insbesondere $\Prb(A)+\Prb(A^C)=1$
+		\item Falls $A\subseteq B$, dann ist $\Prb(A)\le\Prb(B)$ (\enquote{Monotonie})
+		\item $\Prb\left(\bigcup_{i=1}^\infty A_i\right)\leq \sum_{i=1}^\infty \Prb(A_i)$ ($\sigma$-Subadditivität)
+		\item Falls $A_n \nearrow A_n$ (d.h. $A_1\subseteq A_2\subseteq...$ und $\bigcap_{n=1}^\infty A_n=A$), \\
+		dann ist $\lim\limits_{n\to\infty}\Prb(A_n)=\Prb(A)$ (\enquote{$\sigma$-Stetigkeit})\\
+		Falls $A_n \searrow A_n$ (d.h. $A_1\supseteq A_2\supseteq...$ und $\bigcup_{n=1}^\infty A_n=A$), \\
+		dann ist $\lim\limits_{n\to\infty}\Prb(A_n)=\Prb(A)$
+	\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item $\Prb(\emptyset)=\Prb\left(\bigcup_{n=1}^\infty \emptyset\right)=\sum_{n=1}^{\infty}\Prb(\infty)$. Also $\Prb(\emptyset)=0$
+			\item Falls $A\cap B=\emptyset$, dann ist $\Phi(A\cup B)=\Prb(A)+\Prb(B)-\Prb(\emptyset)=\Prb(A)+\Prb(B)$.\\
+			Sei nun $A\cap B\neq\emptyset$. 
+		\end{enumerate}
+		%TODO
+	\end{proof}
+
+%TODO
+
+%TODO VL 02.05.2017
+\setcounter{theorem}{26}
 
 	\begin{definition}
 		Die Abbildung $\la:\Bor(\R^n)\to[0,\infty], A\mapsto\int_{\R^n}\chi_A(x)~dx=\la(A)$ heißt \textbf{Lebesgue-Maß}
@@ -344,7 +430,7 @@
 			\end{description} 
 		\end{exm}
 		\begin{exm}
-			Sei $\Omega=[0,1]$, $\F\in\Bor([0,1])$, $\omega=x\in[0,1]$.
+			Sei $\Omega=[0,1]$, $\scF\in\Bor([0,1])$, $\omega=x\in[0,1]$.
 			\begin{description}
 				\item[Aspekt 1] Erste Ziffer nach dem Komma?\\
 				Modell: $y_1(x)=\left\lfloor10x\right\rfloor$
@@ -356,14 +442,14 @@
 	\end{exmlist}
 
 	\begin{definition}
-		Seine $(\Omega,\F)$ und $(\Omega',\F')$ Ereignisräume.\\
+		Seine $(\Omega,\scF)$ und $(\Omega',\scF')$ Ereignisräume.\\
 		eine Abbildung $X:\Omega\to\Omega'$ heißt \textbf{Zufallsvariable} (ZV) [oder messbare Abbildung, zufälliges Element von $\Omega'$], falls gilt:\\
-		$\forall A'\in\F'$ ist $X^{-1}(A')\in\F$.\\
+		$\forall A'\in\scF'$ ist $X^{-1}(A')\in\scF$.\\
 		Hierbei ist $X^{-1}$ das Urbild von $A'$ unter $X$.
 	\end{definition}
 
 	\begin{bem}
-		Die Urbild-Abbildung bilte Mengen in $\F'$ (d.h.erlaube Ja-Nein-Fragen) auf Mengen  in $\potset(\Omega)$ (d.h. Ja-Nein-Fragen) ab.
+		Die Urbild-Abbildung bilte Mengen in $\scF'$ (d.h.erlaube Ja-Nein-Fragen) auf Mengen  in $\potset(\Omega)$ (d.h. Ja-Nein-Fragen) ab.
 	\end{bem}
 
 	\begin{exm*}
@@ -372,45 +458,45 @@
 	\end{exm*}
 
 	\begin{bem*}
-		Die Bedingung (*) bedeutet, dass für alle durch $A\in\F'$ erzeugte erlaubten Ja-Nein-Fragen auch die Frage \enquote{Liegt $X(\omega)$ in $A'$?} erlaubt ist.
+		Die Bedingung (*) bedeutet, dass für alle durch $A\in\scF'$ erzeugte erlaubten Ja-Nein-Fragen auch die Frage \enquote{Liegt $X(\omega)$ in $A'$?} erlaubt ist.
 	\end{bem*}
 	\begin{bem*}
-		Oft nimmar  man nur $\Omega$ und $(\Omega',\F')$ als gegeben.\\
-		Dann ist $X^{-1}(\F'):=\{X^{-1}(A')\mid A'\in \F'\}$ die von $X$ erzeugt $\sigma$-Algebra.
+		Oft nimmar  man nur $\Omega$ und $(\Omega',\scF')$ als gegeben.\\
+		Dann ist $X^{-1}(\scF'):=\{X^{-1}(A')\mid A'\in \scF'\}$ die von $X$ erzeugt $\sigma$-Algebra.
 	\end{bem*}
 	\begin{bem*}
-		Falls $\F=\potset(\Omega)$, dann ist jede Abbildung eine Zufallsvariable.
+		Falls $\scF=\potset(\Omega)$, dann ist jede Abbildung eine Zufallsvariable.
 	\end{bem*}
 
 	\begin{lem}\label{0135lem}
-		Seine $(\Omega,\F)$ und $(\Omega',\F')$ Ereignisräume, $X:\Omega\to\Omega'$ und sei $\mathscr G'$ ein Mengensystem mit $\F'=\sigma(G')$. Dann ist $X$ genau dann Zufallsvariable, wenn $X^{-1}(A')\in\F\forall A'\in \mathscr G'$.
+		Seine $(\Omega,\scF)$ und $(\Omega',\scF')$ Ereignisräume, $X:\Omega\to\Omega'$ und sei $\mathscr G'$ ein Mengensystem mit $\scF'=\sigma(G')$. Dann ist $X$ genau dann Zufallsvariable, wenn $X^{-1}(A')\in\scF\forall A'\in \mathscr G'$.
 	\end{lem}
 	\begin{proof}
 		\begin{description}
-			\item[\enquote{$\Rightarrow$}] ist klar, da $\mathscr G'\subset \F'$
-			\item[\enquote{$\Leftarrow$}] Sei $\mathscr A':=\{A'\in\Omega'\mid X^{-1}(A')\in\F\}$ ist eine $\sigma$-Algebra und $\mathscr A'\supset\mathscr G'$ nach Annahme.\\
-			Daher ist $\F'=\sigma(\mathscr G')\subset\mathscr A'$, sodass $X^{-1}(A')\in\F\forall A\in\F$.
+			\item[\enquote{$\Rightarrow$}] ist klar, da $\mathscr G'\subset \scF'$
+			\item[\enquote{$\Leftarrow$}] Sei $\mathscr A':=\{A'\in\Omega'\mid X^{-1}(A')\in\scF\}$ ist eine $\sigma$-Algebra und $\mathscr A'\supset\mathscr G'$ nach Annahme.\\
+			Daher ist $\scF'=\sigma(\mathscr G')\subset\mathscr A'$, sodass $X^{-1}(A')\in\scF\forall A\in\scF$.
 		\end{description}
 	\end{proof}
 
 	\begin{exmlist}
 		\begin{exm}
-			Sei $(\Omega',\F')=(\R,\R)$. Nach \ref{0135lem} gilt:\\
-			$X:\Omega\to\Omega'$ ist genau dann Zufallsvariable, wenn $X^{-1}\big((-\infty,c)\big)\in\F\forall c\in\R$
-			Für $\Omega'=\R$ heißt $X$ \textbf{relle Zufallsvariable}
+			Sei $(\Omega',\scF')=(\R,\R)$. Nach \ref{0135lem} gilt:\\
+			$X:\Omega\to\Omega'$ ist genau dann Zufallsvariable, wenn $X^{-1}\big((-\infty,c)\big)\in\scF\forall c\in\R$
+			Für $\Omega'=\R$ heißt $X$ \textbf{reelle Zufallsvariable}
 		\end{exm}
 		\begin{exm}
 			Es ist $\ol{\R}:=[-\infty,\infty]$ mit $\sigma$-Algebra $\Bor(\ol{\R})=\sigma\big(\{[-\infty-c]:c\in\ol{\R}\}\big)$.\\
-			Die Abbildung $X:\Omega\to\ol{\R}$ ist genau dann Zufallsvariable, wenn $X^{-1}\big([-\infty,c]\big)\in\F\forall c$.\\
+			Die Abbildung $X:\Omega\to\ol{\R}$ ist genau dann Zufallsvariable, wenn $X^{-1}\big([-\infty,c]\big)\in\scF\forall c$.\\
 			Dann heißt $X$ \textbf{numerische Zufallsvariable}
 		\end{exm}
 	\end{exmlist}
 
 	\begin{theorem}
-		Sei $(\Omega,\F,\Prb)$ ein Wahrscheinlichkeitsraum, $(\Omega',\F')$ ein Ereignisraum, $X:\Omega\to\Omega'$ eine Zufallsvariable.\\
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum, $(\Omega',\scF')$ ein Ereignisraum, $X:\Omega\to\Omega'$ eine Zufallsvariable.\\
 		Dann ist die Abbildung
-		\[\Prb':\F'\to[0,1],\quad A'\mapsto\Prb'(A'):=\Prb(X^{-1}('A))\] 
-		ein Wahrscheinlichkeitsmaß auf $(\Omega',\F')$.  
+		\[\Prb':\scF'\to[0,1],\quad A'\mapsto\Prb'(A'):=\Prb(X^{-1}('A))\] 
+		ein Wahrscheinlichkeitsmaß auf $(\Omega',\scF')$.  
 	\end{theorem}
 	%TODO COUNTER
 	\addtocounter{subsection}{-1}
@@ -419,11 +505,11 @@
 		Man schreibt $\Prb'=\Prb\circ X^{-1}$ oder $\Prb'=\Prb_X$
 	\end{definition}
 	\begin{proof}
-		Da $X$ eine Zufallsvariable ist, ist $X^{-1}(A')\in\F\forall A'\in\F'$, daher im Definitionsbereich von $\Prb$.\\
+		Da $X$ eine Zufallsvariable ist, ist $X^{-1}(A')\in\scF\forall A'\in\scF'$, daher im Definitionsbereich von $\Prb$.\\
 		Also ist $\Prb'$ wohldefiniert. Prüfe Definition 1.20 \ref{0112def}.
 		\begin{enumerate}[label=\alph*)]
 			\item $\Prb'(\Omega')=\Prb(X^{-1}(\Omega'))=\Prb(\Omega)=1$
-			\item $A_1',A_2',...\in \F'$ seien paarweise disjunkt. Dann sind $X^{-1}(A_1'),X^{-1}(A_2'),...$ auch paarweise disjunkt.
+			\item $A_1',A_2',...\in \scF'$ seien paarweise disjunkt. Dann sind $X^{-1}(A_1'),X^{-1}(A_2'),...$ auch paarweise disjunkt.
 			\begin{align*}
 			\Prb'\left(\bigcup_{i=1}^\infty A_i'\right)&=\Prb\left( X^{-1}\left(\bigcup_{i=1}^\infty A_i'\right)\right)\\
 			&=\Prb\left(\bigcup_{i=1}^\infty X^{-1}(A_i')\right)\\
@@ -434,8 +520,8 @@
 	\end{proof}
 
 	\begin{definition}
-		Seien $(\Omega_1,\F_1,\Prb_1)$ und $(\Omega_2,\F_2,\Prb_2)$ Wahrscheinlichkeitsräume, $X_1:\Omega_1\to\Omega'_1$, $X_2:\Omega_2\to\Omega'_2$ Zufallsvariablen.\\
-		Falls $\Prb_1(X^{-1}_1(A'))=\Prb_2(X_2^{-1}(A'))\forall A'\in\F'$, dann heißen $X_1$ und $X_2$ identisch verteilt.
+		Seien $(\Omega_1,\scF_1,\Prb_1)$ und $(\Omega_2,\scF_2,\Prb_2)$ Wahrscheinlichkeitsräume, $X_1:\Omega_1\to\Omega'_1$, $X_2:\Omega_2\to\Omega'_2$ Zufallsvariablen.\\
+		Falls $\Prb_1(X^{-1}_1(A'))=\Prb_2(X_2^{-1}(A'))\forall A'\in\scF'$, dann heißen $X_1$ und $X_2$ identisch verteilt.
 	\end{definition}
 
 	\begin{bem}[Notation]
@@ -446,4 +532,1057 @@
 			\item $\Prb_X$ statt $\Prb\circ X^{-1}$.
 		\end{itemize}
 	\end{bem}
+
+%TODO VL 08.05.2017
+%TODO
+
+%TODO VL 09.05.2017
+\setcounter{section}{2}
+\setcounter{theorem}{4}
+
+\subsection{Urnenmodelle mit Reihenfolge, mit Zurücklegen}
+	\begin{exmlist}\label{0205exm}
+		\begin{exm}[Einmal zeihen:]
+			 Bsp: Tulpenzwiebeln, $N$ Stück: $k_r$ rote, $k_g$ gelbe, $k_o$ orange.\\
+			 Dann ist $\Prb(\text{rot})=\frac{k_r}{N}$,...\\
+			 Allgemein: Menge der Merkmale $A=(a_1,...,a_m)$ mit $p_i=$Bruchteil der  \enquote{Kugeln} mit Merkmal $a_i$, sodass$\Prb(\{a_i\})=p_i$.\\
+			 Dann ist $\P$ eine Zähldichte mit $\sum_{i=1}^mp_i=1$.
+		\end{exm}
+		\begin{exm}[$N$-Mal ziehen]\label{0205Bexm}
+			Anzahl der Ziehungen $N\in\N$, $\Omega=A^N$, $\P\big((a_{j_1},....,a_{j_N})\big):=p_{j_1}\cdot...\cdot p_{j_N}$, für $j_1,..., j_N\in\{1,...,m\}$ mit $p_1,...,p_m$ wie in 1.\\
+			Modelliert $N$-mal \enquote{unabhängig} (siehe Kapitel 3) ziehen mit Zurücklegen.
+		\end{exm}
+	\end{exmlist}
+	\begin{definition}
+		Spezialfall von \ref{0205exm}: $A=\{0,1\}$, $p_1=p,p_0=1-p$.\\
+		$1\hat{=}$\enquote{Erfolg}, $p_1\hat{=}$\enquote{Erfolgswahrscheinlichkeit}.\\
+		Dann kann für $\omega\in A^N$, $\omega=(\omega_1,...,\omega_N)$ schreiben:
+		\[\Prb(\{\omega\})=p^{\sum_{i=1}^N\omega_i}(1-p)^{\sum_{i=1}^N(1-\omega_i)}\]
+		Man nennt dies die \textbf{Bernoulli-Verteilung} für $N$ Versuche mit Erfolgswahrscheinlichkeit $p$.
+	\end{definition}
+	\begin{definition}
+		Die Zähldichte $\ol p:A\times ...\times A\to [0,1]$, $\ol p(a_1,...,a_n)\mapsto \Prb(\{a_1\})\cdot...\cdot\Prb(\{a_n\})=p_1\cdot...\cdot p_n$ aus \ref{0205Bexm} heißt $N$-fache \textbf{Produktdichte} der Zähldichte $p:A\to[0,1], a_j\mapsto p(a_j)=p_j$.\\
+		Das zugehörige Wahrscheinlichkeitsmaß heißt $N$-faches \textbf{Produktmaß} von $\P$.
+	\end{definition}
+	\subsection{Urnenmodelle, ohne Reihenfolge, mit Zurücklegen}
+	\begin{exm*}
+		In Situation %TODO
+		Das ist ein \enquote{Aspekt} des Experiments, daher eine Zufallsvariable:
+		\[C:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\chi_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\chi_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\chi_{\{a_m\}}(a_{j_k})\right)\]
+		und
+		%TODO Rest der VL
+	\end{exm*}
+	
+	\begin{definition}
+		Sei $\la>0$. Das Wahrscheinlichkeitsmaß auf $\N_0$ mit Zähldichte $p_\la(k)=e^{-\la}\frac{\la^k}{k!}$ heißt \textbf{Poisson-Verteilung} zum Parameter $\la$. Schreibe $\Poi(\{k\}):=\Prb_{p_k}(\{k\})$.
+	\end{definition}
+	
+%TODO VL 15.05.2017
+\setcounter{theorem}{14}
+
+	\begin{bem*}[Bedeutung der Poisson-Verteilung]
+		Modelliert die Anzahl der Erfolge, wenn $N=$Anzahl der Versuche $\to\infty$, $\Prb(\text{Erfolg pro Versuch})\xrightarrow{N\to\infty}0$, sodass $N\Prb(\text{Erfolg})\xrightarrow{N\to\infty}\la$.
+	\end{bem*}
+	%TODO COUNTER
+	\stepcounter{theorem}
+	\begin{definition}
+		Seien $(a_n),(b_n)\subseteq\R^+$ Folgen, dann heißen $(a_n),(b_n)$ zueinander \textbf{asymptotisch äquivalent}, falls $\lim\limits_{n\to\infty}\dfrac{a_n}{b_n}=1$.
+	\end{definition}
+	\begin{lem}
+		Sei $\sim$ die Asymptotische Äquivalenz. Dann gilt
+		\begin{enumerate}[label=\alph*)]
+			\item $\sim$ ist Äquivalenzrelation (reflexiv, symmetrisch, transitiv)
+			\item Falls $\lim\limits_{n\to\infty}a_n=a\leq \infty$ und $(a_n)\sim (b_n)$, dann ist $\lim\limits_{n\to\infty}b_n=a$.
+		\end{enumerate}
+	\end{lem}
+	
+	%TODO COUNTER
+	\addtocounter{theorem}{-3}
+	\begin{satz}[Poisson-Approximation]
+		Sei $\la>0$ und $(p_n)\subset[0,1]$ eine Folge, mit $\lim\limits_{n\to\infty}p_n=\la$. Sei $B_{n,p_n}$ Binomialverteilung, dann gilt $\forall k\in\N$:
+		\[\lim\limits_{n\to\infty}B_{n,p_n}(\{k\})=\Poi_\la(\{k\})\]
+	\end{satz}
+	\begin{proof}
+		Es gilt für den Binomialkoeffizienten:
+		\[\binom{n}{k}=\frac{n!}{k!(n-k)!}=\frac{1}{k!}n(n-1)...(n-k+1)\sim\frac{1}{k!}n^k\]
+		denn für festes $k\in\N$ ist $(n-k)\sim n$ und $\sim$ ist transitiv. Es folgt, dass
+		\begin{align*}
+		B_{n,p_n}(\{k\})=\binom{n}{k}p_n^k(a-p_n)^{n-k}&\sim\frac{1}{k!}n^kp_n^k(1-p_n)^{n-k}\\
+		&\sim\frac{\la^k}{k!}\left(1-n\frac{1}{n}p_n n\right)^n\underbrace{(1-p_n)^{-k}}_{\sim 1}\\
+		&\sim \frac{\la^k}{k!}\big(1-\frac{1}{n}(p_nn)\big)^n\xrightarrow{n\to\infty}\frac{\la^k}{k!}e^{-\la}
+		\end{align*}
+		denn falls $\lim\limits_{n\to\infty} a_n=a>0$, dann $\lim\limits_{n\to\infty}\left(1-\frac{1}{n}a_n\right)^ne^{-a}$.
+	\end{proof}
+	%TODO COUNTER
+	\addtocounter{theorem}{2}
+	
+	\begin{bem}
+		Sei $\al$ die \enquote{Rate des Eintreffens} eiens Ereignisses $E$, d.h.
+		\[\lim\limits_{\delta\to0}\Prb(\text{$E$ tritt in $[0,\delta]$ ein})\frac{1}{\delta}=\al\]
+		Sei $[0,t]$ der Beobachtungszeitraum. Teile $[0,t]$ in $n$ Intervalle der Länge $t/n$. Zusätzlich nehmen wir an
+		\begin{enumerate}[label=(\roman*)]
+			\item Ob $E$ in einem gewissen Teilintervall auftritt beeinflusst die anderen Teilintervalle nicht.
+			\item Zwei Ereignisse in einem Teilintervall sind verschwindend unwahrscheinlich.
+		\end{enumerate}
+		Dann ist 
+		\[\Prb(\text{$E$ passiert $k$-mal in $[0,t]$})\overset{(ii)}{\approx}\Prb(\text{$E$ passiert in $k$ Intervallen})\overset{(i)}{\approx}B_{n,p_n}(k)\xrightarrow{n\to\infty}\Poi_{\al t}(k)\]
+		Also beschreibt der Parameter $\la$ der Verteilung $\Poi_\la$ beschreibt \enquote{Rate mal Zeit}.
+	\end{bem}
+	\begin{definition}
+		Für $0<p\leq 1$ heißt das Wahrscheinlichkeitsmaß $\scG_p$ auf $\N_0$ mit Zähldichte $g(k)=p(1-p)^k$ die \textbf{geometrische Verteilung} zur Erfolgswahrscheinlichkeit $p$.\\
+		$\scG(\{k\})=$\enquote{Wahrscheinlichkeit bei Erfolgswahrscheinlichkeit $p$ pro Versuch genau $k$ Fehlversuche vor dem Ersten Erfolg zu sehen}.\\
+		Allgemein: Da Wahrscheinlichkeitsmaß $\ol{\scB}_{r,p}$ auf $\N_0$ mir $r\in\N$ und $0<p\le 1$ mit
+		\[\ol{\scB}(\{k\})=\frac{r(r+1)...(r+k-1)}{k!}p^r(1-p)^k\]
+		heißt \textbf{negative Binomialverteilung} und modelliert die Wahrscheinlichkeit vor dem $r-$ten Erfolg genau $k$ Misserfolge zu haben.
+	\end{definition}
+
+	\begin{definition}
+		Das Wahrscheinlichkeitsmaß $\Exp_\al$ auf $(\R_0^+,\Bor(\R_0^+))$ mit Dichte $\rho_\al(x):=\al e^{-\al x}$ heißst \textbf{Exponentialverteilung} zum Parameter $\al>0$
+	\end{definition}
+
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{definition}
+		Das Wahrscheinlichkeitsmaß $\Exp_\al$ auf $(\R_0^+,\Bor(\R_0^+))$ mit $\al>0,r\ge 1$ und Dichte 
+		\[\gamma_{\al,r}:=\frac{\al^r}{(r-1)!}x^{r-1}e^{-\al x}=\frac{\al^r}{\Gamma(r)}x^{r-1}e^{-\al x}\]
+		heißt \textbf{Gammaverteilung} zu den Parametern $\al,r$.
+	\end{definition}
+	
+	\begin{bem}
+		\begin{enumerate}[label=\alph*)]
+			\item $\int\gamma_{\al,r}(x)=1$
+			\item \begin{align*}
+					\Exp_\al([0,t])&=\al\int_{0}^{t}e^{-\al x}~dx=\al\left[-\frac{1}{\al}e^{-\al x}\right]_{0}^t=1-e^{-\al t}=e^{-\al t}\sum_{k=1}^{\infty}\frac{\al^k}{k!}t^k\\
+					&=\Poi_{\al,t}(\{\N\})=\Poi_{\al t}(\text{\enquote{Midestens ein Erfolg vor Zeit $t$ bei Rate $\al$}})\\
+					&=\Prb(\text{\enquote{Wartezeit auf ersten Erfolg $\leq t$}})
+				\end{align*}
+			\item Es gilt \[\Prb_{\gamma_{\al,r}}([0,t])=\frac{\al^r}{(r-1)!}\int_{0}^{t}x^{r-1}e^{-\al x}dx=e^{-\al t}\sum_{k=r}^{\infty}\frac{(\al t)^k}{k!}\tag{\star}\]
+			denn \begin{align*}
+			\frac{d}{dt}(\star)&=-\al e^{-\al t}\sum_{k=r}^{\infty}\frac{(\al t)^k}{k!}+e^{-\al t}\sum_{k=r}^\infty\frac{\al^k}{k!}k t^{k-1}\\
+			&=e^{-\al t}\left(-\al\sum_{k=r}^\infty\frac{(\al t)^k}{k!}+\al\sum_{k=r}^\infty\frac{(\al t)^k}{(k-1)!}\right)\\
+			&=e^{-\al t}\al \frac{(\al t)^{r-1}}{(r-1)!}=\frac{\al^r}{(r-1)!}\frac{d}{dt}\int_{0}^{t}x^{r-1}e^{-\al x}~dx
+			\end{align*}
+			Somit ist also
+			\[(\star)=\Poi_{\al,t}(\{r,r+1,...,\})=\Prb(\text{Wartezeit bis zum $r$-ten Erfolg ist $\leq t$})\]
+			Daher heißt $\Exp_\al\al$ und $\Prb_{\gamma_{\al,r}}$ \textbf{Wartezeitverteilungen}.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{definition}
+		Das Wahrscheinlichkeitsmaß $\Nv$ auf $(\R,\Bor(\R))$ mit Dichte $\phi_{0,1(x)}=\frac{1}{\sqrt{2\pi}}\exp(-\frac{x^2}{2})$ heißst \textbf{Standard-Normalverteilung}. Das Wahrscheinlichkeitsmaß $\Nv_{m,v}$ auf $(\R,\Bor(\R))$ mit Dichte $\phi_{m,v}(x)=\frac{1}{\sqrt{2\pi v}}\exp\left(-\frac{(x-m)^2}{2v}\right)$ heißst \textbf{Normalverteilung} (oder Gaußverteilung/Gaußmaß) mit Mittelwert $m$ und Varianz $v$.
+	\end{definition}
+	
+	\begin{prop}
+		$\phi_{m,v}(x)=\frac{1}{\sqrt{2\pi v}}\exp\left(-\frac{(x-m)^2}{2v}\right)$ ist eine Dichte auf $\R$.
+	\end{prop}
+	\begin{proof}
+		Es gilt 
+		\begin{align*}
+		\frac{1}{\sqrt{2\pi v}}\int_{-\infty}^{\infty}e^{-\frac{(x-m)^2}{2v}}
+		&\overset{y=x-m}{=}
+		\frac{1}{\sqrt{2\pi v}}\int_{-\infty}^{\infty}e^{-\frac{y^2}{2v}}~dy\\
+		&\overset{z=\frac{y}{\sqrt v}}{=}\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}e^{-\frac{z^2}{z}}~dz
+		\end{align*}
+		Berechne dann stattdessen
+		\begin{align*}
+		\left(\int_{-\infty}^{\infty}e^{-\frac{x^2}{2}}~dx\right)&=\left(\int_{-\infty}^{\infty}e^{-\frac{x^2}{2}}~dx\right)\left(\int_{-\infty}^{\infty}e^{-\frac{y^2}{2}}~dy\right)=\int_{\R^2}e^{-\frac{x^2+y^2}{2}}~dx~dy\\
+		&= \int_{0}^{\infty}\int_{0}^{2\pi}e^{-\frac{r^2}{2}}r~d\theta~dr\\
+		&= 2\pi\int_{0}^{\infty}e^{-\frac{r^2}{2}}r~dr
+		\intertext{mit $s=-\frac{r^2}{2}$}
+		&= 2\pi\int_{-\infty}^{0}e^{s}~ds\\
+		&=2\pi(e^0-e^{-\infty})=2\pi
+		\end{align*}
+		Es folgt, dass $\int_{-\infty}^{\infty}e^{-\frac{(x-m)^2}{2v}}=\sqrt{2\pi}$.
+	\end{proof}
+
+%TODO VL 10.20.2017
+	\begin{bem}
+		\begin{enumerate}[label=\alph*)]
+			\item Bedeutung der Normalverteilung:\\
+			\enquote{universeller} Grenzwert unabhängiger Summen in der \enquote{einzig sinnvollen} Skalierung: $\frac{1}{n}\sum_{i=1}^\infty X_i\to m$.\\
+			Es folgt, dass $\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i-m)\sim \Nv(0,v)$.
+			\item Geometrische Bedeutung: $\Nv_{0,v}$ ist die erste Koordinate der sogenannte \enquote{Gleichverteilung auf $\R^\infty$}.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{satz}
+		Sei $B_N(r):=\left\{x\in\R^N:|x|\le r\right\}$ Kugel mit Radius $r$im $\R^N$, sei $\Prb_N$die Gelichverteilung auf $B_N(r)$ und sei $X_1:B_N(r)\to\R,x=(x_1,....,x_N)\mapsto x_1$ die Zufallsvariable \enquote{Projektion auf die erste Koordinate}.\\
+		Dann gilt
+		\[\lim\limits_{N\to\infty}\Prb_{N,r_N}(a\le X_1\le b)=\begin{cases}
+		0,&\text{falls $\lim\limits_{n\to\infty}\frac{r_N}{\sqrt{N-1}}=\infty$}\\
+		\delta_0([a,b]),&\text{falls $\lim\limits_{N\to\infty}\frac{r_N}{\sqrt{N-1}}=0$ und $a,b\neq 0$}\\
+		\frac{1}{\sqrt{2\pi v}}\int_{a}^{b}e^{-\frac{x^2}{2v}~dx},&\text{falls $\lim\limits_{N\to\infty}\frac{r_N}{\sqrt{N_1}}=\sqrt{v}>0$}
+		\end{cases}\]
+	\end{satz}
+	\begin{proof}(nur Fall $a,b\neq 0$ im Fall 2)
+		Integration einer Kugel durch Zerlegen in \enquote{Kreisscheiben}.
+		\begin{align*}
+		h_r(a,b):&=\int_{\R^N}\chi_{x_1^2+...+x_N^2\leq r^2}(x)\chi_{\{a\le x_1\le b\}}~dx\\
+		&=\int_{a}^{b}dz\int_{\R^{N-1}}\chi_{x_1^2+...+x_N^2\leq r^2-z^2}(x)~dx\\
+		&=\int_{a}^b\int_{B_{N-1}(\sqrt{r^2-z^2})}~dx=\int_{a}^{b}(r^2-z^2)^{N-1/2}~dz\underbrace{\int_{B_{N-1}}(1)~dx}_{=V_1(N-1)}\\
+		&=r^{N-1}V_1(N_1)\int_{a}^{b}\left(1-\frac{z^2}{r^2}\right)^{\frac{N-1}{2}}~dz
+		\intertext{Durch Subtitution $y=\frac{z}{r}\sqrt{N-1}$}
+		&=r^{N-1}V_1(N-1)\frac{r}{\sqrt{N-1}}\int_{\frac{\sqrt{N-1}}{r}a}^{\frac{\sqrt{N-1}}{r}b}\overbrace{\left(1-\frac{1}{N-1}y^2\right)}^{=:f_N(y)}~dy
+		\end{align*}
+		Da $\Prb_{N,r_N}(a\le x_1\le b)=\frac{h_{r_N}(a,b)}{h_{r_N}(-r_n,r_N)}$ ist kürzen sich die Faktoren vor den Integralen.\\
+		Außerdem ist $\lim\limits_{N\to\infty}f_N(y)=\exp(-y^2)^{1/2}=e^{-\frac{1}{2}y^2}$ gleichmäßig auf Kompakta. (d.h. $\lim\limits_{N\to\infty}\sup\left\{\left|f_N(y)-e^{-\frac{y^2}{2}}\right|:|y|\leq C\right\}=0$)\\
+		Mit dieser Information kann man relativ leicht zeigen, dass für $a_\infty=\lim\limits_{N\to\infty}\frac{\sqrt{N-1}}{r_{N}}a$, $b_\infty=\lim\limits_{N\to\infty}\frac{\sqrt{N-1}}{r_{N}}b$ gilt
+		
+		\[\lim\limits_{N\to\infty}\int_{\frac{\sqrt{N-1}}{r_N}a}^{\frac{\sqrt{N-1}}{r_N}b}f_N(x)dy=
+		\begin{cases}
+		\int_{a_\infty}^{b_\infty}e^{-\frac{y^2}{2}}~dy,&\text{falls $-\infty\leq a_\infty b_\infty \leq\infty$}\\
+		0,&\text{falls $a_\infty=b_\infty\in\{-\infty,0,\infty\}$}
+		\end{cases}\]
+		Aus \ref{0214prop} für $h_{r_N}(-r_n,r_N)$ folgt die Behauptung in allen Fällen.
+	\end{proof}
+	
+\section{Bedingte Wahrscheinlichkeit, Unabhängigkeit}
+	\begin{definition}
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum, $A\in\scF$ mit $\Prb(A)>0$. Dann heißt die Abbildung
+		\[\Prb_A:\scF\to[0,1],\quad B\mapsto\frac{\Prb(A\cap B)}{\Prb(A)}\]
+		\textbf{bedingtes Wahrscheinlichkeitsmaß} unter der Bedingung $A$.\\
+		Für festes $B\in\scF$ heißt die Zahl $\Prb(B|A):=\Prb_A(B)=\frac{\Prb(A\cap B)}{\Prb(A)}$ die \textbf{bedingte Wahrscheinlichkeit} von $B$ unter der Bedingung $A$.
+	\end{definition}
+
+	\begin{prop}
+		$\Prb_A$ ist das eindeutige Wahrscheinlichkeitsmaß auf $(\Omega,\scF)$ mit den Eigenschaften 
+		\begin{enumerate}[label=(\roman*)]
+			\item $\Prb_A(A)=1$
+			\item $\exists c>0$ mit $\Prb_A(B)=c\Prb(B)\forall B\in\scF$ mit $B\subseteq A$.
+		\end{enumerate}
+	\end{prop}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item $\Prb_A$ ist ein Wahrscheinlichkeitsmaß und erfüllt (i),(ii).
+			\item $\Prb$ ist eindeutig:\\
+			Sei $\tilde{\Prb}_A$ ein Wahrscheinlichkeitsmaß mit den Eigenschaften (i),(ii).\\
+			Dann gilt $\tilde{\Prb}_A(B)=\tilde{\Prb}_A(A\cap B)+\tilde\Prb_A(B\setminus A=c\Prb(A\cap B))$.\\
+			Mit $B=A$ folgt $1=\tilde{\Prb}_A(A)=c\Prb(A)$, also $\frac{1}{\Prb(A)}$. Also ist
+			\[\tilde{\Prb}_A(B)=\frac{1}{\Prb(A)}\Prb(A\cap B)=\Prb_A(B)\]
+		\end{enumerate}
+	\end{proof}
+
+	\begin{bem}
+		$\Prb_A$ modelliert die Situation, dass wir wissen, dass $A$ sicher eintritt. $\Prb_A$ beschreibt das Modell welches diese Information berücksichtigt (\ref{0302}(i)), aber sonst möglichst wenig ändert (\ref{0302}(ii)).
+	\end{bem}
+	
+	\begin{exm*}
+		2-Mal Würfeln, Information \enquote*{Summe wird 10 sein}.\\
+		(In der Praxis: alle Würfe mit $X_1+X_2\neq 10$ werden ungültig gemacht.)
+		\begin{align*}
+		\Prb_A(\underbrace{X_1=5}_{B})&=\Prb\big(\underbrace{\{(5,x):1\leq x\leq 6\}}_{B}\cap\underbrace{\{(x,y):x+y=10\}}_{A}\big)/\Prb\big(\underbrace{\{(x,y):x+y=10\}}_{A}\big)\\
+		&=\frac{\Prb(\{(5,5)\})}{\Prb(\{(4,6),(5,5),(6,4)\})}=\frac{1}{3}
+		\end{align*}
+	\end{exm*}
+
+	\begin{satz}\label{0304satz}
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum, $N\leq \infty$, $(B_i)_{i=1,...,N}$ mit paarweise disjunkten $B_i\in\scF$ und $\bigcap_{i=1}^NB_i=\Omega$ (eine abzählbare Partition von $\Omega$)
+		\begin{enumerate}[label=\alph*)]
+			\item Fallunterscheidungsformel:\\
+			\[\forall A\in\scF\text{ ist }\Prb(A)=\sum_{i=1}^{N}\Prb(B_a)\Prb(A|B_i)\]
+			(Konvention: $\Prb(A|B_i)=0$, falls $\Prb(B_i)=0$)
+			\item Formal von Bayes: $\forall k\leq N$ ist
+			\[\Prb(B_k|A)=\frac{\Prb(B_k)\Prb(A|B_k)}{\sum_{i=1}^{N}\Prb(B_i)\Prb(A|B_i)}\tag{\star}\]
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item $\sum_{i=1}^{N}\Prb(B_i)\Prb(A|B_i)=\sum_{i=1}^{N}\Prb(B_i\cap A)=\Prb\left(\bigcup_{i=1}^NB_i\cap A\right)=\Prb(A)$
+			\item $\Prb(B_k|A)=\frac{\Prb(B_k\cap A)}{\Prb(A)}=\frac{\Prb(B_k)\Prb(B_k|A)}{\Prb(A)}=(\star)$
+		\end{enumerate}
+	\end{proof}
+
+	\begin{exm}[Bayes Formel in der Medizin, False-Positive beim HIV-Test]
+		Sei $B_1=\{\text{Menschn mit HIV}\}$, $B_2=\Omega\setminus B_1=\{gesunde Menschen\}$. Empirisch Bekannt $\Prb(B_1)=0.02$ (2\% infizierte), $\Prb(A|B_1)=0.95$ (Sensitivität 95\%), $\Prb(A|B_2)=0.1$ (Spezifität 10\%).\\
+		Angenommen \enquote{Test ist Positiv}:
+		\[\Prb(B_1|A)=\frac{\Prb(B_1)\Prb(A|B_1)}{\Prb(B_1)\Prb(A|B_1)+\Prb(B_2)\Prb(A|B_2)}=\frac{0.02\cdot0.95}{0.02\cdot0.95+0.98\cdot0.1}\approx\frac{1}{6}\]
+		Viel kleiner als die naiv vermuteten 0.9.
+	\end{exm}
+
+
+%TODO VL 22.05.2017
+\subsection{Galton-Watson-Prozesse und Wahrscheinlichkeitsbäume}
+	\begin{exm}[Mehrstufiges Modell]$ $
+		\begin{enumerate}
+			\item 1 Lebewesen bekommt $X_{1,1}\in\N_0$ Nachkommen und stirbt danach.\\
+			$X_{1,1}$ ist Zufallsvariable.
+			\item Die $X_{1,1}$ Nachkommen bekommen jeweils $X_{2,1},X_{2,2},...,X_{2,X_{1,1}}$ Nachkommen und stirbt. Nun leben
+			\[Y_2=\sum_{i=1}^{X_{1,1}}X_{2,i}\]
+			Lebewesen.
+			\item Die $Y_2$ Lebewesen bekommen jeweils $X_{3,1},X_{3,2},...,X_{3,Y_2}$ Nachkommen.
+		\end{enumerate}
+	\begin{figure}[h]
+		\centering
+		\begin{tikzcd}[column sep=3cm]
+		&&(1,3,9)\\
+		&&(1,3,5)\\
+		&&(1,3,3)\\
+		&(1,3)\ar[uuur,"p_3(9)"]\ar[uur,"p_3(5)"]\ar[ur,"p_3(3)"]\ar[r,"p_3(2)"]\ar[dr,"p_3(1)"]\ar[ddr,"p_3(0)"]&(1,3,2)\\
+		&&(1,3,1)\\
+		&&(1,3,0)\\
+		&(1,2)&\\
+		(1)\ar[ddddr,"p_1(0)"']\ar[ddr,"p_1(1)"]\ar[ur,"p_1(2)"']\ar[uuuur,"p_1(3)"]
+		&&(1,1,3)\\
+		&&(1,1,2)\\
+		&(1,1)\ar[uur,"p_1(3)"]\ar[ur,"p_1(2)"]\ar[r,"p_1(1)"]\ar[dr,"p_1(0)"]&(1,1,1)\\
+		&&(1,1,0)\\
+		&(1,0)\ar[r,"p_0(0)=1"]&(1,0,0)
+	\end{tikzcd}
+	\caption{...}
+	\end{figure}
+	\end{exm}
+
+	\begin{prop}\label{0307prop}
+		Sei $(\Omega,\scF,\Prb)$ein Wahrscheinlichkeitsraum und $A_1,...,A_n\in\scF$. Dann gilt\[\Prb(A_1\cap...\cap A_n)=\Prb(A_1)\cdot\Prb(A_2|A_1)\cdot\Prb(A_3|A_1\cap A_2)\cdot...\cdot\Prb(A_1|A_1\cap...\cap A_{n-1})\]
+	\end{prop}
+	\begin{proof}
+		Falls $\Prb(A_1\cap ...\cap A_n)=0$, dann (Konvention) ist auch $\Prb(A_n|A_1\cap...\Cap A_{n-1})=0$. Sonst
+		\begin{align*}
+		&\Prb(A_1)\cdot\Prb(A_2|A_1)\cdot\Prb(A_3|A_1\cap A_2)\cdot...\cdot\Prb(A_1|A_1\cap...\cap A_{n-1})\\
+		&=\Prb(A_1)\frac{\Prb(A_2\cap A_1)}{\Prb(A_1)}\frac{\Prb(A-1\cap A_2\cap A-3)}{\Prb(A_1\cap A_2)}...\frac{\Prb(A_1\cap....\cap A_n)}{\Prb(A-1\cap ...\cap A_{n-1})}\\
+		&=\Prb(A-1\cap...\cap A_n).
+		\end{align*}
+	\end{proof}
+
+	\begin{satz}\label{0308satz}
+		Sei $N\leq\infty$ und seien $(\Omega_i,\scF_i)$ Messräume und die $\Omega_i$ abzählbar.\\
+		Sei $\rho_1$ Zähldichte auf $\Omega_1$ und \\
+		$\forall k<N,\omega_i\in\Omega_i,i\leq k$ sei $\rho_{k+1|\omega_1,...,\omega_k}$ Zähldichte auf $\Omega_{k+1}$.\\
+		Sei $\Omega=\bigtimes\limits_{i=1}^N\Omega_i$ und $X_o:\Omega\to\Omega_i$, $\omega=(\omega_1,...,)\mapsto\omega_i$ die $i$-te Projektion.\\
+		\\
+		Dann esxistiert genau ein Wahrscheinlichkeitsmaß $\Prb$ auf $(\Omega,\bigotimes_{i=1}^N\scF_i)$ mit den Eigenschaften
+		\begin{enumerate}[label=\alph*)]
+			\item $\Prb(X_1=\omega_1)=\rho_1(\omega_1)$ für alle $\omega_1\in\Omega_1$.
+			\item $\forall k<N,\omega\in\Omega$ und falls $\Prb(X_1=\omega_1,...,X_k=\omega_k)\neq 0$, dann ist
+			\[\Prb(X_{k+1}=\omega_{k+1}\mid X_j=\omega_j\forall j\leq k)=\rho_{\omega_{k+1}|\omega_1,...,\omega_k}(\omega_{k+1})\]
+		\end{enumerate}
+	\end{satz}
+	\begin{bem}
+		\begin{enumerate}[label=\alph*)]
+			\item Insbesondere osz $\Prb(A_1=\omega_1,...,X_{k+1}=\omega_{k+1})=\rho_1(\omega_1)\cdot...\cdot\rho_{k+1|\omega_1,...,\omega_k}(\omega_{k+1})$. (\enquote{Produkt entlang der Äste})
+			\item Falls $N<\infty$ dann hat $\Prb$ die Zähldichte $\rho:\omega=(\omega_1,...,\omega_k)\mapsto\rho_1(\omega_1)\cdot...\cdot\rho_{N|\omega_1,...,\omega_{N+1}}(\omega_N)$.
+			\item Falls $N=\infty$, dann hat $\Prb$ im Allgemeinen keine Zähldichte
+		\end{enumerate}
+	\end{bem}
+	\begin{proof}
+		\begin{enumerate}
+			\item Falls $N<\infty$: Nachrechnen
+			\item Falls $N=\infty$ Bilde $[0,1]\to\Omega$ mittels $x\mapsto(\omega_1(x),...)$ mit $\omega_i(x)$= dasjenige $\omega_i\in\Omega_i$, sodass $x$ im zu $\omega_i$ gehörigen Intervall liegt, in Stufe $i$.\\
+			Zeige dann $X:x\mapsto\omega(x)$ ist Zufallsvariable von $([0,1],\Bor([0,1]))$ nach $(\Omega,\scF)$. $\Prb$ ist dann das Bildmaß .
+		\end{enumerate}
+	\end{proof}
+	
+	\begin{exmlist}
+		\begin{exm}[unendlich oft wiederholter Münzwurf]
+			Sei $\Omega=\{-1,1\}^N$ und $\scF=\bigotimes_{i=1}^\infty\potset({-1,1})$.\\
+			($\scF$ wird also von den Mengen 
+			\[\big\{\{\omega\in\Omega:\omega_1=k_1,...,\omega_n=k_n\}:K_i\in\{-1,1\}\forall i\leq nnn\in\N\big\}\]
+			erzeugt. und $\Prb(\omega_1=k_1,...,\omega_n=k_n)=2^{-n}$.\\
+			Im Fall von Satz \ref{0308satz} bedeutet das $\rho_1(\omega_1)=\frac{1}{2},\rho_{2,\omega_1}(\omega_2)=\frac{1}{2}$.
+		\end{exm}
+		\begin{exm}[Unendlich oft wiederholtes würfeln, 10-Seitiger Würfel]
+			Sei $\Omega=\{0,1,...,9\}$. Die Abbildung $X$ aus \ref{0308satz} ist hier:
+			\[X:[0,1)\mapsto\Omega=\bigtimes_{i=1}^\infty\Omega_i, x\mapsto\omega(x)\]
+		\end{exm}
+	\end{exmlist}
+
+	\begin{definition}
+		Sei $(\Omega,\scF,\Prb)$ sei ein Wahrscheinlichkeitsraum, $A,B\in\scF$.\\
+		$A,B$ heißen \textbf{unabhängig} (oder \textbf{unabhängige Ereignisse}), falls $\Prb(A\cap B)=\Prb(A)\Prb(B)$. Man schreibt $A\indep B$.
+	\end{definition}
+	\begin{bem*}
+		\begin{enumerate}[label=\alph*)]
+			\item Falls $A\indep B$, dann ist
+			\[\Prb(A|B)=\frac{\Prb(A\cap B)}{\Prb(B)}=\Prb(A)\]
+			\item Beachte:\\
+			$\Prb(A\cup B)=\Prb(A)+\Prb(B)$ (\enquote{additiv}), falls $A,B$\\
+			$\Prb(A\cap B)=\Prb(A)\Prb(B)$ (\enquote{multiplikativ}), falls $A,B$ unabhängig (per Definition).
+			\item Aussage b) gilt zwar für $A_1,A_1,A_3\scF$ falls $\Prb(A_i\cup A_j)=\Prb(A_i)+\Prb(A_j)$ für $i,j\in\{1,2,3\}$und $i\neq j$. Dann gilt auch
+			\[\Prb(A_1\cup A_2\cup A_3)=\Prb(A_1)+\Prb(A_2)\Prb(A_3)\]
+			Aber: gilt nicht für Unabhängigkeit.
+			\\
+			Unabhängigkeit ist eine algebraische Eigenschafte von Mengen und Wahrscheinlichkeitsmaßen.\\
+			Die Interpretation \enquote{$A$ beeinflusst $B$ nicht} ist nicht immer richtig.
+			\item Unabhängigkeit trotz Kausalität: $\Omega=\{1,2,3,4,5,6\}^2$, $\Prb(A\cap B)\Prb(\{6,1\})=\frac{1}{36}=\Prb(A)\Prb(B)$. Geht nicht wenn man $7$ durch $8$ ersetzt!
+			\item $\Prb(A)\in\{0,1\}$, es folgt $A\indep A$
+			\item Im wichtigen Fall der Produktmaße sind jedoch c) bis e) nicht relevant
+		\end{enumerate}
+	\end{bem*}
+
+	\begin{definition}
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum, $I\neq 0$ eine Indexmenge. $(A_i)_{i\in I}$ heißt \textbf{unabhängige} Familie von Mengen, wenn $\forall J\subseteq$, mit $|J|<\infty$
+		\[\Prb\left(\bigcap_{j\in J}A_j\right)\prod_{j\in J}\Prb(A_j)\]
+		(d.h. Multiplikativ für alle Kombinationen von endlich vielen Mengen) gilt.
+	\end{definition}
+
+%VL 23.05.2017
+	\begin{definition}\label{0313def}
+		Sei $(\Omega,\scF,\Prb)$ Wahrscheinlichkeitsraum, $I\neq 0$ sei Indexmenge und $\forall i\in I$ seien $(\Omega_i,\scF_i)$ Ereignisräume. Seien $Y_i:\Omega\to\Omega_i$ Zufallsvariablen.\\
+		Die Familie $(Y_i)_{i\in I}$ heißt \textbf{unabhängig} (oder \textbf{unabhängige Familie von Zufallsvariablen}), wenn  $\forall J\subseteq$, mit $|J|<\infty$ und für alle $(B_j)_{j\in J}$ mit $B_j\in\scF_j$
+		\[\Prb\left(\bigcap_{j\in J}Y^{-1}_j(B_j)\right)=\prod_{j\in J}\Prb\left(Y^{-1}_j(B_j)\right)\]
+		gilt.
+	\end{definition}
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{definition} %3.13a)
+		Eien Familie $(\scA_i)_{i\in I}$ von \textbf{Megensystemen} heißst \textbf{unabhängig} (oder auch unabhänguge Famile von Mengensystemen), wenn  $\forall J\subseteq$, mit $|J|<\infty$, für alle $(A_j)_{j\in J}$ mit $A_j\in\scA_j$ sind die Mengen $(A_j)_{j\in J}$ unabhängig.\\
+		(Dabei darf aus jedem $\scA_j$ höchstens ein $A_j$ gewählt werden.)\\
+		Daher $X\indep Y\Leftrightarrow\sigma(A)\indep\sigma(Y)$.
+	\end{definition}
+	
+	\begin{satz}\label{0314satz}
+		In \ref{0313def} sei $\scG_i$ ein Schnitt-stabiler Erzeuger von $\scF_i$. Dann
+		\[\text{\ref{0301} gilt $\forall B_i\in\scG_i$}\Leftrightarrow\text{\ref{0301} gilt $\forall B_i\in\scF_i$}\]
+	\end{satz}
+	\begin{proof}
+		\begin{description}
+			\item[\enquote{$\Leftarrow$}] klar, da $\scG_i\subseteq \scF_i$
+			\item[\enquote{$\Rightarrow$}] Durch Induktion nach $n:=|\{i\in J:B_i\in\scF-i\setminus\scG_i\}|$:
+			\begin{description}
+				\item[$n=0$] bedeutet $B_i\in\scG_i\forall i\in J$.
+				\item[$n\to n+1$] Seien $(B_i)_{i\in J}$ mit $B_i\in\scF_i\forall i\in J$ und $B_i\in\scF_i\setminus\scG_i$ (n+1)-mal. Wähle $j\in J$  und setze $J'=J\setminus\{j\}$, dann folgt aus der Induktionsannahme, dass für
+				\[A:\bigcap_{i\in J'}Y^{-1}_i(B_i)\]
+				\[\Prb(A)=\prod_{i\in J'}\Prb(Y^{-1}_i(B_i))\tag{\star}\]
+				gilt.\\
+				Falls $\Prb(A)=0$, dann ist auch $\Prb(A\cap Y^{-1}(B_j))=0$.\\
+				Falls $\Prb(A)>0$, dann definiere die Wahrscheinlichkeitsmaße
+				\begin{align*}
+				\Prb_i:\scF_j&\to[0,1],\\ \tilde{B_i}&\mapsto\Prb(Y^{-1}_j(\tilde{B_j})|A)=\frac{\Prb(Y^{-1}_j(\tilde{B_j})\cap A)}{\Prb(A)}\tag{\star\star}\\
+				\Prb_2:\scF:i&\to[0,1],\\
+				\tilde{B_j}&\mapsto\Prb(Y^{-1}_j(\tilde{B}_j))
+				\end{align*}
+				Da \ref{0301} für $n$ gilt ist $\forall
+				\tilde{B}_j\in\tilde{\scG}_j$, also
+				\[\Prb_1(\tilde{B}_j)=\frac{\Prb\big(Y^{-1}_j(\tilde{B}_j)\big)\cdot\prod_{i\in J'}\Prb\big(Y^{-1}_i(B_i)\big)}{\Prb(A)}\overset{(\star)}{=}\Prb\big(Y^{-1}_j(\tilde{B}_j)\big)=\Prb_2(\tilde{B}_j)\]
+				Es folgt, dass $\Prb_1(\tilde{B})=\Prb_2(\tilde{B})\forall \tilde{B}\in\scG_j$, sodass aus \ref{0124satz} folgt, dass $\Prb_1=\Prb_2$. Dann
+				\begin{align*}
+				\prod_{i\in J}\Prb\big(Y^{-1}_i(B_i)\big)&\overset{(\star)}{=}\Prb\big(Y^{-1}_j(b_i)\big)\Prb(A)=\Prb_2(B_j)\Prb(A)\\
+				&=\Prb_1(B_j)\Prb(A)=\Prb\big(Y^{-1}_j(B_j)\cap A\big)=\Prb\left(\bigcap_{i\in J}Y^{-1}_i(B_i)\right)
+				\end{align*}
+				für alle $B_i\in\scF_i$. Es folgt die Behauptung.
+			\end{description}
+		\end{description}
+	\end{proof}
+
+	\begin{kor}
+		Seien $(Y_i)_{i=1,...,n}$ Zufallsvariablen auf dem Wahrscheinlichkeitsraum $(\Omega,\scF,\Prb)$, dann gilt
+		\begin{enumerate}[label=\alph*)]
+			\item Falls $Y_i:\Omega\to E_i$ mit $E_i$ abzählbar, dann
+			\[\text{$(Y_i)$ ist unabhängig}\Leftrightarrow\Prb(Y_1=e_1,...,Y_n=e_n)=\prod_{i=1}^n\Prb(Y_i=e_i)\]
+			für alle $e_1\in E_1,...,e_n\in E_n$.
+			\item Falls $Y_i:\Omega\to\R$, dann ist
+			\[\text{$(Y_i)$ ist unabhängig}\Leftrightarrow\Prb(Y_1\leq c_1,...,Y_n\leq c_n)=\prod_{i=1}^n\Prb(Y_i\leq c_i)\]
+			für alle $c_1,...,c_n\in\R$.
+		\end{enumerate}
+	\end{kor}
+
+	\begin{kor}
+		Sei $(\Omega,\scF\Prb)$ ein Wahrscheinlichkeitsraum, $I$ eine Menge und für alle $i\in I$ sei $A_i\in\scF$. Dann gilt
+		\begin{enumerate}
+			\item $(A_i)_{i\in I}$ sind unabhängige Mengen $\Leftrightarrow$ $(\chi_{A_i})_{i\in I}$ unabhängige Zufallsvariablen sind.
+			\item Insbesondere: Falls $(A_i)_{i\in I}$ unabhängig und $C_i\in\{\emptyset,\Omega,A_i,A_i^C\}$ für alle $i\in I$, dann sind auch $(C_i)_{i\in I}$ unabhängig.
+		\end{enumerate}
+	\end{kor}
+	\begin{proof}
+		Für $a\in\scF$ ist $\chi_A:\Omega\to\{0,1\}, \omega\mapsto\chi_A(\omega)$ eine Zufallsvariable und das einelementige Mengensystem $\big\{\big\}$ ist ein Schnitt-stabiler Erzeuger von $\potset(\{0,1\})$ und $\chi_a^{-1}(\{1\})=A$.\\
+		Daher gilt, dass $(A_i)$ unabhängig $\Leftrightarrow$ \ref{0301}  gilt falls $B_i=\{1\}$ $\overset{\ref{0314satz}}{\Leftrightarrow}$ $\chi_{A_i}$ ist unabhängig. Also gilt 1.\\
+		Für 2. Setze
+		\[B_i=\begin{cases}
+		\{1\}&\text{falls $c_i=A$}\\
+		\{0\}&\text{falls $c_i=A^c$}\\
+		\emptyset&\text{falls $c_i=\emptyset$}\\
+		\{0,1\}&\text{falls $c_i=\Omega$}
+		\end{cases}\]
+		Dann folgt 2 aus der Unabhängigkeit der $\chi_{A_i}$ und aus \ref{0301} mit den so gewählten $B_i$.
+	\end{proof}
+
+	\begin{exm}
+		Punkt auf Kreisscheibe: Winkel und Radius unabhängig %TODO
+	\end{exm}
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzcd}
+			\Omega\ar[r,"Y_1"]\ar[rd,"Y_2"]\ar[rr, bend left=40, red,"Z_1"]\ar[drr, bend right=60, red,"Z_2"']&\Omega_1\ar[r,"\phi_1"]&E_1\\
+			&\Omega_2\ar[r,"\phi_2"']&E_2
+		\end{tikzcd}
+		\caption{...}
+	\end{figure}
+	\begin{satz}\label{0318satz}
+		Seien $(Y_i)_{i=1}^\infty$ unabhängige Zufallsvariable, mit $Y_i:(\Omega,\scF)\to(\Omega_i\scF_i)$. Dann gilt
+		
+		\begin{enumerate}
+			\item Falls $\phi_i:(\Omega_i\scF_i)\to(E_i\scE_i)$ messbar und $Z_i:\Omega\to E_i,\omega\mapsto\phi_i(Y_i(\omega))$, dann sind auch $(Z_i)_{i\in\N}$ unabhängig. (\enquote{Stabilität unter einsetzen in Funktionen})
+			\item Seien $J_1,J_2,...,$ paarweise disjunkte Teilmengen von $\N$. Für jedes $k\in\N$ definiere
+			\[W_k(\omega)=(X_i(\omega))_{i\in J_k}\in \bigtimes_{i\in J_k}\Omega_i\]
+			Dann sind die Zufallsvariablen $(W_k)_{k\in\N}$ unabhängig:\\
+			(\enquote{Stabilität gegenüber Zusammenfassen in disjunkte Blöcke})
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item Sei $I\subset\N$ endlich. Dann ist (für $A_i\in\scE_i$)
+			\[\Prb\left(\bigcap_{i\in I}Z^{-1}_i(A_i)\right)=\Prb\left(\bigcap_{i\in I}Y^{-1}_i(A_i)\right)\overset{\text{$Y_i$ unahängig}}{=}\prod\Prb(Y^{-1}_i(\phi^{-1}(A_i)))\]
+			\item Es gilt $\bigtimes_{i=1}^nA_i)=\{(\omega_1,...,\omega_n):\omega_1\in A_1,...,\omega_n\in A_n\}\subset\bigtimes_{i=1}^n\Omega_i$.\\
+			Für $k\in \N$ setze
+			\[\scG_k:=\left\{\bigtimes_{i\in J_k}A_i^{(k)}:A^{(k)}\in\scF_i\forall i\in J_k\,A_i^{(k)}\neq \Omega_i\text{ nur endlich oft}\right\}\]
+			$\scG_k$ ist Schnitt-stabiler Erzeuger von $\bigotimes_{i\in J_k}\scF_i$, also miss \ref{0301} nur auf $(G_k)_{k\in\N}$ geprüft werden.\\
+			Seien also $B_{k_1}\in\scG_{k_1},...,B_{k_n}\in\scG_{k_n}$. Da $W_{k_j}\in B_{k_j}$ genau dann wenn $X_i\in A_i^{kj}$ ist
+			\begin{align*}
+			\Prb(W_{k_1}\in B_{k_1},...,W_{k_n\in P_{k_n}})&=\Prb(X_i\in A_i^{(k)}\forall i\in J_{k_1,....,}X_i\in A_{i}^{(k)}\forall
+			i\in J_k)\\
+			&=\prod_{l=1}^n\prod_{i\in J_{k_l}}\Prb(X_i\in A_i^{(k_l)})=\prod_{l=1}^n\Prb(W_{k_l}\in B_{k_l})
+			\end{align*}
+		\end{enumerate}
+	\end{proof}
+
+	%TODO 29.05.2017
+	\begin{bem*}
+		Unabhängigkeit ist eng verwandt mit dem Produktmaß:
+	\end{bem*}
+	\begin{definition}\label{0321def}
+		Sei $(\Omega,\scF_i,\Prb_i)$ ein Wahrscheinlichkeitsraum für $i\in\N$.\\
+		Jedes Maß $\Prb$ auf $(\Omega,\scF):=\left(\bigtimes_{i=1}^\infty \Omega_i,\bigotimes_{i=1}^\infty\scF_i\right)$\\
+		($\bigotimes_{i=1}^\infty\scF_i$ erzeugt durch Zylindermengen)\\
+		mit der Eigenschaft
+		\[\Prb\left(\left\{\omega=(\omega_i)_{i\in \N}\in\Omega:\omega_{j_i}\in A
+		_{j_i},...,\omega_{j_m}\in A_{j_m}\right\}\right)=\prod_{k=1}^m\Prb_{jk}(A_{jk})\tag{3.2}\]
+		für alle $j_1<j_2<...<j_m$, mit $j_i\in\N$ und $A_{ji}\in\scF_{ji}$ heißt \textbf{Produktmaß} der Maße $\Prb_i$. Schreibweise $\Prb=\bigotimes_{i=1}^\infty\Prb_i$
+	\end{definition}
+
+	\begin{bem}
+		\begin{enumerate}[label=\alph*)]
+			\item In \ref{0321def}existiert immer genau ein Produktmaß.\\
+			(Eindeutigkeit nach Satz \ref{0124satz}, Existenz aus dem Maßfortsetzungssatz)
+			\item Wichtiger Spezialfall:
+			\begin{enumerate}[label=(\roman*)]
+				\item Sei $\Omega_i=\{0,1\}$, $\Prb_i(0)=\Prb_i(1)=\frac{1}{2}$ für alle $i$ (unendlich oft wiederholter Münzwurf)
+				\item Sei $\Omega_i=\R$, $\scF_i\Bor(\R)$, $\Prb_i=\rho(x)~dx$ für alle $i$.\\
+				(Zufällige Folge mit Gliedern die gemäß $\rho(x)~dx$ verteilt sind.)
+			\end{enumerate}
+		\end{enumerate}
+	\end{bem}
+
+	\begin{prop}\label{0324prop}
+		\begin{enumerate}[label=\alph*)]
+			\item Seien $(X_i)_{i\in\N}$Zufallsvariablen, $X_i:(\Omega,\scF)\to(\Omega_i\scF_i)$, dann gilt
+			\[\text{$(X_i)$ ist unabhängig }\Leftrightarrow\text{ Das Bildmaß der Zufallsvariablen }X:\Omega\to\bigtimes_{i=1}^\infty\Omega_i,\omega\mapsto(X_i(\omega))_{i\in\N}\text{ ist ein Produktmaß}\]
+			\item Seien $(\Omega_i\scF_i)_{i\in \N}$ seien Maßräume, $\Omega=\bigtimes_{i=1}^\infty,\scF=\bigotimes_{i=1}^\infty\scF_i$.\\
+			$\Prb$ sei ein beliebiges Wahrscheinlichkeitsmaß auf $(\Omega,\scF)$. Dann gilt:
+			\[\text{$\Prb$ ist Produktmaß}\Leftrightarrow\text{Die Projektionenn $X_i:\Omega\to\Omega_i$, $\omega=(\omega_1,\omega_2,...)\mapsto\omega_i$ sin unabhängige Zufallsvariablen unter $\Prb$}\]
+		\end{enumerate}
+	\end{prop}
+
+	\begin{bem}
+		In \ref{0324prop}a) heißt der Wahrscheinlichkeitsraum $(\tilde\Omega,\tilde{\scF},\tilde\Prb):=(\bigtimes_{i=1}^\infty\Omega_i,\bigotimes_{i=1}^\infty,\Prb_X)$ mit $X=(X_i)_{i\in N}$ der kanonische Wahrscheinlichkeitsraum der Zufallsvariablen $X_i$. Die $i$-te Koordinatenabbildung $Y_i:\tilde{\Omega}\to\Omega_i$ entspricht dann jeweis $X_i$, d.h. $(Y_{i_1},....,Y_{i_n})$ hat die gleiche Verteilung wie $(X_{i_1},....,X_{i_n})$.
+	\end{bem}
+
+	\begin{definition}
+		Seien $\Pr_1,...,\Prb_n$ Wahrscheinlichkeitsmaße auf $\R$ mit der Dichte $\rho_1,...,\rho_n$. Dann heißt 
+		\[\rho:\R^n\to\R_0^+, (x_1,...,x_n)\mapsto \rho(x_1,...,x_n)=\rho_1(x_1)...\rho_n(x_n)\]
+		die \textbf{Produktdichte}.
+	\end{definition}
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{satz}
+		Die Produktdichte ist die Dichte des Produktmaßes.
+	\end{satz}
+	\begin{proof}
+		Es gilt\begin{align*}
+		\Prb\big((-\infty,c_1]\times(-\infty,x_2]\times...\times(-\infty,c_1]\big)&=\Prb(X_1\leq c_1,...,X_n\leq c_n)\\
+		&\overset{\ref{0323}b)}{=}\Prb(X_1\leq c)...\Prb(X_n\le n)\\
+		&=\int_{-\infty}^{c_1}\rho_1(x_1)~dx_1\cdot...\cdot\int_{-\infty}^{c_n}\rho_n(x_n)~dx_n\\
+		&=\overset{\substack{\text{Satz von}\\\text{Fubini}}}{=}\int_{(-\infty,c_1]\times...\times(-\infty,c_n]}\rho_1(x_1)...\rho_n(x_n)~dx_1...~dx_n\\
+		&=\int_{(-\infty,c_1]\times(-\infty,x_2]\times...\times(-\infty,c_1]}\rho(x)~dx
+		\end{align*}
+		Dann folgt mit \ref{0124satz}, dass $\Prb$ die Dichte $\rho$ hat.
+	\end{proof}
+	
+	\begin{bem*}
+		Für unabhängige Zufallsvariablen $X,Y$ kann man die Dichte $X+Y$ mittels Faltungsprodukt berechnen.
+	\end{bem*}
+	
+	\begin{satz}\label{0326satz}
+		Seien $X,Y:\Omega\to\Omega'$ unabhängige Zufallsvariablen
+		\begin{enumerate}[label=\alph*)]
+			\item Falls $\Omega'=\Z$ und falls $\Prb_X$ (bzw $\Prb_Y$) Zähldichte $\rho_1$ (bzw. $\rho_2$), dann hat $\Prb_{X+Y}$ die Zähldichte 
+			\[\rho_1*\rho_2:\Z\to[0,1],z\mapsto\rho_1*\rho_2(z)=\sum_{k\in Z}\rho_1(k)\rho_2(z-k)\]
+			\item Falls $\Omega'=\R$ und falls $\Prb_X$ (bzw $\Prb_Y$) die Dichte $\rho_1$ (bzw. $\rho_2$), dann hat $\Prb_{X+Y}$ die Dichte 
+			\[\rho_1*\rho_2:\R\to\R_0^+,x\mapsto\rho_1*\rho_2(x)=\int_{\R}\rho_1(y)\rho_2(x-y)~dy\]
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item Da nur $\Prb_X,\Prb_Y,\Prb_{X+Y}$ untersucht werden kann man$\Omega=\Z\times\Z$, $X\big((z_1,z_2)\big)=z_1$ und $Y\big((z_1,z_2)\big)=z_2$ wählen und $\Prb_{(X,Y)}$ hat die Produkt-Zähldichte $(z_1,z_2)\mapsto\rho_1(z_1)\rho_2(z_2)$.\\
+			Dann gilt $X+Y=w\in\Z$,genau dann wenn $z_1+z_2=w$, bzw. $z=1=w-z_2$.\\
+			Also $(X+y)^{-1}(\{w\})=\{(z_1,z_2):z_1=w-z_2\}$, es folgt
+			\[\Prb_{X+Y}(\{w\})=\Prb_{(X,Y)}\big((X+Y)^{-1}(\{w\})\big)=\sum_{\substack{z_1\in\Z\\z_2\in\Z\\z_1+z_2=w}}\rho(z_1)\rho(z_2)=\sum_{z\in Z}\rho_1(z)\rho_2(w-z)\]
+			\item Setze $\Omega=\R^2$, $X\big((x_1,x_2)\big)=x_1$, $Y\big((x_1,x_2)\big)=x_2$, $\Prb\big([a,b]\times [c,d]\big)=\int_{[a,b]\times[b,c]}\rho_1(x_1)\rho_2(x_2)~dx_1~dx_2$.
+			Dann ist 
+			\begin{align*}
+			\Prb(X+Y\leq c&)=\Prb\big(\{(x,y)\in\Omega\}:x+y\leq c\big)\\
+			&=\int_{-\infty}^{\infty}\rho_1\int_{-\infty}^{c-x}\rho _2(y)~dy~dx\\
+			&=\int_{-\infty}^{\infty}\rho_1\int_{-\infty}^{c}\rho _2(\tilde y-x)~d\tilde y~dx\\
+			&=\int_{-\infty}^{c}\underbrace{\int_{-\infty}^{\infty}\rho_1(x)\rho_2(\tilde y-x)~dx}_{=\rho_1*\rho_2(\tilde y)}~d\tilde y
+			\end{align*}
+			Dann folgt mit \ref{0124satz}, dass $\Prb_{X+Y}$ die Dichte $\rho_1*\rho_2$ hat.
+		\end{enumerate}
+	\end{proof}
+	
+	\begin{exmlist}
+		\begin{exm}
+			
+		\end{exm}
+	\end{exmlist}
+	%TODO
+	%TODO COUNTER
+	\stepcounter{theorem}	\stepcounter{theorem}
+	\begin{exm}
+		Sei $\Omega=\R^n$, $\scF=\otimes_{x=1}^\infty\Bor(\R)$, $X_i(\omega)=\omega_i$ Projektionen. Sei 
+		\begin{align*}
+		A_1&=\left\{\omega\in\Omega:\lim\limits_{n\to\infty} X_n(\omega)=\lim\limits_{n\to\infty}\omega_n\text{ exitsiert}\right\}\\
+		A_2&=\left\{\omega\in\Omega:\lim\limits_{n\to\infty} \frac{1}{n}\sum_{i=1}^nX_n(\omega)=0\right\}\\
+		A_3&=\left\{\omega\in\Omega:\lim\limits_{n\to\infty} \frac{1}{\sqrt{n}}\sum_{i=1}^nX_n(\omega)=\lim\limits_{n\to\infty}\frac{1}{\sqrt{n}}\sum_{i=1}^n\omega_n\text{ exitsiert}\right\}
+		\end{align*}
+		Für $A_1,A_2,A_3$ gilt: Sei $\omega\in A_j$. Wenn $\tilde\omega_i=\omega_i$ für alle außer endlich viele $i\in\N$ gilt, dann ist $\tilde\omega\in A_j$. Ebenso wenn $\omega\in A_j^C$, dann $\omega\in A_j^C$.
+	\end{exm}
+
+%VL 30.05.2017
+	\begin{definition}\label{0329def}
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und seien $X_i:(\Omega,\scF)\to(\Omega_i,\scF_i)$ seien Zufallsvariablen. Setze \[\scF_{\{i\}}=\sigma(X_i)=\{X^{-1}_i(B):B\in\scF_i\} \tag{\enquote{von $X_i$ erzeugte $\sigma$-Algebra}}\]
+		Setze für $K\subseteq\N$
+		\[\scF_K:=\sigma(\{X_i:i\in K\})=\sigma(\scF_{\{i\}}:i\in K) \tag{\enquote{von $(X_i)_{i\in K}$ erzeugte $\sigma$-Algebra}}\]
+		Schreibe für $n\in\N$
+		\[\scF_n:=\scF_{\{1,...,n\}} \tag{\enquote{$\sigma$-Algebra bis zur \enquote{Zeit} $n$}}\]
+		\[\tau_n:=\scF_{n+1,n+2,...} \tag{\enquote{$\sigma$-Algebra nach der Zeit $n$}}\]
+		\[\tau:=\bigcap_{n\in \N}\tau_n \tag{\enquote{terminale/asymptotische $\sigma$-Algebra}}\]
+	\end{definition}
+
+	\begin{exm}
+		Für $\Omega=\R^N$, $\scF=\Bor(\R^N)$, $X_i$ ist $i$-te Projektion. Dann ist
+		\[\scF_{\{1,....,n\}}=\left\{\left\{x\in\R^N:(x_1,...,x_n)\in B,\text{$x_{n+1}$ beliebig},\text{$x_{n+1}$ beliebig},...\right\}:B\in\Bor(\R^n)\right\}\]
+		sind Zylindermengen.\\
+		Für $|K|=\infty$ (insbesondere für $\tau_n$) kann man $\scF_K$ nicht explizit angeben. Stattdessen: $\tau_n=$kleinste $\sigma$-Algebra, die $\scF_{n+1,n+2,...,m}$ enthält für alle $m>n$.
+	\end{exm}
+
+	\begin{definition}\label{0332def}
+		Sei $(\Omega,\scF)$ Messraum, $A_i\in \scF$ für alle $\in\N$. Definiere
+		\begin{align*}
+		\limsup_{n\to\infty}A_n&:=\bigcap_{m=1}^\infty\bigcup_{k=m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für unendlich viele $i$}\}\\
+		\liminf_{n\to\infty}A_n&:=\bigcup_{m=1}^\infty\bigcap_{k=m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für alle außer endlich viele viele $i$}\}
+		\end{align*}
+	\end{definition}
+	
+	\begin{prop}
+		\begin{enumerate}[label=\alph*)]
+			\item Die Gleichheiten in \ref{0332def} gelten
+			\item $\bigcap_{n=1}^\infty A_n\subseteq\liminf_{n\to\infty}A_n\subseteq\limsup_{n\to\infty}A-n\subseteq\bigcap_{n=1}^\infty A_n$
+			\item Für alle $\omega\in\Omega$ gilt 
+			\begin{align*}
+				\liminf_{n\to\infty}\chi_{A_i}(\omega)&=\chi_{\liminf_{n\to\infty}A_i}(\omega)\\
+				\limsup_{n\to\infty}\chi_{A_i}(\omega)&=\chi_{\limsup_{n\to\infty}A_i}(\omega)
+			\end{align*}
+			\item Falls $X_i:(\Omega,\scF)\to(\Omega_i\scG_i)$ Zufallsvariablen sind uns $A_i=X^{-1}(B_i)$ mit $B_i\scG_i$, dann sind $\limsup_{n\to\infty} A_n\in\tau$ und $\liminf_{n\to\infty}A_n\in \tau$.\\
+			(Nicht aber $\bigcap_{n=1}^\infty A_n$ oder $\bigcup_{n=1}^\infty$!)
+		\end{enumerate}
+	\end{prop}
+	
+	\begin{exm}
+		In der Situation von \ref{0329def} mit $\Omega_i=\R$ ist
+		\[A=\left\{\lim\limits_{N\to\infty}\frac{1}{N}\sum_{i=1}^{N}X_i\text{ exitsiert und liegt in $[a,b]$}\right\}\in\tau\]
+		für alle $a\leq b$.
+	\end{exm}
+	
+%TODO Kolmogorov
+	\begin{satz}
+		
+	\end{satz}
+
+	\begin{bem*}
+		In der Sitation von \ref{0333exm} können also nur Wahrscheinlichkeiten $\{0,1\}$ auftreten, wenn die $X_i$ unabhängig sind. Welche der beiden Möglichkeiten trifft zu?\\
+		Diese frage is i.A. schwierig zu beantworten, aber im Fall $\limsup_{n\to\infty}A_n$ gibt es folgenden Satz:
+	\end{bem*}
+
+	\begin{satz}[Lemma von Boreal-Cantelli]\label{0335satzBorCant}
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und $A_j\in\scF$, für alle $j\in\N$. Dann
+		\begin{enumerate}[label=\alph*)]
+			\item Falls $\sum_{k=1}^{\infty}\Prb(A_k)<\infty$, dann ist $\Prb(\limsup_{n\to\infty}A_n)=0$
+			\item Falls $(A_k)_{k\in \N}$ unabhängig dun $\sum_{k=1}^{\infty}\Prb(A_k)=\infty$, dann ist $\Prb(\limsup_{n\to\infty} A_n)=1$.
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=\alph*)]
+			\item Für alle $m$ ist $A\subseteq \bigcap_{k=1}^\infty A_k$. Also ist $\Prb(A)\leq\sum_{k=m}^{\infty}\Prb(A_k)$.\\
+			Da $\sum_{k=1}^{\infty}\Prb(A_k)<\infty$ gilt, muss $\lim\limits_{n\to\infty}\sum_{k=m}^{\infty}\Prb(A_k)=0$ gelten. Da die Mengenfolge $\left(\bigcup_{k=m}^{\infty}\right)_{m\in\N}$ absteigend ist gilt 
+			\[\Prb\left(\bigcap_{m=1}^\infty\bigcup_{k=m}^\infty A_k\right)=\lim\limits_{n\to\infty}\Prb\left(\bigcup_{k=m}^\infty A_k\right)\leq\lim\limits_{m\to\infty}\sum_{k=m}^\infty\Prb(A_k)=0\]
+			\item Es gilt für das Komplement:
+			\[A^C=\bigcup_{m=1}^\infty\bigcap_{k=m}^\infty\]
+			Also ist
+			\begin{align*}
+			\Prb(A^C)&\leq\sum_{m=1}^{\infty}\Prb\left(\bigcap_{k=m}^\infty A_K^C\right)\overset{\substack{\text{Satz \ref{0122satz} c)}\\\text{absteigende}\\\text{Mengefolge}}}{=}\sum_{m=1}^{\infty}\lim\limits_{m\to\infty}\Prb\left(\bigcap_{k=m}^\infty A_K^C\right)\\
+			&\overset{\text{unabh.}}{=}\sum_{m=1}^{\infty}\lim\limits_{n\to\infty}\prod_{k=m}^n(1-\Prb(A_k))\\
+			&=\sum_{m=1}^{\infty}\lim\limits_{n\to\infty}e^{-\sum_{k=m}^{\Prb(A_k)}}\\
+			&=\sum_{m=1}^{\infty}0=0
+			\end{align*}
+		\end{enumerate}
+	\end{proof}
+
+% 06.06.2017
+	\section{Erwartungswert und Varianz}
+	\begin{bem}[Motivation]
+		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und $(X_i)_{i\in\N}$ mit $X_i:\Omega\to\Z$, $\Prb(X_i=k)=p_k$ seien unabhängige Zufallsvariablen.\\
+		(d.h. $(p_k)$ ist zähldichte für jedes $X_i$)\\
+		Wenn man nun $N$-mal mit $(X_i)$ \enquote{würfelt}, erhält man $N$ zufällige ganze Zahlen $X_1(\omega),...,X_n(\omega)$.\\
+		(\enquote{Realisierung von $(X_1,....,X_n)$})\\
+		\begin{description}
+			\item[Frage] Wie groß ist der (zufällige) Mittelwert für $\frac{1}{N}\sum_{i=1}^{n}X_i$ typischerweise wenn $n$ groß (unendlich groß) wird?
+			\item[Beispiel] $\Prb(X_i=k)=\frac{1}{6}$, falls $k\in \{1,...,6\}$. Dann ist der Mittelwert $\approx3.5$. Es ist aber auch $(1,1,1,...,1)$ möglich.
+			\item[Überlegung] $p_k$ modelliert die \enquote{relative Häufigkeit} mit der der Wert $k$ auftritt. \\
+			D.h. für große $n$ sollte man cs $p_k\cdot n$-mal den Wert $k$ erhalten.\\
+			Wähle z.B. $(-4,2,1,2,-4,0,1,3,2,-3,1,0)$:
+			\begin{align*}
+			\frac{1}{n}\sum_{i=1}^{n}X_i(\omega)&=\frac{1}{n}\left(0|\{i\leq n:X_i(\omega=0)\}|+1|\{i\leq n:X_i(\omega)=1\}|+(-1)|\{i\leq n:X_i(\omega=-1)\}|+...\right)\\
+			&=\sum_{k\in\Z}\frac{k}{n}|\{i\leq n:X_i(\omega)=k\}|\\
+			\overset{?}{\approx}\sum_{k\in\Z}kp_k\tag\star
+			\end{align*}
+			\item[Beobachtung] Das letzte $\approx$ stimmt sicher nicht immer, sollte aber \enquote{meistens} richtig sein.\\
+			Siehe dazu \ref{gdgz} (Gesetze der großen Zahlen)
+		\end{description}
+		Betrachte nun die rechte Seite von $(\star)$:
+	\end{bem}
+
+	\begin{definition}
+		Eine reelle Zufallsvariable $X:\Omega\to\R$ heißt \textbf{diskret} wenn die Menge $X(\Omega)$ höchstens abzählbar ist
+	\end{definition}
+
+	\begin{definition}
+		Sei $X$ eine diskrete Zufallsvariable. $X$ heißt \textbf{integrierbar} (bzw \enquote{\textbf{Erwartungswert existiert}}), falls
+		\[\sum_{y\in X(\Omega)}|y|\Prb(X=y)<\infty \label{eq:integrierbar}\]
+		Man schreibt $X\in\scL^1$ bzw. $X\in\scL^1(\Prb)$.
+	\end{definition}
+	
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{definition}
+		Für $X\in\scL^1$ heißt
+		\[\Epv(X)=\Epv_\Prb(X):=\sum_{y\in X(\Omega)}\Prb(X=y)\in\R\]
+		der \textbf{Erwartungswert} von $X$.
+	\end{definition}
+
+	\begin{exmlist}
+		\begin{exm}
+			Sei $X:\Omega\to\{a,b\}$, $a,b\in\R$ und $\Prb(X=a)=p=1-\Prb(X=b)$.\\
+			Dann ist $\Epv(X=p\cdot 0+(1-p)b=b+p(a-b)$.
+			\begin{description}
+				\item[$a=1$, $b=0$] Dann ist $\Epv(X=p$ (Münzwurf)
+				\item[$a=1$, $b=-1$] Dann ist $\Epv(X=1-2p$ (Schrittweise Irrfahrt)
+			\end{description}
+		\end{exm}
+		\begin{exm}
+			Sei $T$ geometrisch verteilt, also $\Prb(T=k)=p(1-p)^{k-1}$, dann ist
+			\[\Epv(X=\sum_{k=1}^{\infty}p{\overbrace{(1-p)}^{=:q}}^{k-1}=p\underbrace{\sum_{k=1}^{\infty}kq^{k-1}}_{=:f(q)}=(\star)\]
+			Für die Funktion $f(q)$ gilt 
+			\begin{align*}
+			f(q)&=\frac{d}{dq}\sum_{k=0}^{\infty}q^k
+			=\frac{d}{dy}\frac{1}{1-q}\\
+			=\frac{1}{(1-q)^2}=\frac{1}{p^2}
+			\end{align*}
+			Also ist $(\star)=\frac{p}{p^2}=p$.
+		\end{exm}
+	\end{exmlist}
+
+	\begin{satz}\label{0405satz}
+		Seien $X,Y\in\scL^1$ diskrete Zufallsvariablen.
+		\begin{enumerate}
+			\item Falls $X\geq Y$, dann ist $\Epv(X)\geq \Epv(Y)$
+			\item \begin{enumerate}
+				\item Sei $c\in\R$, dann ist auch $cX\in\scL^1$ und $\Epv(cX)=c\Epv(X)$.
+				\item Es ist auch $X+Y\in\scL^1$ und $\Epv(X+Y)=\Epv(X)+E(Y)$
+			\end{enumerate}
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		Aus der Maßtheoreie, da $\Epv(X)$ das (elementare) Integral ist.
+	\end{proof}
+
+	\begin{definition}\label{0406def}
+		Sei $X$ reelle Zufallsvariable. Dann heißt $X_{(n)}$ für alle $n\in\N$
+		\[X_{(n)}(\omega:=\frac{1}{n})\lfloor nX(\omega)\rfloor\]
+		die $\frac{1}{n}$-Approximation.\\
+		(Dabei ist $\lfloor\cdot\rfloor$ die Abrunden-Funktion.)
+	\end{definition}
+
+	\begin{satz}\label{0407satz}
+		Sei $X$ reelle Zufallsvariable, $X_{(n)}$ aus \ref{0406def}.
+		\begin{enumerate}
+			\item Für alle $n\in \N$ ist $X_{(n)}\leq X\leq X_{(n)}+\frac{1}{n}$
+			\item Falls $X_(N_0)\in\scL^1$ für ein $n_0\in\N$, dann ist $X_{(n)}\in\scL^1$ für alle $n$.
+			\item Falls b) gilt, so ist $\big(\Epv(X_{(n)})\big)_{n\in \N}$ eine Cauchyfolge.
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}$~$
+		\begin{enumerate}
+			\item ist klar.
+			\item Aus a) folgt, dass $|X_{(n)}(\omega)|\leq |X_{(m)}|+\max\{\frac{1}{n},\frac{1}{m}\}$.\\
+			Da insbesondere $1\in\scL^1(\Prb)$ folgt die Behauptung.
+			\item Aus b) folgt, dass $|\Epv(X_{(n)})-\Epv(X_{(m)})|\leq\max\{\frac{1}{n},\frac{1}{m}\}\xrightarrow{n,m\to\infty}0$. Ist Cauchyfolge.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{satz}\label{0409satz}
+		Die Aussagen von Satz \ref{0405satz} (Linearität und Monotonie) gelten auch für Reelle Zufallsvariablen.
+	\end{satz}
+	\begin{proof}
+		Durch Grenzwertsätze der Maßtheorie:
+	\end{proof}
+
+%TODO COUNTER:
+\stepcounter{theorem}
+
+	\begin{satz}[Monotonen Konvergenz]\label{0410monokonv}
+		Seien $(X_n)_{n\in\N},X$ relle Zufallsvariablen mit punktweise $X_{n}(\omega)\leq X_{n+1}(\omega)$ für alle $\omega\in\Omega$ und $\lim\limits_{n\to\infty}X_n(\omega)=\sup_{n\in\N}X_n(\omega)=X(\omega)$.\\
+		Dann gilt
+		\[\lim\limits_{n\to\infty}\Epv(X_n)=\Epv(X)\]
+	\end{satz}
+
+	\begin{satz}[Majorisierte Konvergenz]\label{0411majkonv}
+		Seien $(X_n)_{n\in\N},X$ relle Zufallsvariablen und es existiert $Y\in\scL^1$, mit $|X_n(\omega)|\leq |Y(\omega)|$ für alle $\omega\in\Omega$ und $\lim\limits_{n\to\infty}X_n(\omega)=X(n)$ für alle $\omega\in\Omega\setminus\Omega_0$, mit $\Omega_0$ Nullmenge. Dann ist
+		\[\lim\liminf_{n\to\infty}\Epv(X_n)=E(X)\]
+	\end{satz}
+
+	\begin{definition}
+		Sei $A:=\{\omega\in\Omega\mid\text{$\omega$ hat Eigenschaft $E$}\}\in\scF$.\\
+		Falls $\Prb(A^c)=0$, dann sagen wir \enquote{die Eiegnschaft $E$ gilt $\Prb$-\textbf{fast sicher}}.
+	\end{definition}
+
+	\begin{exmlist}
+		\begin{exm}
+			Sei $\Prb=U[0,1]=\la_{[0,1]}$, $X(\omega)=\omega$.. Dann ist $X\notin\Q$ $\Prb$ fast sicher, denn $\la(\Q\cap[0,1])=0$
+		\end{exm}
+		\begin{exm}
+			Sei $\Prb=U[-1,1]$, $X_n(y)=\sin\big(\frac{1}{|y|+\frac{1}{n}}\big)$, dann konvergiert $X_n(y)$ $\Prb$ fast sicher.
+		\end{exm}
+	\end{exmlist}
+
+	\begin{bem}
+		Falls $X\geq 0$, dann erlauben wir auch $\Epv(X)=\infty$. Wir definieren dann $\Epv(X)=\lim\limits_{n\to\infty}\Epv(\min\{X,n\})$.\\
+		Satz \ref{0409satz}a),b) und \ref{0410monokonv} gilt weiterhin, falls $X,Y\geq 0$ und $c\geq 0$.
+	\end{bem}
+
+	\begin{satz}\label{0415fatou}
+		Seien $(X_n)$ reele Zufallsvariable und $X_n\geq 0$, dann ist
+		\[\Epv(\liminf_{n\to\infty} X_n)\leq \liminf_{n\to\infty} \Epv(X_n)\]
+	\end{satz}
+
+%VL 12.06.2017
+	\begin{exm}
+		Sei $(\Omega,\scF,\Prb)=\big((0,1),\Bor\big((0,1)\big),\la_{(0,1)}\big)$ und $X_n=n\chi_{0,\frac{1}{n}}$.\\
+		Dann ist $\Epv(X_n)=1\forall n$, aber $\liminf_{n\to\infty}X_n(\omega)=0$.\\
+		Also kann die Ungleichung in Satz \ref{0415fatou} kann also Strikt sein.
+	\end{exm}
+
+	\begin{satz}[Integration bezüglich des Bildmaßes]\label{0417satz}
+		Sei $X:\Omega\to\Omega'$ Zufallsvariable, $f:\Omega'\to\R$ messbar.\\
+		Es gelte entweder $f(\omega')\geq 0\forall\omega'\in\Omega'$ oder
+		\[\Epv\left(|f(X)|\right)=\int_\Omega|f\big(X(\omega)\big)|\Prb(d\omega)<\infty\]
+		Dann gilt:
+		\[\Epv(f(X))=\int_{\Omega'}f(\omega')\Prb_X(d\omega')=\Epv_{\Prb_X}(f)=\int_{\Omega'}f(\omega')\Prb\circ X^{-1}(d\omega')\]
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}[label=(\roman*)]
+			\item Sei $f(\omega')=\chi_B(\omega')$ mit $B\in\scF'$.\\
+			Dann ist $\Epv(f(X))=\Epv(\chi_B(X))=\Prb(X\in B)=\Prb(X^{-1(B)})=\Prb_X(B)$ nach Definition von $\Prb_X$. Dann gilt die Gleichung aus \ref{0417satz}.
+			\item Sei nun $f(\omega')=\sum_{n=1}^{m}c_n\chi_{B_n}(\omega')$, mit $C_n\in\R$, $B_n\in\scF'$.
+			Dann ist
+			\[\Epv(f(X))\overset{\ref{0409satz}}{=}\sum_{n=1}^{m}c_n\Epv(\chi_{B_n}(X))\overset{(i)}{=}\sum_{n=1}^{m}c_n\Epv_{\Prb_X}(\chi_{B_n})\overset{\ref{0409satz}b)}{=}\Epv_{\Prb_X}\left(\sum_{n=1}^{m}c_n\chi_{B_n}\right)=\Epv_{\Prb_X}(f)\]
+			\item Sei nun $f(\omega')\geq 0\forall\omega\in\Omega$. Setze 
+			\[f_n(\omega'):=\sup\left\{\frac{1}{n}\lfloor f(\omega')\rfloor,n\right\}\]
+			(Abgeschnittene $\frac{1}{n}$ Approximation.)\\
+			Dann folgt aus (ii), dass $\Epv(f_n(X))=\Epv_{\Prb_X}(f_n)$. Dann folgt aus der monotonen Konvergenz, dass im Grenzwert $n\to\infty$ gilt: $\Epv(f(X))=\Epv_{\Prb_X}(f)$. Dann gilt die Gleichung aus \ref{0417satz}.
+			\item Sei $\Epv(|f(X)|)<\infty$. Da $|f(X(\omega))|=f_+(X(\omega))+f_-(\omega')$ ist auch $\Epv(f_-(X))<\infty$ und $\Epv(f_+(X))<\infty$.\\
+			Da $f(\omega')=f_+(\omega')-f_-(\omega')$ gilt ist 
+			\[\Epv(f(X))=\Epv(f_+(X))-\Epv(f_-(X))\overset{(iii)}{=}\Epv_{\Prb_X}(f_+)-\Epv_{\Prb_X}(f_-)=\Epv_{\Prb_X}(f)\]
+		\end{enumerate}
+	\end{proof}
+
+	\begin{bem}
+	 	Sei $H:[a,b]\to\R$ streng monoton wachsend und $h\in C^1$. Sei $\Omega=[a,b],\scF\Bor([a,b]),\mu(dx)=h'(x)~dx$.\\
+		Dann ist $\mu([a,b])=\int_{a}^{b}h'(x)~dx=h(b)-h(a)$ das Bildmaß von $\mu$ unter $h$.
+		\begin{align*}
+		\mu\circ h^{-1}\big((-\infty,x]\big)&=\mu\big(\{y\in[a,b]:-\infty\leq h(y)\leq x\}\big)=\mu\big([a,b]\cap(-\infty,h^{-1}(x))\big)\\
+		&=\int_{a}^{h^{-1(x)}}h'(y)~dy=\left[h(y)\right]_a^{h^{-1}(x)}=h(h^{-1}(x))-h(a)=x-h(a)
+		\end{align*}
+		falls $h(a)\leq x\leq h(b)$. Dann ist
+		\[\mu\circ h^{-1}=\la_{[h(a),h[b]]}\]
+		Dann folgt aus \ref{0417satz}
+		\[\int_{a}^{b}f(h(x))h'(x)~dx=\Epv_\mu(f(h))=\Epv_{\Prb_n}(f)=\int_{h(a)}^{h(b)}f(y)~dy\]
+	\end{bem}
+
+	\begin{kor}
+		Seien $X:\Omega_1\to\Omega'$, $Y:\Omega_2\to\Omega'$ Zufallsvariablen mit $\Prb_X=\Prb_Y$. Dann gilt $\Epv(f(x))=\Epv(f(Y))$ für alle $f:\Omega'\to\R$ mit $\Epv(|f(x)|)<\infty$ oder $f\geq 0$.\\
+		Umgekehrt: sei $\Epv(f(X))=\Epv(f(Y))$ für alle $f$ messbar, beschränkt, dann gilt $\Prb_X=\Prb_Y$.
+	\end{kor}
+	\begin{proof}
+		\begin{description}
+			\item[\enquote{$\Rightarrow$}] Folgt aus \ref{0417satz}.
+			\item[\enquote{$\Leftarrow$}] $\Prb_X(A)=\Epv(\chi_A(X))=\Epv(\chi_A(X))=\Prb_Y(A)$.
+		\end{description}
+	\end{proof}
+
+	\begin{exmlist}
+		\begin{exm}
+			Sei $X\sim\Exp(\al)$, d.h. $\Prb_X(dx)=\al e^{-\al x}~dx$. Dann ist
+			\[\Epv(X^k)=\al \int_{0}^{\infty}x^ke^{-\al x}~dx=\frac{k!}{\al^k}\]
+		\end{exm}
+		\begin{exm}
+			Sei $X\sim \Nv(m,v)$, dann ist $\Epv(X)=m$ und $\Epv\big((X-m)^2\big)=v$
+		\end{exm}
+	\end{exmlist}
+
+	\begin{kor}\label{0421kor}
+		\begin{enumerate}
+			\item Sei $X$ reelle Zufallsvariable. $\Prb_X$ habe dichte $\rho$ bezüglich des Lebesgue-Maß. Dann ist
+			\[\Epv(f(X))=\int_{-\infty}^{\infty}\rho(x)f(x)~dx\]
+			(falls $\int\rho(x)|f(x)|~dx<\infty$). Inesbesondere
+			\[\Epv(X)=\int_{-\infty}^{\infty}x\rho(x)~dx\]
+			\item Sei $\Omega=\R$, $\Prb(dy)=\rho(y)~dy$ ($\rho$ ist Dichte von $\Prb$).\\
+			Sei $X$ reelle Zufallsvariable . Dann gilt:
+			\[\Epv(f(X))=\int_{-\infty}^{\infty}f(X(y))\rho(y)~dy\]
+			Insbesondere $\Epv(X=\int_{-\infty}^{\infty}X(y)\rho(y)~dy$
+		\end{enumerate}
+	\end{kor}
+
+	\begin{definition}
+		Sei $X$ reelle Zufallsvariable
+		\begin{enumerate}
+			\item Falls $|X^n|\in\scL^1$ für $n\in\N$, so heißst $\Epv(X^n)$ das \textbf{$n$-te Moment von $X$}.
+			\item Falls $|X^p|\in\scL^1$, für $p>0$, so schreibt man $X\in\scL^p$.
+			\item Die Zahl $\Var(X):=\Epv\left((X-\Epv(X))^2\right)$ heißt die \textbf{Varianz} von $X$ (bezüglich $\Prb$).\\
+			$\sqrt{\Var(X)}$ heißt \textbf{Standardabweichung} von $X$.
+		\end{enumerate}
+	\end{definition}
+
+	\begin{bem}
+		\begin{enumerate}
+			\item Für die Varianz gilt \[\Var(X)=\Epv(X^2-E\Epv(X)X+\Epv(X)^2)=\Epv(X^2)-2\Epv(X)\Epv(X)+\Epv(X)^2=\Epv(X^2)-\Epv(X)^2\]
+			\item Da $|X|^p\leq 1+|X|^q$, falls $p\leq q$ ist
+			\[\scL^q\leq \scL^p\]
+			falls $p\leq q$.
+		\end{enumerate}
+	\end{bem}
+
+%VL 13.06.2017
+	\begin{definition}
+		Sei $X,Y\in\scL^2$, dann heißt \[\Cov(X,Y):=\Epv\big(X-\Epv(X)\big)\big(Y-\Epv(Y)\big)=\Epv(XY)-\Epv(X)\Epv(Y)\]
+		die \textbf{Kovarianz} von $X$ und $Y$.\\
+		Man nennt $X$ und $Y$
+		\begin{description}
+			\item[positiv korreliert] falls $\Cov(X,Y)>0$
+			\item[unkorreliert] falls $\Cov(X,Y)=0$
+			\item[negtaiv korreliert] falls $\Cov(X,Y)<0$
+		\end{description}
+	\end{definition}
+
+	\begin{exm}\label{0425exm}
+		Sei $\Omega=[0,1]$ mit Lebesgue-Maß, sei $X(\omega)=\omega$,$Y(\omega)=\omega^2$ und $Z(\omega)=\frac{1}{2}\sin(\pi\omega)$.
+		Dann ist
+		\begin{align*}
+		\Epv(X)&=\int_{0}^{1}d~dx=\frac{1}{2}\\
+		\Epv(Y)&=\int_{0}^{1}x^2~dx=\frac{1}{3}\\
+		\Epv(Z)&=\int_{0}^{1}\frac{\sin(\pi\omega)}{2}~dx=\frac{1}{2\pi}
+		\end{align*}
+		Dann folgt für die Kovarianz:
+		\begin{align*}
+		\Cov(X,Y)&=\Epv\big(\left(X-\frac{1}{2}\right)\left(Y-\frac{1}{3}\right)\big)=\frac{1}{12}\\
+		\Cov(X,Z)&=\int_{0}^{1}\left(x-\frac{1}{2}\right)\left(\sin(\pi x)-\frac{1}{2\pi}\right)~dx=0
+		\text{Zum Vergleich: }\Cov(X,X)&=\Var(X)=\frac{1}{12}
+		\end{align*}
+		Daher eigenen sich die Korrelationskoeffizienten besser al Maß
+	\end{exm}
+
+	\begin{definition}
+		Für $X,Y\in\scL^2$ heißt\[\Kor(X,Y)=\frac{\Cov(X,Y)}{\sqrt{\Var(X)\Var(Y)}}\]
+		\textbf{Korrelationskoeffizient} von $X$ und $Y$.
+	\end{definition}
+
+	\begin{exm}
+		In Beispiel\ref{0425exm} gilt
+		\begin{align*}
+		\Kor(X,Y)&=\frac{\sqrt{15}}{4}\approx0.968\\
+		\Kor(X,X)&=1
+		\end{align*}
+	\end{exm}
+
+	\begin{satz}[Ungleichungen für Integrale]\label{0428intUngl}
+		\begin{enumerate}
+			\item \textbf{Jensen-Ungleichung} Sei $X$ reelle Zufallsvariable, $\phi(\R\to\R)$ sei konvex.\\
+			Sei zusätzlich noch $\Epv(|X|)<\infty$ und $\Epv(|\phi(X)|)<\infty$.\\
+			Dann gilt
+			\[\Epv(\phi(X))\geq \phi(\Epv(X))\]
+			\item\textbf{Hölder Ungleichung} Seine $X,Y$ reelle Zufallsvariablen. Dann gilt für alle $p,q\in[1,\infty]$ mit $\frac{1}{p}+\frac{1}{q}=1$, dass
+			\[\Epv(|XY|)\leq\norm{X}_p\norm{Y}_q\]
+			dabei ist 
+			\[\norm{A}_p:=\begin{cases}
+			\Epv(|X|^p)^\frac{1}{p}&p\leq \infty\\
+			\sup\{|X(\omega)|:\omega\in\Omega\}&p=\infty
+			\end{cases}\]
+			\item\textbf{Cauchy-Schwarz-Ungleichung} Seien $X,Y\in\scL^2$. Dann ist $XY\in\scL^2$ und\[\Epv(|XY|)^2\leq\Epv(|X|^2)\Epv(|Y|^2)\]
+			(Spezialfall von b) mit $p=q=2$)
+			\item\textbf{Chebyshev-Markov-Ungleichung} Sei $X$ reelle Zufallsvariable, $f:[0,\infty)\to[0,\infty)$ sei monoton wachsend. Dann gilt $\forall c>0$ mit $f(c)>0$, dass\[\Prb(|X|\geq c)\leq\frac{\Epv(f(|X|))}{f(c)}\]
+			Insbesondere gilt für $f(x)=x^2$
+			\[\Prb(|X-\Epv(X)|\geq c)\leq\frac{\Var(X)}{c^2}\]
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}
+			\item Da $\phi$ konvex ist, ist per Definition $A:=\{(x,y)\in\R^2:y\geq\phi(x)\}$ konvexe Menge.\\
+			$\Leftrightarrow$ $\forall x\in\R$ gibt es eine Gerade durch $(x,\phi(X))$, die das Innere $A^0$ von $A$ nicht schneidet.\\
+			$\Leftrightarrow $ $\forall x\in\R\exists a\in\R:l(y):=\phi(x)+a(y-x)\leq \phi(y)$.\\
+			Wähle nun $x=\Epv(X)$. Dann ist 
+			\begin{align*}
+			%TODO!
+			\end{align*}
+			\setcounter{enumi}{3}
+			\item Es gilt
+			\begin{align*}
+			\Prb(|X|\ge c)&=\Prb(f(|X|)\geq f(c))\\
+			&=\Prb\left(\frac{f(|X|)}{f(c)}\geq 1\right)=\Epv\left(\chi_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}}\right)\\
+			&\leq\Epv\left(\chi_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}\frac{f(|X|)}{f(c)}}\right)\\
+			&\leq\Epv\left(\frac{f(|X|)}{f(c)}\right)=\frac{1}{f(c)}\Epv(f(|X|))
+			\end{align*}
+		\end{enumerate}
+	\end{proof}
+
+	\begin{bem}
+		\begin{itemize}
+			\item Sei $X,Y\in\scL^2$, dann gilt mit \ref{0428intUngl} c), dass auch$X+\al Y\in\scL^2$. Also ist $\scL^2$ ein Vektorraum und $\norm{X}_2=\Epv(|X|^2)^\frac{a}{2}$ ist eine Halbnorm.
+			Dann ist $\Var(X)=\Epv\big((X-\Epv(X))^2\big)$ die \enquote{Länge des optimal Verschobenen Vektors}:
+			\[\Var(X)=\min\{\Epv\big((X-a)^2\big):r\in\R\}\]
+			und
+			\[\Cov(X,Y)=\Epv\left(\big(X-\Epv(X)\big)\big(Y-\Epv(Y)\big)\right)\]
+			ist ein Skalarprodukt der beiden optimal verschobenen Vektoren.
+			\[\Kor(X,Y)=\frac{\Cov(X,Y)}{\sqrt{\Var(X)\Var(Y)}}\]
+			gibt den Winkel zwischen optimal verschobenen Vektoren an.
+		\end{itemize}
+	\end{bem}
+
+	\begin{satz}\label{0430rechenregeln}
+		\begin{enumerate}
+			\item $\Cov(X+a,Y+b)=\Cov(X,Y)$ für alle $a,b\in\R$.
+			\item $\Cov(aX,bY)=ab\Cov(X,Y)$
+			\item $\Var(aX)=a^2\Var(X)$
+			\item Es ist $\sum_{i=1}^{n}X_i\in\scL^2$ und
+			\[\Var(\sum_{i=1}^{n}X_i)=\sum_{i=1}^{n}\Var(X_i)+\sum_{\substack{i,j=0\\i\neq j}}^{n}\Cov(X_i,X_j)\tag{\text{Binomische Formel}}\]
+			\item Falls $(X_i)$ paarweise unkeorreliert sind, dann
+			\[\Var\left(\sum_{i=1}^{\infty}X_i\right)=\sum_{i=1}^\infty\Var(X_i)\tag{\text{\enquote{Gleichheit von Bienarme}/\enquote{Pythagoras}}}\]
+		\end{enumerate}
+	\end{satz}
+	
+	\begin{satz}
+		Seien $X,Y\in\scL^1$ und $X\indep Y$, dann gilt
+		\begin{enumerate}
+			\item $XY\in\scL^1$ und $\Epv(XY)=\Epv(X)\Epv(Y)$
+			\item $\Cov(X,Y)=0$
+		\end{enumerate}
+	\end{satz}
 \end{document}
