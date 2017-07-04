@@ -39,7 +39,8 @@
 \newcommand{\ol}[1]{\overline{#1}}
 \newcommand{\ul}[1]{\underline{#1}}
 \newcommand{\todomark}[1]{\fbox{\Large Hier könnte \sout{Ihre Werbung} #1 stehen}}
-\newcommand{\norm}[1]{\left|#1\right|}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
 \newcommand{\Bor}{\mathscr B}
 \newcommand{\indep}{\perp\!\!\!\perp}
@@ -59,11 +60,15 @@
 \newcommand{\scF}{\ensuremath{\mathscr{F}}}
 \newcommand{\scG}{\mathscr G}
 \newcommand{\scL}{\mathscr L}
+\newcommand{\scO}{\mathscr O}
 
-
+\newcommand{\Ber}{\operatorname{Ber}}
 \newcommand{\Poi}{\operatorname{Poi}}
 \newcommand{\Exp}{\operatorname{Exp}}
 \newcommand{\Nv}{\mathscr N}
+
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\MSE}{\operatorname{MSE}}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
@@ -813,7 +818,7 @@
 		\end{enumerate}
 	\begin{figure}[h]
 		\centering
-		\begin{tikzcd}[column sep=3cm]
+		\begin{tikzcd}[scale=0.5, column sep=3cm,row sep=0.3cm]
 		&&(1,3,9)\\
 		&&(1,3,5)\\
 		&&(1,3,3)\\
@@ -1528,7 +1533,8 @@
 			\end{cases}\]
 			\item\textbf{Cauchy-Schwarz-Ungleichung} Seien $X,Y\in\scL^2$. Dann ist $XY\in\scL^2$ und\[\Epv(|XY|)^2\leq\Epv(|X|^2)\Epv(|Y|^2)\]
 			(Spezialfall von b) mit $p=q=2$)
-			\item\textbf{Chebyshev-Markov-Ungleichung} Sei $X$ reelle Zufallsvariable, $f:[0,\infty)\to[0,\infty)$ sei monoton wachsend. Dann gilt $\forall c>0$ mit $f(c)>0$, dass\[\Prb(|X|\geq c)\leq\frac{\Epv(f(|X|))}{f(c)}\]
+			\item \label{chebyshev-markov}
+			\textbf{Chebyshev-Markov-Ungleichung} Sei $X$ reelle Zufallsvariable, $f:[0,\infty)\to[0,\infty)$ sei monoton wachsend. Dann gilt $\forall c>0$ mit $f(c)>0$, dass\[\Prb(|X|\geq c)\leq\frac{\Epv(f(|X|))}{f(c)}\]
 			Insbesondere gilt für $f(x)=x^2$
 			\[\Prb(|X-\Epv(X)|\geq c)\leq\frac{\Var(X)}{c^2}\]
 		\end{enumerate}
@@ -1585,4 +1591,614 @@
 			\item $\Cov(X,Y)=0$
 		\end{enumerate}
 	\end{satz}
+%VL 19.06.2017
+	\begin{proof}
+		\begin{enumerate}
+			\item Da $X\indep Y$ ist folgt mit \ref{0323}a), dass das Bildmaß von $\Prb$ unter $(X,Y):\Omega\to\R^2$ ein Produktmaß, also $\Prb_X\otimes\Prb_Y$ ist.\\
+			Nach \ref[a)]{0417satz}ist
+			\begin{align*}
+			\Epv\big(|X||Y|\big)&=\int|x||y|\Prb_{(XY)}~(dx~dy)=\int_{\R^2}|x||y|\Prb_X(dx)\Prb_Y(dy)
+			\intertext{mit $h:\R^2\to R,(x,y)\mapsto |x|y|$. Dann folgt mit dem Satz von Fubini}
+			&=\int_{\R}|x|\Prb_X(dx)\int_\R|y|\Prb_Y(dy)=\Epv(|X|)\Epv(|Y|)
+			\end{align*}
+			Dann folgt dass $XY\in\scL^1$ ist. Also darf die gleiche Rechnung auch ohne $|\cdot|$ durchgeführt werden.
+			\item Es gilt
+			\[\Cov(X,Y)=\Epv\left(\big(X-\Epv(X)\big)\big(Y-\Epv(Y)\big)\right)\overset{a)}{=}\Epv\big(X-\Epv(X)\big)\Epv\big(Y-\Epv(Y)\big)=0\]
+		\end{enumerate}
+	\end{proof}
+
+	\begin{bem}
+		\begin{enumerate}
+			\item \ref[e)]{0430rechenregeln} gilt also auch wenn $X_i\indep X_j$ für alle $i\neq j$.
+			\item Es kann aber $\Epv(XY)=\Epv(X)\Epv(Y)$ gelten, ohne dass $X,Y$ unabhängig sind.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{exm*}
+		Sei $\Omega=[0,1]$, $\Prb=\frac{1}{2}\lambda_{[-1,1]}$, $X(x)=y$, $Y(x)=x^2$. Dann ist
+		\[\Epv(XY)=\frac{1}{2}\int_{-1}^{1}x^3~dx=0=\Epv(X)=\Epv(X)\Epv(Y)\]
+		\[\Epv(X^2Y)=\frac{1}{2}\int_{-1}^{1}x^4~dx=\frac{1}{5}\quad\text{aber}\quad\Epv(\Epv(X^2))\Epv(Y)=\left(\frac{1}{3}\right)^3=\frac{1}{9}\]
+		Wären $X\indep Y$, dann müsste auch $X^2\indep Y$ sein, also muss $X\not\indep Y$.
+	\end{exm*}
+	\begin{bem*}
+		Orthogonalität in $\scL^2$ ist viel schwächer (und weniger stabil) als Unabhängigkeit.
+	\end{bem*}
+	
+	
+	\subsection{Erzeugende Funktionen}
+	Für viele Wahrscheinlichkeitsmaße auf $\N_0$ besteht die Zähldichte aus den Taylor Koeffizienten einer Funktion entwickelt bei $x=0$.
+	\begin{exm}
+		Poisson Verteilung: $e^{-\la}\frac{\la^k}{k!}$. Dann ist
+		\[e^{\la u-\la}=e^{-\la}\sum_{k=0}^{\infty}\frac{\la^ku^k}{k!}\]
+		Geometrische Verteilung: $(1-p)^{k-1}p$. Dann ist
+		\[\sum_{k=0}^{\infty}(1-p)^{k-1}pu^k=\frac{p}{1-p}\sum_{k=1}^{\infty}\big((1-p)\big)^k=\frac{p}{1-p}\frac{1}{1-(1-p)u}\]
+	\end{exm}
+
+	\begin{definition}
+		Sei $\Prb$ ein Wahrscheinlichkeitsmaß auf $\N_0$ mit Zähldichte $(p_k)_{k\geq 0}$. Die Funktion
+		\[\varphi_{\Prb}:[0,1]\to\R\quad \varphi_{\Prb}\Prb(u)=\sum_{k=0}^{\infty}p_ku^k\]
+		heißt \textbf{Erzeugende Funktion} von $\Prb$ (oder der Folge $(p_k)$).
+	\end{definition}
+
+	\begin{bem}
+		\begin{enumerate}
+			\item Da $\sum_{k=0}^{\infty}p_k=1$ ist der Konvergenzradius von $\phi$ größer gleich als 1.
+			\item Es gilt 
+			\[\varphi_{\scB_{n,p}}(u)=\sum_{k=0}^{n}p^k(1-p)^{n-k}\binom{n}{k}u^k=\big(pu+(1-p)\big)^n\]
+		\end{enumerate}
+	\end{bem}
+
+	\begin{definition}
+		Sei $X$ Zufallsvariable mit Werten in $N_0$. Dann heißt\[\varphi_X(u)=\Epv(u^X)=\sum_{k=0}^{\infty}\Prb(X=k)u^k\]
+		\textbf{erzeugende Funktion von $X$}.
+	\end{definition}
+
+	\begin{satz}\label{0436satz}
+		Sei $X$ eine $N_0$-wertige Zufallsvariable. Dann
+		\begin{enumerate}
+			\item $\Prb(X=k)=\frac{1}{k!}\left.\frac{d^k}{du^k}\varphi_X(u)\right|_{u=0}$  für alle $k\in\N$.
+			\item $\Epv(X)$ existiert $\Leftrightarrow$ $\lim\limits_{u\uparrow 1}\phi'(u)$ existiert. Dann ist $\Epv(X)=\varphi'_X(1)$.
+			\item Für alle $p\in \N$ ist $X\in\scL^p$ $\Leftrightarrow$ $\lim\limits_{u\uparrow 1}\frac{d^p}{du^p}\varphi(u)$ existiert. Dann ist
+			\[\frac{d^p}{du^p}\varphi_X(1)=\Epv\big(X(X-1)\cdot...\cdot(X-p+1)\big)\]
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		\begin{enumerate}
+			\item Satz von Taylor: Für alle $u\leq 1$(Konvergenzradius)
+			\[\partial_u^k\varphi(u)=\sum_{n=0}^{\infty}p_n(\partial^nd^k)=\sum_{n=k}^{\infty}p_n\frac{n!}{(n-k)!}u^{k-n}\]
+			Also gilt bei Auswertung in $0$
+			\[\frac{1}{k!}\left.\partial_n^k\varphi(n)\right|_{u=0}=p_k=\Prb(X=k)\]
+			\item Für $u<1$ konvergiert die Reihe absolut
+			\begin{align*}
+			\sum_{k=0}^{\infty}ku^k\Prb(X=k)&=u\sum_{k=0}^{\infty}(\partial_uu^k)\Prb(X=k)
+			\intertext{also darf man gliedweise Differenzieren}
+			&=u\partial u\sum_{k=0}^{\infty}u^k\Prb(X=k)=u\varphi'_X(u)
+			\end{align*}
+			Beide Seiten wachsen Monoton, wenn $u\uparrow 1$:
+			\[\text{Linke Seite}\operatornamewithlimits{\uparrow}_{u\uparrow 1}\Epv(X)\quad\text{Rechte Seite}\operatornamewithlimits{\uparrow}_{u\uparrow 1}\varphi'(1)\]
+			\item Anwenden des gleichen Arguments mit
+			\[\sum_{k\geq p}k(k-1)...(k-p+1)u^k\Prb(X=k)=u^p\sum_{k=0}^{\infty}\partial_u^p(u^k)\Prb(X=k)\]
+			gegen $\Epv\big(X(X-1)...(X-p+1)\big)$ bzw. $1^p\partial_u^p\varphi_X(1)$.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{exm}
+		Sei $X\sim\Poi_\la$: Dann ist
+		\[\Epv(X)=\left.\partial_u\left(e^{\la u-\la}\right)\right|_{u=1}=\la e^0=\la\]
+		\[\Epv\big(X(X-1)\big)=\partial^2_u\left(e^{\la u-\la}\right)=\la^2\]
+		Also gilt für die Varianz:
+		\[\Var(X)=\Epv(X^2)-\Epv(X)^2=\Epv\big(X(X-1)+\Epv(X)-\Epv(X)^2\big)=\la\]
+	\end{exm}
+
+	\begin{satz}\label{0438satz}
+		Seien $X,Y$ unabhängige $\N_0$-verteilte Zufallsvariablen. Dann gilt
+		\[\varphi_{X+Y}(u)=\varphi_X(u)\varphi_Y(u)\]
+	\end{satz}
+	\begin{proof}
+		Sei $X\sim\Poi_\la$, $Y\sim\Poi_\mu$, $Y\indep X$. Dann ist\[\varphi_{X+Y}(u)=\varphi_X(u)\varphi_Y(u)=e^{\la u-\la}e^{\mu u-\mu}=e^{(\mu+\la)u-(\mu+\la)}\]
+		Also $X+Y\sim\Poi_{\la+\mu}$.
+	\end{proof}
+
+	\begin{bem}[Ausblick]
+		\begin{enumerate}
+			\item Die rechte Seite in \ref{0436satz}c) ist etwas unhandlich. Daher definiere für $t>0$
+			\[L_X(t):=\varphi_X(e^{-t})=\Epv\big(\left(e^{-t}\right)^X\big)=\Epv\left(e^{-t}\right)\tag{\enquote{Laplace Transformierte von $\Prb_X$}}\]
+			Dann ist
+			\[\Epv(X^p)=\left.\frac{d^p}{dt^p}L_X\right|_{t=0}\]
+			falls $\Epv(X^p)<\infty$.
+			\item Das geht auch für reelle Zufallsvariablen. Sei $X:\Omega\to\R$. Es sei $\Epv\left(e^{-tX}\right)<\infty$ für ein $c>0$. Dann ist
+			\[L_X(t)=\Epv(e^{-tX})=\int_{-\infty}^{\infty}e^{-t}\Prb_X(dy)\]
+			für alle $t\in\{\tilde t\in\R\mid \Epv(e^{-\tilde t X})<\infty\}$.\\
+			Wieder gilt
+			\[\Epv(X^p)=(-1)^p\left.\partial_t^pL_X(t)\right|_{t=0}\]
+			und es gilt auch $L_X$ bestimmt $P_X$ eindeutig.\\
+			Satz \ref{0438satz} gilt mit $L_{X+Y}=L_XL_Y$. Außerdem ist $L_{\al X}(t)=\Epv\left(e^{-t\al X}\right)=L_X(\al t)$, falls alles $<\infty$.
+			\item Für unabhängige reelle Zufallsvariablen $X_i$ mit $\Prb_{X_i}=\Prb_{X_j}$ gilt
+			\[(**)=L_{\frac{1}{\sqrt{n}}\sum_{i=1}^n X_j}(t)=\prod_{i=1}^{n}L_{\frac{X_i}{\sqrt n}}(t)=\prod_{i=1}^nL_{X_i}\left(\frac{t}{\sqrt{ n}}\right)=\left(L_{X_1}\left(\frac{t}{\sqrt{n}}\right)\right)^n\]
+			Es gilt immer $L_X(0)=1$ und $L'_X(0)=\Epv(X)$.\\
+			Angenommen $\Epv(X)=0$ und $L''_X(0)=\Epv(X^2)<\infty$, dann gilt die Taylor-Gleichung:
+			\[\ln(L_X(s))=\ln\left(L_X(0)+sL'_X(0)+\scO(s^3)\right)=\frac{1}{2}s^2L''_X(0)+\scO(s^3)\]
+		\end{enumerate}
+	Es folgt, dass 
+	\[(**)=e^{n\ln L_X\left(\frac{t}{\sqrt{n}}\right)}=e^{n\left(\frac{1}{2}\frac{t^2}{n}L''_X(0)+\scO\left(\frac{t^3}{n^3}\right)\right)}\xrightarrow{n\to\infty}e^{\frac{t^2}{2}\Epv(X^2)}\]
+	\end{bem}
+
+%VL 20.06.2017
+
+\section{Grenzwertsätze}
+	Wir haben $\Epv(X)=\sum_{k\in\Z}k\Prb(X=k)$ über die relative Häufigkeit motiviert: 
+	\[\Epv(X)\approx\frac{1}{N}\sum_{i=1}^NX_i(\omega)\approx\sum_{k\in\Z}\frac{|\{i:X_i(\omega=k)\}|}{N}k\]
+	Wir werden nu begründen, dass dies Intuition richtig ist.
+	
+	\begin{definition}
+		Eine Folge $(X_n)$ von Zufallsvariablen heißt \textbf{unabhängig identisch Verteilt} (\textbf{uiv}), wenn
+		\begin{enumerate}[label=(\roman*)]
+			\item die $X_n$ sind paarweise unabhängig
+			\item $\Prb_{X_i}=\Prb_{X_j}$ für alle $i,j\in\N$.
+		\end{enumerate}
+	\end{definition}
+
+	\begin{satz}[Schwache Gesetz der großen Zahlen (GGZ), Basisversion]\label{0502satzGGZschwach}
+		Seien $(X_i)$ uiv, reelle Zufallsvariable mit $\Var(X_i)<\infty$.\\
+		Dann ist für alle $\epsilon>0$
+		\[\lim\limits_{n\to\infty}\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}\geq \epsilon\right)=0\]
+	\end{satz}
+	\begin{proof}
+		Setze $Y_n=\frac{1}{n}\sum_{i=1}^{n}X_i$, dann ist 
+		\[\Epv(Y_n)=\Epv\left(\frac{1}{n}\sum_{i=1}^{n}X_i\right)=\frac{1}{n}\sum_{i=1}^{n}\Epv(X_i)=\Epv(X_1)\]
+		\[\Var(Y_n)=\Var\left(\frac{1}{n}\sum_{i=1}^{n}X_i\right)\overset{\ref{0430rechenregeln}}{=}\frac{1}{n^2}\sum_{i=1}^{n}\Var(X_i)=\frac{1}{n}\Var(X_1)\]
+		Mit \ref{0428intUngl}d) (Chebyshev-Markov-Ungleichung) folgt
+		\[\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}>\epsilon\right)=\Prb\left(\abs{Y_n-\Epv(Y_n)}>\epsilon\right)\leq\frac{1}{\epsilon^2}\Var(Y_n)=\Var(X_1)\frac{1}{n\epsilon^2}\xrightarrow{n\to\infty}0\]
+	\end{proof}
+
+	\begin{satz}[Schwache Gesetz der großen Zahlen, $\scL^2$-Version]\label{0503satzGGZL^2}
+		Seien $(X_i)$ (nicht notwendigerweise uiv) reelle Zufallsvariablen für die gilt:
+		\begin{enumerate}[label=(\roman*)]
+			\item \textbf{Paarweise unkorreliert} $\Cov(X_i,X_j)=0$ für alle $i\neq j$.
+			\item \textbf{Beschränkte Varianzen} $v:=\sup\left\{\Var(X_i),i\in\N\right\}<\infty$
+		\end{enumerate}
+		Dann gilt für alle $n\in \N$ und alle $\epsilon_n>0$
+		\[\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}\big(X_i-\Epv(X_i)\big)}\geq\epsilon_n\right)\leq\frac{v}{n\epsilon_n^2}\]
+	\end{satz}
+	\begin{proof}
+		Analog, Übung %TODO Beweis Übung
+	\end{proof}
+	
+	\begin{satz}[Schwache Gesetz der großen Zahlen, $\scL^1$-Version]\label{0504satzGGZL^1}
+		Seien $(X_i)$ paarweise undabhängige, identisch Verteilte Zufallsvariablen und $\Epv(|X_1|)<\infty$.\\
+		Dann gilt für alle $\epsilon>0$
+		\[\lim\limits_{n\to\infty}\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}\geq \epsilon\right)=0\]
+	\end{satz}
+	\begin{proof}
+		Zerlege 
+		\[X_i(\omega)=\underbrace{X_i(\omega)\chi_{\{|X_i(\omega)|<\sqrt[4]{i}\}}(\omega)}_{Y_i(\omega)}
+		+\underbrace{X_i(\omega)\chi_{\{|X_i(\omega)|\geq\sqrt[4]{i}\}}(\omega)}_{Z_i(\omega)}\]
+		Dann gilt
+		\begin{enumerate}
+			\item $\Epv(X_i)=\Epv(Y_i)+\Epv(Z_i)$
+			\item mit der Dreiecksungleichung
+			\begin{align*}
+			\abs{\frac{1}{n}\sum_{i=1}^{n}X_i(\omega)-\Epv(X_1)}&=\frac{1}{n}\abs{\sum_{i=1}^{n}\left(Y_i(\omega)-\Epv(Y_i)+Z_i(\omega)-\Epv(Z_i)\right)}\\
+			&\leq \frac{1}{n}\abs{\sum_{i=1}^{n}\left(Y_i(\omega)-\Epv(Y_i)\right)}
+			 +\frac{1}{n}\abs{\sum_{i=1}^{n}\left(Z_i(\omega)-\Epv(Z_i)\right)}
+			\end{align*}
+		\end{enumerate}
+	Daher ist
+	\begin{align*}
+	\underbrace{\left\{\omega\in\Omega:\abs{\frac{1}{n}\sum_{i=1}^{n}X_i(\omega)-\Epv(X_i)}\geq\epsilon\right\}}_{A_n}\subset&
+	\underbrace{\left\{\omega\in\Omega:\abs{\frac{1}{n}\sum_{i=1}^{n}Y_i(\omega)-\Epv(Y_i)}\geq\frac{\epsilon}{2}\right\}}_{B_n}\\&\bigcup
+	\underbrace{\left\{\omega\in\Omega:\abs{\frac{1}{n}\sum_{i=1}^{n}Z_i(\omega)-\Epv(Z_i)}\geq\frac{\epsilon}{2}\right\}}_{C_n}
+	\end{align*}
+	und damit $\Prb(A_n)\leq\Prb(B_n)+\Prb(C_n)$.\\
+	Wegen \ref[a)]{0318satz} sind auch die $Y_i$ paarweise unabhängig. Sei nun $\ol{Y}_n:=\frac{1}{n}\sum_{i=1}^{n}Y_i$, dann ist
+	\begin{align*}
+	\Prb(B_n)&=\Prb\left(\abs{\ol{Y}_n-\Epv(\ol{Y}_n)}\geq \frac{\epsilon}{2}\right)\overset{\ref{0428intUngl}d)}{\leq}\frac{4}{\epsilon^2}\Var(\ol{Y}_n)=\frac{4}{\epsilon^2}\frac{1}{n^2}\sum_{i=1}^{n}\Var(Y_i)\\
+	&\leq\frac{4}{n^2\epsilon^2}\sum_{i=1}^{n}\Epv(Y_i^2)\leq\frac{4}{n^2\epsilon^2}\sum_{i=1}^{n}\sqrt{i}\leq\frac{4}{\epsilon^2n^2}n\sqrt{n}=4\frac{\epsilon^2}{\sqrt{n}}\xrightarrow{n\to\infty}0
+	\end{align*}
+	Analog für $C_n$ mit Sei $\ol{Z_n}=\frac{1}{n}\sum_{i=1}^{n}Z_i$. Dann ist
+	\begin{align*}
+	\Prb(C_n)&=\Prb\left(\abs{\ol{Z_n}-\Epv(\ol{Z_n})}\geq\frac{\epsilon}{2}\right)\overset{\substack{\ref{0428intUngl}d)\\f(x)=\abs{x}}}{\leq}\frac{2}{\epsilon}\Epv\left(\abs{\ol{Z}_n-\Epv(\ol Z_n)}\right)=\frac{2}{n\epsilon}\Epv\left(\abs{\sum_{i=1}^{n}Z_i-\Epv(Z_i)}\right)\\
+	&\leq\frac{2}{n\epsilon}\sum_{i=1}^{n}\Epv\left(\abs{Z_i-\Epv(Z_i)}\right)\leq\frac{2}{n\epsilon}\sum_{i=1}^{n}2\Epv(Z_i)
+	\end{align*}
+	Da aber falls $a_i\xrightarrow{i\to\infty}0$ geht auch $\frac{1}{n}\sum_{i=1}^{n}a_i\xrightarrow{in\to\infty}$. Also
+	\[\Prb(C_n)\leq \frac{2}{n\epsilon}\sum_{i=1}^{n}2\Epv(Z_i)\xrightarrow{n\to\infty}0\]
+	\end{proof}
+
+	\begin{exm}[Satz von Weierstraß]
+		Sei $f:[0,1]\to\R$ stetig.\\
+		Zu $p\in[0,1]$ seien $(X_i)_{i\in\N}$ uiv Zufallsvariablen mit $\Prb(X_i=1)=p=1-\Prb(X_i=0)$. Dann ist $\sum_{i=1}^{n}X_i\sim\scB_{n,p}$ und
+		\[f_n(p):=\Epv_p\left(f\left(\frac{1}{n}\sum_{i=1}^{n}X_i\right)\right)=\sum_{k=0}^{n}f\left(\frac{k}{n}\right)\Prb_p\left(\sum_{i=1}^{n}X_i=k\right)=\sum_{k=0}^{n}f\left(\frac{k}{n}\right)\binom{n}{k}p^k(1-p)^{n-k}\]
+		ist Polynom $n$-ten Grades in $p$ (\enquote{Bernstein-Polynome}).\\
+		$f$ ist gleichmäßig stetig in $[0,1]$, also $\forall\epsilon>0\exists\delta>0$, sodass für alle $|x-y|<\delta$ immer $|f(x)-f(y)|<\epsilon$ gilt.\\
+		Außerdem ist
+		\[f_n(p)-f(p)=\Epv_p\left(f\left(\frac{1}{n}\sum_{i=1}^{n}X_i\right)-f(p)\right)\]
+		Also kann man abschätzen:
+		\begin{align*}
+		|f_n(p)-f(p)|&\leq\abs{\Epv_p\left(f\left(\frac{1}{n}\sum_{i=1}^{\infty}\right)-f(p)\right)}
+		\leq \Epv_p\left(\abs{f\left(\frac{1}{n}\sum_{i=1}^{\infty}\right)-f_p}\right)\\
+		&\leq \epsilon+ 2\norm{f}_\infty\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-p}\geq \delta\right)
+		\overset{\ref{0503satzGGZL^2}}{\leq} \epsilon+2\norm{f}_\infty\frac{\Var(X_i)}{n\delta^2}
+		\end{align*}
+		Also ist $\limsup_{n\to\infty}\abs{f_n(p)-f(p)}\leq\epsilon$  für alle $\epsilon>0$.\\
+		Also ist $\lim\limits_{n\to\infty}\abs{f_n(p)-f(p)}=0$.
+	\end{exm}
+	
+	\begin{bem}
+		%TODO
+	\end{bem}
+
+%VL 26.07.2017
+	\begin{exm}
+		Sei $\Omega=[0,1)$ mit dem Lebesgue-Maß, Sei $X_i(\omega)=\chi_{I_i}(\omega)$. für $i=1,...,15$ mit
+		\begin{align*}
+		I_1&=\big[0,\frac{1}{2}\big)&&&I_1&=\big[\frac{1}{2},1\big)\\
+		I_3&=\big[0,\frac{1}{4}\big)&\cdots&&I_6&=\big[\frac{3}{4},1\big)\\
+		I_7&=\big[0,\frac{1}{8}\big)&\cdots&&I_{15}&=\big[\frac{7}{8},1\big)
+		\end{align*}
+		Dann ist 
+		\[\Prb(|X_n-0|>\epsilon)=\begin{cases}
+		\frac{1}{2}&n=1,2\\
+		\frac{1}{4}&n=3,4,5,6\\
+		\frac{1}{8}&n=7,...,15
+		\end{cases}\quad\leq\frac{2}{n}\xrightarrow{n\to\infty}0\]
+		Aber $\limsup_{n\to\infty}|X_n(\omega)-0|=1$ $\forall\omega\in\Omega$.\\
+		Also $X_n(\omega)\not\xrightarrow{n\to\infty}0$.
+	\end{exm}
+
+	\begin{definition}
+		Seien $(S_n)$ Zufallsvariablen. Man sagt für $c\in\R$, dass $S_n$ \underline{konvergiert $\Prb$ fast sicher} ($S_n\xrightarrow{n\to\infty}c$), wenn $\Prb\left(\lim\limits_{n\to\infty} S_n=c\right)=1$.
+	\end{definition}
+	
+	\begin{bem}
+		%TODO
+	\end{bem}
+	
+	\begin{satz}[Starkes Gesetz der großen Zahlen, $\scL^4$-Version]\label{0509satzGGZL^4}
+		Seien $X_n$ Zufallsvariablen mit $\Epv(|X_n|^4)<\infty$, dann ist
+		\[\Prb\left(\lim\limits_{n\to\infty}\frac{1}{n}\sum_{i=1}^{n}X_i=\Epv(X_1)\right)=1\]
+	\end{satz}
+	\begin{proof}
+		Wegen $\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)=\frac{1}{n}\sum_{i=1}^{n}\left(X_i-\Epv(X_i)\right)$ kann man $\Epv(X_1)=0$ annehmen.
+		\begin{enumerate}[label=(\roman*)]
+			\item Sei 
+			\[A_n=\left\{\omega\in\Omega\mid \abs{\frac{1}{n}\sum_{i=1}^{n}X_i(\omega)}\geq n^{-\frac{1}{8}}\right\}\]
+			Es gilt
+			\begin{align*}
+			\Prb(A_n)&=\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i}\geq n^{-\frac{1}{8}}\right)\\
+			\substack{\ref{0428intUngl}\\\text{\enquote{Chebychev $f(x)=x^4$}}}&\leq\frac{\Epv\big(\left(\frac{1}{n}\sum_{i=1}^{n}X_i\right)^4\big)}{\left(n^{-\frac{1}{8}}\right)^{4}}=n^{\frac{1}{2}}n^{-4}\Epv\left(\sum_{i=1}^{n}\sum_{j=1}^{n}\sum_{k=1}^{n}\sum_{l=1}^{n}X_iX_jX_kX_l\right)\\
+			&=n^{\frac{1}{2}-4}\sum_{i,j,k,l=1}^{n}\Epv\big(X_iX_jX_kX_l\big)
+			\intertext{$\Epv(...)\neq 0$, nur wenn je zwei oder alle Indizes gleich sind.}
+			&=n^{\frac{1}{2}-4}\left(\sum_{i=1}^{n}\Epv(X_i^4)+\sum_{i=1}^{n}\sum_{\substack{i=1\\i\neq j}}^{n}\Epv(X_i^2X_j^2)\right)\\
+			&=n^{\frac{1}{2}-4}\left(n\Epv(X_1^4)+n(n-1)\Epv(X_1^2)^2\right)\leq c n^{-\frac{3}{2}}
+			\end{align*}
+			Also ist $\sum_{i=1}^{\infty}\Prb(A_n)\leq \infty$.
+			\item Dann folgt mit dem Lemma von Borel-Cantelli (\ref{0335satzBorCant}):
+			\begin{align*}
+			0=\Prb\left(\limsup_{n\to\infty} A_n\right)&=\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^nX_i}\geq n^{-\frac{1}{8}}\text{ unendlich oft}\right)\\
+			&=1-\underbrace{\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^nX_i}\geq n^{-\frac{1}{8}}\text{ nur endlich oft oft}\right)}_{\geq\Prb\left(\lim\limits_{n\to\infty}\abs{\frac{1}{n}\sum_{i=1}^{n}X_i}=0\right)}\\
+			&\geq1-\Prb\left(\lim\limits_{n\to\infty}\abs{\frac{1}{n}\sum_{i=1}^{n}X_i}=0\right)
+			\end{align*}
+			Dann ist also $\Prb\left(\lim\liminf_{n\to\infty}\abs{\frac{1}{n}\sum_{i=1}^{n}X_i}=0\right)\geq 1$, also $=1$.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{bem}
+		Die aussage von \ref{0509satzGGZL^4} gilt auch falls $X\in\scL^1$.
+	\end{bem}
+
+	\begin{bem}
+		Rückblick auf \ref{0503satzGGZL^2}:\\
+		Falls $X_i$ uiv, dann ist
+		\[\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}\geq \epsilon_n\right)\leq\frac{V}{n\epsilon_n^2}\]
+		Also gilt $\Prb(...)\xrightarrow{n\to\infty}0$, falls $\epsilon_n\gg\frac{1}{\sqrt{n}}$ (Also $\limsup_{n\to\infty}\sqrt{n}\epsilon_n=\infty$).\\
+		Das Bedeutet1: Der Abstand zwischen $\frac{1}{n}\sum_{i=1}^{n}X_i$ und $\Epv(X_1)$ schrumpft \enquote{fast} wie $\frac{1}{\sqrt{n}}$.\\
+		\\
+		Frage: Was ist $\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}\big(X_i-\Epv(X_i)\big)}\geq\frac{1}{\sqrt{n}}\right)$?\\
+		Für $\al>\frac{1}{2}$ gilt
+		\[\Var\left(n^{\al-1}\sum_{i=1}^{n}\big(X_i-\Epv(X_i)\big)\right)=n^{2\al-2}\sum_{i=1}^{n}\Var(X_1)\]
+		Sei $v=n^{2\al-1}$, dann $v\xrightarrow{n\to\infty}$, falls $\al>\frac{1}{2}$ und $n>0$.
+		Also ist zu erwarten, dass für $\al>\frac{1}{2}$ gilt
+		\[\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_i)}\leq n^{-\al}\right)\not\to 0\]
+		Tatsächlich gilt
+	\end{bem}
+
+	\begin{satz}[zentraler Grenzwertsatz]\label{0512satzZentrGrenzw}
+		Sei $X_n$ eine Folge von unabhängigen, identisch verteilten Zufallsvariablen, $\Epv(X_i)=m$, $\Var(X_i)=v\leq\infty$ für alle $i\in\N$.\\
+		Dann gilt
+		\[\lim\limits_{n\to\infty}\Prb\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i-m)\leq c\right)=\int_{-\infty}^{c}\frac{1}{2\pi v}e^{-\frac{x^2}{2v}}~dx\]
+	\end{satz}
+
+	\begin{bem}
+		Die Gleichung aus \ref{0512satzZentrGrenzw} bedeutet, dass die Folge der Bildmaße $\Prb_{\ol S_n(\omega)}$ von $\Prb$ unter $\omega\mapsto\ol{S_n(\omega)}:=\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i(\omega)-m)$
+		konvergiert gegen $\Nv_{0,v}$.
+%VL 27.06.2017
+		Im Sinne der Maßkonvergenz
+		\[\Prb_{\ol S_n}\big((-\infty,c]\big)\xrightarrow{n\to\infty}\Prb_{\Nv_{0,v}}\big((-\infty,c]\big)\forall c\]
+	\end{bem}
+
+	\begin{definition}
+		Seine Folge $\mu_n$ von endlichen Maßen auf $\R$ heißt \textbf{schwach konvergent} gegen ein Maß $\mu$, falls $\forall f\in C_0(\R)$
+		\[\lim\limits_{n\to\infty}\Epv_{\mu_n}(f)=\Epv_{\mu}(f)\quad\text{bzw.}\quad\lim\limits_{n\to\infty}\int f~d\mu_n=\int f~d\mu\]
+	\end{definition}
+	
+	\begin{bem*}
+		In \ref{0512satzZentrGrenzw} verwenden wir $f(x)=\chi_{(-\infty,c]}(x)$. Da $f$ unstetig ist, gilt z.b. mit $\mu_n=\delta_{\frac{1}{n}}$, $g=\chi_{(-\infty,0]}$, $\mu=\delta_0$. Dann ist
+		\[\int f~d\mu_n=f\left(\frac{1}{n}\right)\xrightarrow{n\to\infty}f(0)\]
+		falls $f$ stetig differenzierbar bei $0$, aber $\int g~d\mu_n=0$, $\int g~d\mu=1$.
+	\end{bem*}
+
+	\begin{prop}\label{0515prop}
+		Seien $\mu_n$ Wahrscheinlichkeitsmaße auf $\R$, $\mu$ Wahrscheinlichkeitsmaß auf $\R$ und $\mu$ habe Lebesgue-Dichte $\rho$ und sei für alle $k\in\N$
+		\[\lim\limits_{n\to\infty}\Epv_{\mu_n}(f)=\Epv_{\Prb_\mu}(f)\forall f\in C_b^k\]
+		Dannist
+		\[\lim\limits_{n\to\infty}\Prb_{\mu_n}\big((-\infty,c]\big)=\Prb_\mu\big((-\infty,c]\big)\forall c\in\R\]
+	\end{prop}
+	\begin{proof}
+		\begin{enumerate}[label=(\roman*)]
+			\item Zu zeigen: $\forall x\in\R\forall\epsilon>0\exists\delta>0$
+			\[\limsup_{n\to\infty}\Prb_{\mu_n}\big([x-\delta,x+\delta]\big)<\epsilon\]
+			Wähle dazu $f\in C_b^k$ mit $0\leq f\leq 1$, $f(y)=1\forall y\in[x-\delta,x+\delta]$ und $f(y)=0\forall y\notin[x-2\delta,x+2\delta]$.\\
+			Dann gilt
+			\begin{align*}
+			\limsup_{n\to\infty} \Prb_{\mu_n}\big([x-\delta,x+\delta]\big)&\leq \limsup_{n\to\infty} \Epv_{\mu_n}(f)=\Epv_{\Prb_X}\mu(f)\\
+			&=\int_{x-2\delta}^{x+2\delta}f(y)\rho(y)~dy&\leq \int_{x-2\delta}^{x+2\delta}\rho(y)~dy\xrightarrow{\delta\to 0}0
+			\end{align*}
+			mit \ref{0411majkonv}, da $\rho\in\scL^1$.
+			\item Zu $\epsilon>0$, $c\in\R$ wähle $f(x)=1\forall x\leq c$.\\
+			Dann ist
+			
+			\[\Prb_{\mu_n}\big((-\infty,c]\big)-\Prb_\mu\big((-\infty,c]\big)=\Epv_{\mu_n}\left(\chi_{(-\infty,c]-f}\right)\tag{\star}+\Epv_{\mu_n}(f)-\Epv_{\mu}(f)-\Epv_\mu\underbrace{\left(\chi_{(-\infty,c]}-f\right)}_{|\cdot|\leq\chi_{(-\infty,c]}}\]
+			Mit (i) folgt, $\delta$ existiert, sodass $|(\star)|\leq 2\epsilon+\abs{\Epv_{\mu_n}(f)-\Epv_{\Prb_X}\mu(f)}$.
+			Also ist $\limsup_{n\to\infty}\abs{(\star)}\leq 2\epsilon\forall\epsilon>0$.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{proof}[Beweis von \ref{0512satzZentrGrenzw}]
+		Setze $\tilde X_i=\frac{1}{\sqrt{v}}\left(X_i-m\right)$. Dann ist $\Epv(\tilde X_i)=0$ und $\Var(\tilde X_i)=1$ und
+		\[\Prb\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i-m)\geq c\right)=\Prb\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}\tilde X_i\geq c\sqrt{v}\right)\]
+		Also kann oBdA angenommen werden, dass bereits $\Epv(X-i)=0$ und $\Var(X_i)=1$ gilt.\\
+		Sei nun $\ol{S}_n=\frac{1}{\sqrt{n}}\sum_{i=1}^{n}X_i$.\\
+		Mit \ref{0515prop} folgt, dass es bereits ausreicht, dass zu prüfen, ob (mit $k=3$) $\lim\limits_{n\to\infty}\Epv\big(f(\ol{S}_n)\big)=\Epv_{\Nv_{0,1}}(f)$ für alle $f\in C^3_b(\R)$ gilt.\\
+		\\
+		Sei dazu $(Y_n)$ eine weiter Folge von unabhängig identisch verteilen Zufallsvariablen mit
+		\begin{enumerate}
+			\item $(Y_n)$ unabhängig von $(X_n)$
+			\item $(Y_n\sim\Nv_{0,1})\forall n$
+		\end{enumerate}
+		Dann gilt für $\ol T_n:=\frac{1}{\sqrt{n}}\sum_{i=1}^{n}Y_i\sim\Nv_{0,1}$, dass
+		\[\Epv\big(f(\ol T_n)\big)=\Epv_{\Nv_{0,1}}(f)\]
+		Also gilt es zu Ziegen, dass
+		\[\forall f\in\C^3_b\quad\Epv\big(f(\ol S_n)-f(\ol T_n)\big)\xrightarrow{n\to\infty}0\]
+		Dabei gilt
+		\begin{align*}
+		&-f\big(\ol S_n(\omega)\big)-f\big(\ol T_n\big)\\
+		=&\sum_{i=1}^{n}\left[f\left (\frac{1}{\sqrt{n}}\left(\sum_{j=1}^{i}X_j(\omega)+\sum_{j=i+1}^{n}Y_j(\omega)\right)\right)
+		-f\left(\frac{1}{\sqrt{n}}\left(\sum_{j=1}^{i-1}X_j(\omega)+\sum_{j=i}^{Y_j(\omega)}\right)\right)\right]\\
+		=&\sum_{i=1}^{n}f %TODO
+		\end{align*}
+	\end{proof}
+
+%VL 03.07.2017
+\section{Grundzüge der Statistik}
+	\subsection{Fragestellung und Modellbildung}
+	\begin{bem}
+		\begin{enumerate}
+			\item \underline{Ausgangspunkt:} Daten $x=(x_1,...,x_n)\in\R$ oder allgemein $x\in\Omega$. Diese Daten sind fest vorgegeben, nicht zufällig und nicht verhandelbar (z.B. Messwerte).
+			\item \underline{Modellannahme:} $x_1,...,x_n$ sind das Ergebnis eines (unbekannten) zufälligen Geschehens. Also gibt es einen Wahrscheinlichkeitsraum $(\Omega,\scF,\Prb)$ mit $x\in\Omega$, sodass $x$ das Ergebnis von \enquote{einmal würfeln mit $\Prb$} ist.
+			\item \underline{Ziel:} Finde heraus welches $\Prb$ (äquivalent: welche Zufallsvariable $X$) die Daten $x$ erzeugt haben könnte.
+			\item \underline{Häufige zusätzliche Annahme:} Es kommt in b) nur eine Familie $(P_\theta)_{\theta\in\Theta}$ mit $\Prb_\theta=\Nv(\mu,\sigma^2)$ in Frage.\\
+			$\theta$ heißt Parameter. Daher spricht man von \enquote{parametrische Statistik}.
+		\end{enumerate}
+	\end{bem}
+	\begin{exm}[Feuerwerk]\label{0602exm}
+		Großpackung $10^6$ Raketen. Davon werden 100 getestet und 5 davon sind defekt.\\
+		Wie viele der $10^6$ Raketen sind voraussichtlich Defekt (Ausschussquote)?
+		\begin{enumerate}
+			\item Daten: $x=5$
+			\item Modell (Approximativ) ziehen mit zurücklegen (eigentlich: ohne) mit Erfolgswahrscheinlichkeit $\theta=\frac{|\{\text{defekte}\}|}{10^6}$.
+			\stepcounter{enumi}
+			\item $\Theta=[0,1]$, $\Prb_\theta=\scB_{N,\theta}$ binomialverteilt $N=100$, Erfolgswahrscheinlichkeit $\theta$.
+			\addtocounter{enumi}{-2}
+			\item Welches $\theta$ hat die Daten erzeugt.
+		\end{enumerate}
+	\end{exm}
+	\begin{exm}[\enquote{\ref{0602exm}} abstrahiert]
+		Ein Ratespiel. Der Spielleiter hat für jedes $\theta\in\Theta$ einen Würfel mit der Verteilung $\Prb_\theta$. Er nimmt einen davon, würfelt einmal und sagt das Ergebnis.\\
+		Nun muss man möglichst gut Raten welcher Würfel genommen wurde.
+	\end{exm}
+
+	\begin{definition}
+		Ein \textbf{statistisches Modell} (sM) ist ein Tripel $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$, wobei $(\Omega,\scF)$ ein Messraum ist und $\Theta$ die sog. \enquote{\textbf{Parametermenge}} und $\Prb_\theta$ ein Wahrscheinlichkeitsmaß auf $(\Omega,\scF)$ für alle $\theta\in\Theta$ ist.
+	\end{definition}
+
+	\begin{definition}
+		Ein statistisches Modell heißt \textbf{Produktmodell}, falls $n\in\N$ existiert, sodass für $(\tilde{\Omega},\tilde{\scF})$ Messraum, $\tilde{\Prb_\theta}$ Familie von Wahrscheinlichkeitsmaßen auf $\tilde\Omega$
+		\[\big(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta}\big)=\big(\tilde{\Omega}^n,\tilde{\scF}^n,\big(\tilde{\Prb}_\theta^{\otimes n}\big)_{\theta\in\Theta}\big)\]
+		ein $n$-faches unabhängiges Würfeln Modelliert.
+	\end{definition}
+
+	\begin{exm}
+		In Beispiel \ref{0602exm} alternativ:
+		\[\Omega=\{0,1\}^{100},\quad\scF=\potset(\{0,1\})^{\otimes 100},\quad\Prb_{\theta}=\big(\Ber_{\{0,1\},\theta}\big)\]
+		Typische Daten: $x=(0,0,1,0,...,1)$. Interssant ist die Anzahl der Einsen.
+	\end{exm}
+
+	\begin{definition}\label{0607def}
+		$\big(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta}\big)$ sei statistisches Modell. Eine messbare Abbildung $T:\Omega\to\Theta$ heißt \textbf{Schätzer} für den Parameter $\theta\in\Theta$.\\
+		Eine messbare Abbildung $\Omega\to\Omega'$ heißt $\Omega'$-wertiger Schätzer.\\
+		Bedeutung: Bei Daten $x\in\Omega$ \enquote{schätzt} man dass $\theta=T(x)$. Ein $\Omega'$-wertiger Schätzer ist sinnvoll, falls z.B. $\Theta=\R\times \R^+$, $\theta=(\mu,\sigma^2)$, $\Prb_\theta=\Nv(\mu,\sigma^2)$ man aber nur $\mu$ wissen will. Dann ist $\Omega'=\R$.
+	\end{definition}
+
+	\begin{bem*}
+		\ref{0607def} verlangt nicht,dass der geschätzte Wert $T(x)$ etwas mit dem wahren $\theta$ zu tun hat. Im falle eines Produktmodells hat man aber folgendes Gütekriterium:
+	\end{bem*}
+
+	\begin{definition}\label{0608def}
+		Zu jedem $n\in\N$ sei $(\Omega^n,\scF^{\otimes n},\left(\Prb_{(X,Y)}\theta\right)^{\otimes n}_{\theta\in\Theta})$ ein Produktmodell $T_N:\Omega\to\Omega'$ ein Schätzer, $f:\Theta\to\Omega'$ eine Funktion: $(T_n)_{n\in\N}$ heißt \textbf{schwach konsistente Familie von Schätzern}, falls
+		\[\forall\theta\in\Theta,\forall\epsilon>0:\lim\limits_{n\to\infty}\Prb_{(X,Y)}\theta^{\otimes n}\left(\abs{T-f(\theta)}>\epsilon\right)=0\]
+	\end{definition}
+
+	\begin{bem}
+		\ref{0608def} bedeutet nicht, dass für gegebene Daten $x$ und $\epsilon>0$ und großem $n$ der Wert $T(x)$ mit hoher Wahrscheinlichkeit höchstesn Abstand $\epsilon$ von $f(\theta)$ hat.\\
+		Denn $x$ und $\theta$ sind fest (obwohl $\theta$ unbekannt ist). Hier kommt kein Zufall in Spiel.\\
+		Stattdessen: Egal welches $\theta$ das richtige ist liegt $T(x)$ nur dann weit von $f(\theta)$ weg (für große $n$) wenn wir beim Erzeugen der Daten \enquote{Pech hatten}.\\
+		Mit anderen Worten: Würden wir die Messung häufig wiederholen und Datensätze $x^{(1)},...,x^{(m)}$ erzeugen, so wäre für die meisten dieser Datensätze die Ungleichung $|T(x^{(k)})-f(\theta)|\leq\epsilon$ wahr.
+	\end{bem}
+
+	\begin{exm}
+		In \ref{0602exm} wählt man $T(x)=\frac{x}{100}$ bzw in der Form \ref{0606exm}: $T(x)=\frac{1}{100}\sum_{i=1}^{100}x_i$.\\
+		Speziell für $x=5$ ist $T(x)=\frac{1}{20}$, d.h. man schätzt $5\%$ Ausschuss.
+	\end{exm}
+
+	\begin{definition}
+		Sei $(\Omega^n,\scF^{\otimes n},(\Prb_\theta)_\theta^{\otimes n})$ für alle $n$ ein Produktmodell. Sei $\Prb_\theta$  die Verteilung einer reelle Zufallsvariable $X$ mit $\Epv(|X|)<\infty$ und $\Epv(X)=\theta$. Dann heißst
+		$T_n:\Omega^n\to\R, x\mapsto\frac{1}{n}\sum_{i=1}^{n}x_i$ heißt \textbf{Mittelwertschätzer}.
+	\end{definition}
+	%COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{satz}
+		Der Mittelwertschätzer ist schwach konsistent
+	\end{satz}
+	\begin{proof}
+		Durch GGZ.
+	\end{proof}
+
+	\begin{definition}
+		Sei $T$ Schätzer für eine Größe $f(\theta)$ dann \begin{enumerate}
+			\item ist der sog \textbf{Bias} definiert als
+			\[\Bias_\theta:=\Epv_\theta(T)-f(\theta)\]
+			\item heißt $T$ \textbf{Erwartungstreu}, falls  $\Bias_\theta=0$.
+			\item der sog \textbf{mean square error} definiert als
+			\[\MSE_\theta(T):=\Epv_{\Prb_\theta^{\otimes n}}\left(\big(T-\Epv_{\Prb_\theta^{\otimes n}}(T)\big)^2\right)=\Var_{\Prb_\theta^{\otimes n}}(T)\]
+			\item heißt $T$ \textbf{konsistent im quadratischen Mittel} (im Produktmodell), falls 
+			$\Bias_\theta\xrightarrow{n\to\infty}0$.
+		\end{enumerate}
+	\end{definition}
+	
+	\begin{lem}
+		Sei $T$ erwartungstreu und $\Prb_{(X,Y)}\theta^{\otimes n}(T)$ konsistent im quadratischen Mittel, dann ist $T$ schwach konsistent.
+	\end{lem}
+	
+	\begin{definition}
+		Sei $(\Omega^n,\scF^{\otimes n},(\Prb_\theta)_\theta^{\otimes n})$ für alle $n$ ein Produktmodell, sei $\Prb_{(X,Y)}\theta$ die Verteilung einer rellen Zufallsvariable $X$ mit $\Epv(|X|)<\infty$, $\Var_\theta(X)=\theta$.\\
+		Dann ist der \textbf{Varianzschätzer} gegeben durch
+		\[x\mapsto\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\frac{1}{n}\sum_{i=1}^{n}x_j)^2\tag{\enquote{Empirische Varianz}}\]
+	\end{definition}
+	\addtocounter{theorem}{-1}
+	\begin{kor}
+		$T$ ist erwartungstreu
+	\end{kor}
+	\addtocounter{theorem}{-1}
+	\begin{kor}
+		Wenn $(X_i)$ Gaußverteilt ist, dann ist $T$ konsistent im quadratischen Mittel.
+	\end{kor}
+
+%VL 04.05.2017
+	\begin{bem*}
+		In der Theorie der Statistik untersucht man \enquote{optimale} Schätzer (z.B. mit minimalem MSE). Sie zu finden ist nicht immer einfach.
+	\end{bem*}
+
+	\begin{exm}
+		Sei $\Omega=[0,\infty)$, $\Prb_{(X,Y)}\theta=\frac{1}{\theta}\chi_{[0,\theta]}\cdot\la$. (Gleichverteilung auf $[0,\theta]$).\\
+		Modell: $(\Omega^n,\scF^{\otimes n},\Prb_\theta^{\otimes n})$. Schätze $\theta$ aus Daten $x_1,...,x_n$.\\
+		Mögliche Sätzer
+		\begin{enumerate}
+			\item $T_1(x)=2\frac{1}{n}\sum_{i=1}^{n}x_i$
+			\item $T_2(x)=\frac{n+1}{n}\max\{x_1,...,x_n\}$
+			\item $T_3(x)=\max(x_1,...,x_n)+\min\{x_1,...,x_n\}$
+		\end{enumerate}
+	\end{exm}
+
+	\subsection{Maximum-Likelihood-Schätzer}
+	\begin{definition}
+		\begin{enumerate}
+			\item Auf diskreten Wahrscheinlichkeitsräumen: Sei $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $\Omega$ abzählbar, $\rho_{\theta}(x):=\Prb(\{x\})$ sei Zähldichte von $\Prb_\theta$.
+			\begin{description}
+				\item[Simpled Idee] \begin{enumerate}
+					\item Zu den Daten $x$ Berechne $\Prb_\theta(\{x\})$
+					\item Rak-Vorschrift: das \enquote{richtige} $\theta$ ist jenes für das $\Prb_\theta(\{x\})$ maximal ist.
+				\end{enumerate}
+				\item[Formal] Zu $x\in\Omega$ heißt die Abbildung $\theta\mapsto\rho_\theta(x)$ Likelyhood- (oder Plausibilitäts-)Funktion zum Beobachtungswert $x$.\\
+				Eine Abbildung $\Omega\to\Theta,x\mapsto\arg\max\rho_x$ heißt \textbf{maximum-Likelyhood Schätzert}.
+			\end{description}
+		\item Stetige Wahrscheinlichkeitsräume mit Dichte: Sei $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $\Omega=\R^d$, $\rho_\theta$ Dichtefunktion zu $\Prb_\theta$.\\
+		Dann heißt die Abbildung $\Omega\to\Theta, x\mapsto\arg\max\rho_\theta$ \textbf{ML-Schätzer}.
+		\end{enumerate}
+	\end{definition}
+
+	\begin{bem}
+		Berechnen von ML Schätzern ist meist durch Ableiten von $\theta\mapsto\rho_\theta(x)$ und Nullsetzen möglich. Da Schätzer häufig Produktstruktur haben ist es oft einfacher $\theta\mapsto\ln\rho_\theta(x)$.
+	\end{bem}
+
+	\begin{definition}
+		Sei $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $f:\Theta\to\Omega'$ messbar, $\al>0$.\\
+		Eine Abbildung $K:\Omega\to\potset(\Omega')$ heißt \textbf{Konfidenzbereich für $f$} zum \textbf{Irrtumsniveau} $\al$ (\textbf{Sicherheitsniveau} $1-\al$), wenn gilt
+		\begin{enumerate}[label=(\roman*)]
+			\item $\{\omega\in\Omega:f(\theta)\in K(\omega)\}\in\scF$
+			\item $\Prb_\theta\big(f(\theta\in K(\cdot))\big)\geq 1-\al$
+		\end{enumerate}
+	\end{definition}
+
+	\begin{bem}
+		es wird zu jedem Datensatz $x$ eine Menge $K(x)\subset\Omega'$ bestimmt, sodass $f(\theta)$ nur mit sehr geringer Wahrscheinlichkeit (beim Erzeugern der Daten) nicht in $K(x)$ liegt, falls $\theta$ der wahre Wert war.\\
+		Genauer: Macht man das Experiment
+		\begin{enumerate}
+			\item Würfele $x$ mit $\Prb_\theta$ aus
+			\item rate, dass $\theta\in K(x)$
+			\item Schaue nach ob richtig geraten wurde
+		\end{enumerate}
+	Häufiges unabhängiges durchführen: Man hat in mehr als $(1-\al)N$ Fällen recht.
+	\end{bem}
+
+	\begin{definition}
+		Sei (vgl \ref{0618def}) $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $f:\Theta\to\Omega'$ messbar, $\Omega'=\R$ und $K:\Omega\to\potset(\Omega')$. Dann heißt die Abbildung $x\mapsto K(x)$ \textbf{Konfidenzintervall}.
+	\end{definition}
+
+	\begin{satz}[Berechnung von Konfidenzintervallen]
+		Sei $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $\Omega'=\R$, $f:\Theta\mapsto\R$ Zielgröße, $x\in\Omega$ Daten.\\
+		Gesucht: $KI:[R^-,R^+]$.
+		\begin{description}
+			\item[Einzige Möglichkeit] Sage $R_-,R_+$ aus den Daten vorher. Gesucht sind Schätzer $x\mapsto R_-(x),x\mapsto R_+(x)$ für die Intervallenden.
+			\item[Benötigte Eigenschaft]
+			\[\forall\theta:\Prb_\theta\big(f(\theta)\in[R_-,R_+)\big)\geq 1-\al\Leftrightarrow\Prb_\theta\big(R_->f(\theta)\big)\text{ oder }\Prb_\theta\big(R_+<f(\theta)\big)<\al\]
+			\item[Hinreichend] (und in der Praxis auch immer Benutzt)
+			\[\Prb_\theta\big(R_->f(\theta)\big)\leq\al/2\quad\text{ und }\quad \Prb_\theta\big(R_+<f(\theta)\big)\leq\al/2\]
+			Finde also $\forall\theta\in\Theta$  eine Funktion $\omega\mapsto R_{-,\theta}(\omega)$, sodass 
+			\[\Prb_\theta\big(R_{-,\theta}>f(\theta)\big)\leq \al/2\Leftrightarrow\Prb_\theta\circ R^{-1}_{-,\theta}\big([f(\theta,\infty))\big)\leq \al/2\]
+			Da man $\theta$ nicht kennt muss man annehmen $R_-(x)=\inf\{R_{-,\theta(x)}|\theta\in\Theta\}$ und $R_+(x)=\sup\{R_{+,\theta(x)}|\theta\in\Theta\}$.
+		\end{description}
+	\end{satz}
+
+	\begin{exm}
+		Sei $\Prb_\theta=\Nv_{\theta,\sigma^2}$, $\sigma^2$ bekannt und fest.\\
+		Finde $f(\theta)=\theta$, d.h. schätze den Erwartungswert.\\
+		$(\Omega^n,\scF^{\otimes n},(\Prb^{\otimes n}_\theta)_{\theta\in\Theta})$
+		Wähle dann
+		\[R_-(x)=\frac{1}{n}\sum_{i=1}^{n}x_i-s\quad R_+=\frac{1}{n}\sum_{i=1}^{n}x_i+s\]
+		Dann ist , da$X_i\sim\v_{\theta,\sigma^2}$, $Y_i\sim\Nv_{0,\sigma}$, $Z\sim\Nv_{0,\sigma^2}$, $W\sim\Nv_{0,1}$.
+		\begin{align*}
+		\Prb^{\otimes n}(R_-\geq \theta)&=\Prb\left(\frac{1}{n}\sum_{i=1}^{n}(X_i-\theta)\geq s\right)\\
+		&=\Prb\left(\frac{1}{\sqrt n}\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}Y_i\right)\geq s\right)\\
+		&=\Prb\left(\frac{1}{\sqrt{n}}Z\geq s\right)\\
+		&=\Prb(Z\geq s\sqrt{n})=\Prb\left(W\geq \frac{s}{\sigma}\sqrt{ n}\right)
+		\end{align*}
+		Also muss $s$ (mindestens) als Lösung der Gleichung
+		\[\int_{\frac{s}{\sigma}\sqrt{n}}^\infty\frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}}~dx=\al/2\]
+		wählen.
+	\end{exm}
+	\begin{definition}\label{0623def}
+		Sei $\Prb$ Wahrscheinlichkeitsmaß auf $\R$, $0<\al<1$.\\
+		Eine Zahl $q_a\in\R$ heißt \textbf{$\al$-quantil} von $\Prb$, falls $\Prb\left((-\infty,q_\al)\right)\leq \al$ und $\Prb\left((-\infty,q_\al]\right)\geq\al$.
+	\end{definition}
+
+	\begin{lem}
+		In \ref{0623def} sei $F$ die Verteilungsfunktion von $\Prb$. Dann gilt
+		\begin{enumerate}
+			\item $\lim\limits_{x\uparrow q_\al}\leq \al$ und $F(q_\al)\geq\al$ für jedes $\al$-Quantil $q_\al$.
+			\item Jede zahl im Intervall $\left(\sup\left\{y\in\R:F(y)\leq \al\right\},\inf\left\{y\in\R:F(y)\geq\al\right\}\right)$ ist ein $\al$-Quantil
+			\item Falls $F$ stetig ist, dann ist $q_\al$ die eindeutige Zahl mit $F(q\al)=\al$.
+		\end{enumerate}
+	\end{lem}
+	
+
 \end{document}
