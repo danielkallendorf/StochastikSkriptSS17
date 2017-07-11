@@ -45,7 +45,7 @@
 \newcommand{\Bor}{\mathscr B}
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\bigtimes}{\operatornamewithlimits{\times}}
-
+\newcommand{\identity}{\mathds{1}}
 
 \newcommand{\potset}{\mathscr P}
 \newcommand{\Prb}{\mathbb P}
@@ -69,6 +69,8 @@
 
 \newcommand{\Bias}{\operatorname{Bias}}
 \newcommand{\MSE}{\operatorname{MSE}}
+
+\newcommand{\SM}{\big(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta}\big)}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Theorem}[section]
@@ -1173,8 +1175,8 @@
 	\begin{definition}\label{0332def}
 		Sei $(\Omega,\scF)$ Messraum, $A_i\in \scF$ für alle $\in\N$. Definiere
 		\begin{align*}
-		\limsup_{n\to\infty}A_n&:=\bigcap_{m=1}^\infty\bigcup_{k=m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für unendlich viele $i$}\}\\
-		\liminf_{n\to\infty}A_n&:=\bigcup_{m=1}^\infty\bigcap_{k=m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für alle außer endlich viele viele $i$}\}
+		\limsup_{n\to\infty}A_n&:=\bigcap_{m=1}^\infty\bigcup_{k\geq m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für unendlich viele $i$}\}\\
+		\liminf_{n\to\infty}A_n&:=\bigcup_{m=1}^\infty\bigcap_{k\geq m}A_k=\{\omega,\in\Omega:\text{$\omega\in A_i$ für alle außer endlich viele viele $i$}\}
 		\end{align*}
 	\end{definition}
 	
@@ -1208,11 +1210,11 @@
 		Diese frage is i.A. schwierig zu beantworten, aber im Fall $\limsup_{n\to\infty}A_n$ gibt es folgenden Satz:
 	\end{bem*}
 
-	\begin{satz}[Lemma von Boreal-Cantelli]\label{0335satzBorCant}
+	\begin{satz}[Lemma von Borel-Cantelli]\label{0335satzBorCant}
 		Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und $A_j\in\scF$, für alle $j\in\N$. Dann
 		\begin{enumerate}[label=\alph*)]
 			\item Falls $\sum_{k=1}^{\infty}\Prb(A_k)<\infty$, dann ist $\Prb(\limsup_{n\to\infty}A_n)=0$
-			\item Falls $(A_k)_{k\in \N}$ unabhängig dun $\sum_{k=1}^{\infty}\Prb(A_k)=\infty$, dann ist $\Prb(\limsup_{n\to\infty} A_n)=1$.
+			\item Falls $(A_k)_{k\in \N}$ unabhängig und $\sum_{k=1}^{\infty}\Prb(A_k)=\infty$, dann ist $\Prb(\limsup_{n\to\infty} A_n)=1$.
 		\end{enumerate}
 	\end{satz}
 	\begin{proof}
@@ -1905,7 +1907,7 @@
 	\begin{satz}[zentraler Grenzwertsatz]\label{0512satzZentrGrenzw}
 		Sei $X_n$ eine Folge von unabhängigen, identisch verteilten Zufallsvariablen, $\Epv(X_i)=m$, $\Var(X_i)=v\leq\infty$ für alle $i\in\N$.\\
 		Dann gilt
-		\[\lim\limits_{n\to\infty}\Prb\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i-m)\leq c\right)=\int_{-\infty}^{c}\frac{1}{2\pi v}e^{-\frac{x^2}{2v}}~dx\]
+		\[\lim\limits_{n\to\infty}\Prb\left(\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i-m)\leq c\right)=\int_{-\infty}^{c}\frac{1}{\sqrt{2\pi v}}e^{-\frac{x^2}{2v}}~dx\]
 	\end{satz}
 
 	\begin{bem}
@@ -2035,7 +2037,7 @@
 
 	\begin{definition}\label{0608def}
 		Zu jedem $n\in\N$ sei $(\Omega^n,\scF^{\otimes n},\left(\Prb_{(X,Y)}\theta\right)^{\otimes n}_{\theta\in\Theta})$ ein Produktmodell $T_N:\Omega\to\Omega'$ ein Schätzer, $f:\Theta\to\Omega'$ eine Funktion: $(T_n)_{n\in\N}$ heißt \textbf{schwach konsistente Familie von Schätzern}, falls
-		\[\forall\theta\in\Theta,\forall\epsilon>0:\lim\limits_{n\to\infty}\Prb_{(X,Y)}\theta^{\otimes n}\left(\abs{T-f(\theta)}>\epsilon\right)=0\]
+		\[\forall\theta\in\Theta,\forall\epsilon>0:\lim\limits_{n\to\infty}\Prb_{\theta^{\otimes n}}\left(\abs{T_n-f(\theta)}>\epsilon\right)=0\]
 	\end{definition}
 
 	\begin{bem}
@@ -2071,7 +2073,7 @@
 			\item der sog \textbf{mean square error} definiert als
 			\[\MSE_\theta(T):=\Epv_{\Prb_\theta^{\otimes n}}\left(\big(T-\Epv_{\Prb_\theta^{\otimes n}}(T)\big)^2\right)=\Var_{\Prb_\theta^{\otimes n}}(T)\]
 			\item heißt $T$ \textbf{konsistent im quadratischen Mittel} (im Produktmodell), falls 
-			$\Bias_\theta\xrightarrow{n\to\infty}0$.
+			$\MSE_\theta\xrightarrow{n\to\infty}0$.
 		\end{enumerate}
 	\end{definition}
 	
@@ -2169,7 +2171,7 @@
 		\end{description}
 	\end{satz}
 
-	\begin{exm}
+	\begin{exm}\label{0622exm}
 		Sei $\Prb_\theta=\Nv_{\theta,\sigma^2}$, $\sigma^2$ bekannt und fest.\\
 		Finde $f(\theta)=\theta$, d.h. schätze den Erwartungswert.\\
 		$(\Omega^n,\scF^{\otimes n},(\Prb^{\otimes n}_\theta)_{\theta\in\Theta})$
@@ -2191,14 +2193,167 @@
 		Eine Zahl $q_a\in\R$ heißt \textbf{$\al$-quantil} von $\Prb$, falls $\Prb\left((-\infty,q_\al)\right)\leq \al$ und $\Prb\left((-\infty,q_\al]\right)\geq\al$.
 	\end{definition}
 
-	\begin{lem}
+	\begin{lem}\label{0624lem}
 		In \ref{0623def} sei $F$ die Verteilungsfunktion von $\Prb$. Dann gilt
 		\begin{enumerate}
 			\item $\lim\limits_{x\uparrow q_\al}\leq \al$ und $F(q_\al)\geq\al$ für jedes $\al$-Quantil $q_\al$.
 			\item Jede zahl im Intervall $\left(\sup\left\{y\in\R:F(y)\leq \al\right\},\inf\left\{y\in\R:F(y)\geq\al\right\}\right)$ ist ein $\al$-Quantil
-			\item Falls $F$ stetig ist, dann ist $q_\al$ die eindeutige Zahl mit $F(q\al)=\al$.
+			\item Falls $F$ stetig und streng monoton ist, dann ist $q_\al$ die eindeutige Zahl mit $F(q\al)=\al$.
 		\end{enumerate}
 	\end{lem}
 	
+	%VL 10.07.2017
+	\begin{prop}\label{0625prop}
+		Sei $\big(\Omega^n,\scF^{\otimes n},(\Prb_\theta^{\otimes n})_{\theta\in\R}\big)$ statistisches Modell mit $\Prb_\theta=\Nv(\theta,\sigma^2)$, wobei $\sigma^2$ bekannt und fest. Sei $q_{1-\frac{\al}{2}}$ das $1-\frac{\al}{2}$-Quantil von $\Nv(0,1)$. Dann ist die Abbildung
+		\[K:\Omega^n\to\potset(\R):x\mapsto
+		\left[M(x)-\frac{\sigma}{\sqrt{n}}q_{1-\frac{\al}{2}},M(x)+\frac{\sigma}{\sqrt{n}}q_{1-\frac{\al}{2}}\right]
+		=\left[M(x)+\frac{\sigma}{\sqrt{n}}q_{\al/2},M(x)+\frac{\sigma}{\sqrt{n}}q_{1-\al/2}\right]\]
+		(Dabei ist $M(x):=\frac{1}{n}\sum_{i=1}^{n}x_i$ der Mittelwert) ein Konfindenzintervall zum Irrtumniveau $\al$.
+	\end{prop}
+	\begin{proof}
+		Wähle $s=\frac{\sigma}{\sqrt n}q_{1-\al}$ in\ref{0622exm}
+	\end{proof}
 
+	\begin{exm}
+		Sei $\Theta=\R\times\R^+$, $\theta=(\mu,\sigma^2)$, $\Prb_\theta=\Nv(\mu,\sigma^2)$ und $\big(\Omega^n,\scF^{\otimes n},(\Prb_\theta^{\otimes n})$ statistisches Modell.\\
+		Gesucht wird nun das Konfidezintervall für die Varianz $\sigma^2$.\\
+		Der einzige vernünftige Schätzer ist dann
+		\[S^2:\Omega^n\to\R^+,\,S^2(x)=\frac{1}{n-1}\sum_{i=1}^{n}\big(x_i-M(x)\big)^2\]
+		Für $X_i\sim\Nv(\mu,\sigma^2)$ ist dann
+		\begin{align*}
+		S^2\big((X_1,...,X_n)\big)&=\frac{1}{n}\sum_{i=1}^{n}\left[(X_i-\mu)-\frac{1}{n}\sum_{j=1}^{n}(X_j-\mu)\right]^2\\
+		&=\frac{\sigma^2}{n-1}\sum_{i=1}^{n}\left[\frac{X_1-\mu}{\sigma}-\frac{1}{n}\sum_{j=1}^{n}\frac{X_i-\mu}{\sigma}\right]^2
+		\intertext{Dabei ist $\frac{X_i-\mu}{\sigma}\sim\Nv(0,1)$, also mit $Y_1,...,Y_n\sim\Nv(0,1)$ uiv}
+		&\sim\sigma^2S^2\big((Y_1,...,Y_n)\big)
+		\end{align*}
+		Da Bildmaß von $\frac{S^2(x)}{\sigma^2}$ ist unabhängig von $\theta$! Also folgt
+		\begin{align*}
+		\Prb_\theta(S^2>a\sigma^2)&=\Prb_\theta\circ\left(\frac{S^2}{\sigma^2}\right)^{-1}\big((a,\infty]\big)=:\nu\big(a,\infty\big)\\
+		\Prb_\theta(S^2<b\sigma^2)&=\Prb_\theta\circ\left(\frac{S^2}{\sigma^2}\right)^{-1}\big((-\infty,b)\big)=:\nu\big(-\infty,b\big)
+		\end{align*}
+		Falls man $a$ als $(1-\frac{\al}{2})$-Quantil von $\nu$ und $b$ als $\al/2$-Quantil von $\mu$ wählt, dann gilt
+		\[\Prb_\theta\big(\sigma^2\in[\dfrac{1}{a}S^2,\dfrac{1}{b}S^2]\big)\geq 1-\al\]
+	\end{exm}
+
+	\begin{definition}
+		Inhalt...
+	\end{definition}
+	%COUNTER
+	\begin{satz}
+		Seien $X-1,...,X_n$ uiv und $X_1\sim\Nv(\mu,\sigma)$. Dann ist $M(x)=\dfrac{1}{n}\sum_{i=1}^{n}X_i(\omega)$, $S^2(\omega)=\dfrac{1}{1-n}\sum_{i=1}^{n}\big(X_i(\omega)-M(\omega)\big)$.
+		%TODO
+	\end{satz}
+
+	\begin{bem*}
+		$t_{n-1}$ ist ähnlich wie $\Nv(0,1)$ und für große n gilt $\Prb_{t_n}\to\Nv(0,1)$
+	\end{bem*}
+
+	\begin{prop}\label{0628prop}
+		Sei $\big(\Omega^n,\scF^{\otimes n},(\Prb_\theta^{\otimes n})$ statistisches Modell mit $\Prb_\theta=\Nv(\mu,\sigma^2)$, $f(\theta)=f\big((\mu,\sigma^2)\big)=\sigma^2$.\\
+		Seien $q_\al$ das $\al$-Quantil der $\chi^2_{n-1}$-Verteilung. Dann ist die Abbildung 
+		\[K:\Omega^n\to\Bor\big([0,\infty]\big),\quad x\mapsto\left[(n-1)\frac{S^2(x)}{q_{1-\al/2}},(n-1)\frac{S^2(x)}{q_{\al/2}}\right]\]
+		ein Konfidenzintervall von $f(\theta)$ zum Irrtumsniveau $\al$.
+	\end{prop}
+	\begin{proof}
+		Es gilt
+		\begin{align*}
+		\Prb_\theta\left(f(\theta<\frac{(n-1)S^2}{q_{1-\al/2}})\right)&=\Prb\left((n-1)S^2>\sigma^2q_{1-\al/2}\right)\\
+		&=\Prb_\theta\left(\frac{n-1}{\sigma^2}S^2>q_{1-\al/2}\right)\\
+		&=\Prb_{\chi^2_{n-1}}\left(Y>q_{1-\al/2}\right)=\al/2
+		\end{align*}
+		und $\Prb_\theta\big(f(\theta)>(n-1)^2\frac{S^2}{q_{\al/2}}\big)=...=\Prb_{\chi_{n-1}^2}(Y<q_{\al/2})=\frac{\al}{2}$.
+	\end{proof}
+
+	\begin{bem}
+		\ref{0628prop} erscheint so also ob das Konfidenzintervall mit wachsendem $n$ größer wird. Kontraintuitiv!\\
+		Es gilt
+		\[\Prb_{\chi_n^2}(\mathrm{id}\leq c)=\Prb\left(\sum_{j=1}^{n}X_i\leq c\right)\]
+		mit $X-i\sim\Gamma_{\frac{1}{2},\frac{1}{2}}$ (siehe \ref{0327???}c).\\
+		Dann gilt $\Epv(X_i)=1$, $\Epv(X_i^2)=3$, also $\Var(X_i)=2$. Somit ist
+		\begin{align*}
+		\Prb_{\chi_{n-1}^2}\left((-\infty,c]\right)&=\Prb\left(\sum_{j=1}^{n}(X_j-1)\leq c-(n-1)\right)\\
+		&=\Prb\left(\frac{1}{\sqrt{n-1}}\sum_{j=1}^{n}(X_j)\leq\frac{c}{\sqrt{n-1}}-\sqrt{n-1}\right)
+		\end{align*}
+		ist nach dem Gesetz der Großen Zahlen $\sim\Nv(0,2)$ für große $n$.
+		%TODO
+	\end{bem}
+
+%VL 11.07.2017
+	\begin{exm}
+		Sei $\Theta=\R\times R^+$, $\theta=(\mu,\sigma^2)$, $\Prb_\theta=\Nv(\mu,\sigma^2)$. Sei $\big(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta}\big)$ statistisches Modell. Nun sind $\mu$ und $\sigma^2
+		$ unbekannt, gesucht ist ein Konfidenzintervall für $\mu$:\\
+		Naiver Versuch: Berechne das Konfidenzintervall gemäß \ref{0622exm} für alle $\sigma^2$ und maximiere über $\sigma^2$. Dann egit sich
+		\[K_{\sigma^2}(x)=\left[M(x)+\frac{\sigma}{\sqrt{n}}q_{\al/2},M(x)+\frac{\sigma
+		}{\sqrt{n}}q_{(1-\al)/2}\right]\]
+		Dann ergibt das Maximieren über $\sigma\in\R$ ergibt $K(x)=\R$.
+	\end{exm}
+	\begin{proof}
+		Für alle $\theta\in\Theta$ gilt
+		\[\Prb_\theta\left(M-\frac{\sqrt{S^2}}{\sqrt{n}}q_{1-\al/2}\geq \mu\right)=\Prb_\theta\left(M-\mu\geq \frac{\sqrt{S^2}}{\sqrt{n}}q_{1-\al/2}\right)=\Prb_\theta\left(\sqrt{n}\frac{M-\mu}{\sqrt{S^2}}\geq q_{1-\al/2}\right)\]
+	\end{proof}
+	
+	\subsection{Tests}
+	\begin{bem}
+		Wichtigstes Werkzeug der Statistik: wissenschaftliche Studien, Medikamentenzulassung, Nachweis von Produktmängeln, ect. Dient zum Treffen von Ja-Nein-Entscheidungen anhand \enquote{verrauschter} Daten.
+		\\
+		Sei $\SM$ statistisches Modell. Wir teilen $\Theta$ in zwei Bereiche: $A_0,A_1\subset\Theta$, mit $A_0\dot{\cup}A_1=\Theta$.
+		Dann beschreibt die
+		\begin{itemize}
+			\item \textbf{Nullhypothese}: $\theta\in A_0$ (Schreibe $H_0$ gilt)
+			\item \textbf{Alternative}: $\theta\in A_1$ (Schreibe $H_1$ gilt)
+		\end{itemize}
+		Testproblem: Kann man aufgrund der Daten $x\in\Omega$ bestimmen, ob $\sigma\in A_0$ oder $\in A_1$ war?\\
+		Dabei soll $\theta\in A_1$ nur sehr unwahrscheinlich (bwzüglich der Daten) fälschlicherweise angenommen werden.
+		
+	\end{bem}
+	\begin{definition}
+		Eine Abbildung $T:\Omega\to\{0,1\}$ heißt \textbf{Test}. Dabei bedeute
+		\begin{description}
+			\item[$T(x)=0$] als \enquote{$\theta$ liegt in $A_0$}.\\
+			Wir sagen \textbf{Nullhypothese wird nicht abgelehnt}
+			\item$T(x)=1$] als \enquote{$\theta$ liegt in $A_1$}.\\
+			Wir sagen \textbf{Nullhypothese wird abgelehnt}
+		\end{description}
+		Falls $\theta\in A_0$  aber $T(x)=1$ so sagen wir die Daten führen zu einem \textbf{Fehler 1. Art}.\\
+		Falls $\theta\in A_1$  aber $T(x)=0$ so sagen wir die Daten führen zu einem \textbf{Fehler 2. Art}.
+	\end{definition}
+
+	\begin{exmlist}
+		\begin{exm}[Feuerwerkskörper]
+			Behauptung des Herstellers: höchstens $3\%$ Ausschuss, \\
+			$H_1$:$\theta>0.03$, $H_0:\theta\leq 0.03$.\\
+			Falls die Daten suggerieren, dass $H_1$ gilt, dann gibt es Ärger für alle Beteiligten (Reklamation, Untersuchung, Prozess). Falls $H_1$ dagegen nicht erkannt wird, sind die Verluste gering.
+		\end{exm}
+		\begin{exm}[Wissenschaftlicher Durchbruch] 
+			$H_0$ entspricht der \enquote{Lehrmeinung}, $H_1$ entspricht \enquote{Skandal, Sensation} (z.B. \enquote{Kalte Kernfusion},\enquote{Stammzellentherapie},...).\\
+			Ein Falsches Behaupten von $H_1$ kostet Reputation, Karriere.\\
+			Nicht erkennen von $H_1$ ist eine verpasste Chance aber nicht fatal.
+		\end{exm}
+	\end{exmlist}
+
+	\begin{definition}
+		Ein Test $T$ hält das \textbf{Irrtumsniveau} $\al>0$ ein, falls gilt:
+		\[\forall\theta\in A_0:\Prb_\theta(T=1)<\al\]
+		Zu $\theta\in A_1$ heißt die Zahl $G_T(\theta):=\Prb_\theta(T=1)$ die \textbf{Güte} (oder Schärfe, Machte) des Test bei $\theta$.
+	\end{definition}
+
+	\begin{bem}[Konstruktion von Tests] mit Konfidenzintervallen
+		\begin{enumerate}
+			\item Zweiseitiger Test: angenommen man hat ein Konfidenzintervall $K:\Omega\to\Omega'$ für die Größe $f(\theta)\in\Omega'$ zum Nievau $\al$ gegeben. Dann setzte man
+			\[T:\Omega\to\{0,1\},\,T(x)=\begin{cases}
+			!&\text{falls }K(x)\cap\{f(\theta:\theta\in A_0)\}=\emptyset\\
+			0&\text{sonst}
+			\end{cases}\]
+			Dann gilt für alle $\theta_o\in A_0$
+			\[\Prb_\theta(T=1)\Prb_{\theta_0}\big(\forall\theta\in A_0:f(\theta)\notin K\big)\leq\Prb_{\theta_0}\big(f(\theta_0)\notin K\big)=1-\Prb_{\theta_0}\big(f(\theta_0)\in K\big)\leq \al\]
+			Interpretation, falls $T(x)=1$: Die Daten $x$ können nur mit sehr geringer Wahrscheinlichkeit von $\theta_0\in A_0$ erzeugt werden, sodass wir $\theta_0\in A_0$ ausschließen.
+			\item einseitige Tests: mit Asymmetrischen Konfidenzintervallen. Oft ist $\Omega'=\R$, $A_0=(-\infty,c]$ oder $A_0=[c,\infty)$. Dann ist es besser statt wie in a) symmetrischer auch asymmetrische Konfidenzintervalle der Form $K(x)=[S(x),\infty)$ oder $K(x)=(-\infty,S(x)]$ zu wählen.
+		\end{enumerate}
+	\end{bem}
+
+	\begin{exmlist}
+		\begin{exm}[Gaußtest, Zweiseitig]
+			Inhalt...
+		\end{exm}
+	\end{exmlist}
 \end{document}
