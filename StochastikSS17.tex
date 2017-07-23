@@ -1833,9 +1833,9 @@
 		Also ist $\lim\limits_{n\to\infty}\abs{f_n(p)-f(p)}=0$.
 	\end{exm}
 	
-	\begin{bem}
+	\begin{bem*}
 		%TODO
-	\end{bem}
+	\end{bem*}
 
 %VL 26.07.2017
 	\begin{exm}
@@ -1855,12 +1855,36 @@
 		Also $X_n(\omega)\not\xrightarrow{n\to\infty}0$.
 	\end{exm}
 
-	\begin{definition}
-		Seien $(S_n)$ Zufallsvariablen. Man sagt für $c\in\R$, dass $S_n$ \underline{konvergiert $\Prb$ fast sicher} ($S_n\xrightarrow{n\to\infty}c$), wenn $\Prb\left(\lim\limits_{n\to\infty} S_n=c\right)=1$.
+	\begin{definition}\label{0507def}
+		%TODO Counter (5.1 markieren)
+		\stepcounter{equation}
+		Seien $(S_n)$ Zufallsvariablen. Man sagt für $c\in\R$, dass $S_n$ \underline{konvergiert $\Prb$ fast sicher} ($S_n\xrightarrow{n\to\infty}c$), wenn \[\Prb\left(\lim\limits_{n\to\infty} S_n=c\right)=1\autotag\label{eq:0502}\]
 	\end{definition}
 	
-	\begin{bem}
-		%TODO
+	\begin{bem}\label{0508bem}
+		Setze $\Omega_m:=\{\omega\in\Omega:\limsup_{n\to\infty}\abs{S-n-c}<\frac{1}{m}\}$.\\
+		Da $\Omega_{m+1}\subseteq\Omega_m$, also 
+		\[\Omega_\infty:=\left\{\omega\in\Omega:\limsup_{n\to\infty}S_n=c\right\}\]
+		mit \ref{0122}e). Dann gilt
+		\[\Prb\left(\limsup_{n\to\infty} S_n=c\right)=1\Leftrightarrow \forall\epsilon>=:\Prb\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)=1\tag{\star\star\star}\label{0507defEq}\]\\
+		\\
+		Daher besteht der Unterschied zwischen \ref{eq:0501} und \ref{eq:0502} in der Platzierung der Grenzwerts: $\forall\epsilon,c>0$
+		\begin{itemize}
+			\item \ref{eq:0501} besagt $\lim\limits_{n\to\infty}\Prb\left(\abs{S_n-c}<\epsilon\right)=1$
+			\item \ref{eq:0502} besagt 
+			$\Prb\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)=1$
+		\end{itemize}
+		Außerdem gilt das Lemma von Fatou \ref{0415fatou}: $\Epv\left(\liminf_{n\to\infty} X_n\right)\leq\liminf_{n\to\infty}\Epv(X_n)$, falls $X_n\geq 0$.\\
+		Setze nun $X_n=\chi_{\{\abs{S_n-c}<\epsilon\}}$. Dann ist
+		\begin{align*}
+		\liminf_{n\to\infty}(X_n\omega)=1&\Leftrightarrow \exists m\in\N:\forall n>m\chi_{\{\abs{S_n-c}<\epsilon\}}(\omega)=1\\
+		&\Leftrightarrow\abs{S_n-c}>\epsilon\text{ unendlich oft}\Leftrightarrow\limsup_{n\to\infty}\abs{S_n-c}<\epsilon
+		\end{align*}
+		Dann folgt (Fatou)
+		\[\liminf_{n\to\infty}\Prb(\abs{S_n-c}<\epsilon)=\liminf_{n\to\infty}\Epv(X_n)\geq \Epv\left(\liminf_{n\to\infty}X_n\right)=\Epv\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)\]
+		Daher folgt aus $\Prb\left(\lim\limits_{n\to\infty}\abs{S_n-c}=0\right)$ mit \ref{0507defEq}, dass $\forall\epsilon>0.\Prb\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)$.
+		Dann folgt mit Fatou: $\forall\epsilon>0\lim\limits_{n\to\infty}\Prb\left(\abs{ S_n-c}<\epsilon\right)=1$.\\
+		Also ist \ref{eq:0502} stärker als \ref{eq:0502}.
 	\end{bem}
 	
 	\begin{satz}[Starkes Gesetz der großen Zahlen, $\scL^4$-Version]\label{0509satzGGZL^4}
@@ -1921,6 +1945,7 @@
 	\begin{bem}
 		Die Gleichung aus \ref{0512satzZentrGrenzw} bedeutet, dass die Folge der Bildmaße $\Prb_{\ol S_n(\omega)}$ von $\Prb$ unter $\omega\mapsto\ol{S_n(\omega)}:=\frac{1}{\sqrt{n}}\sum_{i=1}^{n}(X_i(\omega)-m)$
 		konvergiert gegen $\Nv_{0,v}$.
+		
 %VL 27.06.2017
 		Im Sinne der Maßkonvergenz
 		\[\Prb_{\ol S_n}\big((-\infty,c]\big)\xrightarrow{n\to\infty}\Prb_{\Nv_{0,v}}\big((-\infty,c]\big)\forall c\]
@@ -1940,7 +1965,7 @@
 	\begin{prop}\label{0515prop}
 		Seien $\mu_n$ Wahrscheinlichkeitsmaße auf $\R$, $\mu$ Wahrscheinlichkeitsmaß auf $\R$ und $\mu$ habe Lebesgue-Dichte $\rho$ und sei für alle $k\in\N$
 		\[\lim\limits_{n\to\infty}\Epv_{\mu_n}(f)=\Epv_{\Prb_\mu}(f)\forall f\in C_b^k\]
-		Dannist
+		Dann ist
 		\[\lim\limits_{n\to\infty}\Prb_{\mu_n}\big((-\infty,c]\big)=\Prb_\mu\big((-\infty,c]\big)\forall c\in\R\]
 	\end{prop}
 	\begin{proof}
@@ -2503,22 +2528,25 @@
 		\end{itemize}
 	\end{exm}
 
-	%TODO
 	%TODO Counter
 	\stepcounter{equation}
 	\begin{definition}\label{0710def}
-		$z\in E$ heißt \textbf{absorbierend}, falls $p(z,z)=1$.
-		\[\]
+		$z\in E$ heißt \textbf{absorbierend} bezüglich $\Prb$, falls $p(z,z)=1$.\\
+		Dann heißt
+		\[h_z(x):=\Prb^x\left(\exists N\in\N:\forall n\geq N:X_n=z\right)=\Prb\left(\bigcup_{N\geq 0}\bigcap_{n\geq N}\{x_n=z\}\right)\]
+		die \textbf{Absorptionswahrscheinlichkeit in $z$ bei Startwert $x$}.
 	\end{definition}
 	
 	\begin{definition}\label{0711def}
-		Inhalt...
+		Sei $(X_n)$ eine Markovkette, $z\in E$. Die Zufallsvariable
+		\[\tau_z:\Omega\to\N\cup\{\infty\},\,\omega\mapsto\infty\{n\geq 1:X_n(\omega)=z\}\]
+		heißt Trefferzeit (oder Eintrittszeit) bei $z$.
 	\end{definition}
 	
 	%VL 18.07.2017
 	\begin{lem}\label{0712lem}
-		Sei $(X_n)$ Markovkette, $\tau_2$ Trefferzeit. Dann ist
-		\[\{\omega\in\Omega:\tau_2=n\}\in\sigma(X_1,...,X_n)\autotag\label{eq:0702}\]
+		Sei $(X_n)$ Markovkette, $\tau_z$ Trefferzeit. Dann ist
+		\[\{\omega\in\Omega:\tau_z=n\}\in\sigma(X_1,...,X_n)\autotag\label{eq:0702}\]
 	\end{lem}
 	\begin{proof}
 		Es gilt\begin{align*}
