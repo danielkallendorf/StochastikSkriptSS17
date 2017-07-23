@@ -41,11 +41,14 @@
 \newcommand{\todomark}[1]{\fbox{\Large Hier könnte \sout{Ihre Werbung} #1 stehen}}
 \newcommand{\abs}[1]{\left|#1\right|}
 \newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\scp}[1]{\left\langle#1\right\rangle}
 \newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
 \newcommand{\Bor}{\mathscr B}
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\bigtimes}{\operatornamewithlimits{\times}}
 \newcommand{\identity}{\mathds{1}}
+\newcommand{\Kern}{\operatorname{Kern}}
+\newcommand{\Img}{\operatorname{Im}}
 
 \newcommand{\potset}{\mathscr P}
 \newcommand{\Prb}{\mathbb P}
@@ -102,6 +105,7 @@
 	\renewenvironment{exm}{\addtocounter{theorem}{-1}\stepcounter{exmlistitem}\oldexm}{\oldendexm}}
 	{\setcounter{exmlistitem}{0}}
 
+\newcommand{\autotag}{\stepcounter{equation}\tag{Gl. \arabic{section}.\arabic{equation}}}
 
 \title{Einführung in die Stochastik}
 \author{}
@@ -702,7 +706,7 @@
 		Es folgt, dass $\int_{-\infty}^{\infty}e^{-\frac{(x-m)^2}{2v}}=\sqrt{2\pi}$.
 	\end{proof}
 
-%TODO VL 10.20.2017
+%TODO VL 10.02.2017
 	\begin{bem}
 		\begin{enumerate}[label=\alph*)]
 			\item Bedeutung der Normalverteilung:\\
@@ -1047,6 +1051,9 @@
 	\begin{bem*}
 		Unabhängigkeit ist eng verwandt mit dem Produktmaß:
 	\end{bem*}
+
+	%TODO COUNTER Async
+	\setcounter{theorem}{20}
 	\begin{definition}\label{0321def}
 		Sei $(\Omega,\scF_i,\Prb_i)$ ein Wahrscheinlichkeitsraum für $i\in\N$.\\
 		Jedes Maß $\Prb$ auf $(\Omega,\scF):=\left(\bigtimes_{i=1}^\infty \Omega_i,\bigotimes_{i=1}^\infty\scF_i\right)$\\
@@ -1136,14 +1143,15 @@
 		\end{enumerate}
 	\end{proof}
 	
+
 	\begin{exmlist}
 		\begin{exm}
-			
+			Sei $X\sim\Nv_{\mu,\nu}$ und $Y\sim\Nv_{\mu',\nu'}$, dann ist $X+Y\sim\Nv_{\mu+\mu',\nu+\nu'}$
 		\end{exm}
 	\end{exmlist}
 	%TODO
 	%TODO COUNTER
-	\stepcounter{theorem}	\stepcounter{theorem}
+	
 	\begin{exm}
 		Sei $\Omega=\R^n$, $\scF=\otimes_{x=1}^\infty\Bor(\R)$, $X_i(\omega)=\omega_i$ Projektionen. Sei 
 		\begin{align*}
@@ -2356,4 +2364,272 @@
 			Inhalt...
 		\end{exm}
 	\end{exmlist}
+
+
+
+
+%VL 17.07.2017
+\section{Markovketten}
+	\begin{bem*}[Motivation]
+		Sei $E$ eine Menge (=\enquote{Spielfeld}) mit abzählbar vielen Feldern (\enquote{Zuständen}) =Elemente von $E$.\\
+		Auf jemden Feld $x\in E$ liegt ein Würfel bereit, der $N_r\leq |E|$ Seiten hat und mit Wahrscheinlichkeit $p(x,y)$ die Seite $y$ würfelt.\\
+		Man geht dann auf das Feld $y$. 
+	\end{bem*}
+
+	\begin{exmlist}
+		\begin{exm}[Irrfahrt]
+			$E=\Z$, $p(x,x+1)=p(x,x-1)=\frac{1}{2}$.
+		\end{exm}
+		\begin{exm}[Galton-Watson-Populationsmodell]
+			$E=\N_0$, $p(x,y)=\Prb\left(\sum_{j=1}^{n}Z_j=y\right)$, wobei $Z_j$ eine Zufallsvariable ist, die die Nachkommen des $j$-ten Individuum modelliert. Normalerweise sind die $Z_j$ uiv.
+		\end{exm}
+		\begin{exm}[Sammelbilder]
+			Sei $E=\{1,...,N\}$ (\enquote{Anzahl der noch fehlenden Bilder})und
+			\[p(x,y)=\begin{cases}
+			x/N&\text{falls }y=x-1\\
+			1-\frac{x}{N}&\text{falls }y=x\\
+			0&\text{sonst}
+			\end{cases}\]
+		\end{exm}
+	\end{exmlist}
+
+	\begin{bem*}
+		Wie hoch ist die Wahrscheinlichkeit in 2 Schriteenvon $x$ nach $z$ zu gehen?
+		\begin{align*}
+		\Prb(x\xrightarrow{\text{2 Schritte}}z)&=\Prb(x\to y,y\to z)\\
+		&=\sum_{y\in E}\Prb(x\to y)\Prb(y\to z)\\
+		&=\sum_{y\in E}p(x,y)p(y,z)
+		\intertext{Vergleiche: Matrixmultiplkation}
+		&=P^2(x,z)
+		\end{align*}
+		mit $P^2=P\cdot P$, $P=\big(p(x,y)\big)_{x,y\in E}$ (Matrix)\\
+		Beachte dabei:
+		\[\sum_{y\in E}p(x,y)=\sum_{y\in E}\Prb(x\to y)=\Prb(x\to E)=1\]
+		(Zeilensumme =1)
+	\end{bem*}
+
+	\begin{definition}
+		Eine Matrix $P=\big(p(x,y)\big)_{x,y\in E}$ heißt \textbf{stochastisch}, wenn gilt
+		\begin{enumerate}[label=(\roman*)]
+			\item $p(x,y)\geq 0$ $\forall x,y\in E$
+			\item $\sum_{y\in E}p(x,y)=1$ $\forall x\in E$
+		\end{enumerate}
+	\end{definition}
+
+	\begin{definition}
+		Sei $E$ höchstens abzählbar, $P$ stochastische Matrix.\\
+		Eine Folge $(X_n)$ von $E$-wertigen Zufallsvariablen heißt \textbf{Markovkette} (Mk) mit Übergangsmatrix $P$ (ÜM), falls für alle $n\in\N$ und für alle $x_1,...,x_n\in E$ gilt
+		\[\Prb\left(X_{n+1}=x_{n+1}\vert X_0=x_0,...,X_n=x_n\right)=p(x_n,x_{n+1})\]
+	\end{definition}
+	
+	\begin{bem*}
+		Falls $\Prb(X_0=x)=\mu(x)$ für ein Wahrscheinlichkeitsmaß $\mu$, dann schreibt man auch $\Prb^\mu$ statt $\Prb$.\\ Falls
+		\[\Prb(X_0=x)=\delta_y(x)=\begin{cases}
+		1&\text{falls }y=x\\
+		0&\text{sonst}
+		\end{cases}\]
+		schreibt man $\Prb^y$ statt $\Prb$.
+	\end{bem*}
+
+	\begin{prop}\label{0704prop}
+		Sei $(X_n)$ Markovkette mit Übergangsmatrix $P$. Dann gilt für alle $x\in\N$, $x,y\in E$
+		\[\Prb^x(X_n=y)=P^n(x,y)\]
+		wobei $P^n$ die $n$-te Potenz von $P$ ist. 
+	\end{prop}
+	\begin{proof}
+		Induktiv
+	\end{proof}
+
+	\begin{bem*}
+		Es besteht eine starke Verbindung zur linearen Algebra. Falls $|E|=\infty$ wird $P$ trotzdem Matrix genannt.
+	\end{bem*}
+
+	\begin{prop}\label{0705prop}
+		Sei $P$ stochastische Matrix. Dann gilt
+		\begin{enumerate}
+			\item $P1=1$, wobei $1(x)=1\forall x$.\\
+			Das heißt, $1$ ist Rechts-Eigenvektor von $P_y$ zum Eigenwert $1$.
+			\item Falls $|E|<\infty$, dann Existiert ein Zeilenvektor $\mu\neq 0$ mit $\mu P=\mu$. D.h. $\mu$ ist Links-Eigenvektor zu $P$,zum Eigenwert $1$.
+		\end{enumerate}
+	\end{prop}
+	\begin{proof}
+		\begin{enumerate}
+			\item $P1(x)=\sum_{y\in E}p(x,y)1(y)=1$ (Zeilensumme)
+			\item $P1=1$ genau dann wenn $\scp{w,P1}=\scp{w,1}$ für alle $w\in\R^E$.\\
+			Genau dann wenn $\scp{P^*w,w,1}=0$ für alle $w\in R^E$.\\
+			Genau dann wenn $\operatorname{\Img}(P^*w-1)\perp \scp{\{1\}}$.\\
+			Dann ist also $\dim(\Kern(P^*-1))>0$.\\
+			Aus dem Eigenwert 1 folgt, dass $P$ Zeileneigenwerte zum Eigenwert $1$.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{definition}
+		Sei $(X_i)$ Markovkette auf $E$ mit Übergangsmatrix $P$.\\
+		Ein Wahrscheinlichkeitsmaß $\hat{\mu}$ auf $E$ heißt \textbf{invariante Verteilung} von $(X_n)$, falls $\Prb^{\hat{\mu}}(X_1=y)=\hat{\mu}(\{y\})$.
+		Dabei ist
+		\begin{align*}
+		\Prb^{\hat{\mu}}(X_1=y)&=\sum_{y\in E}\hat{\mu}(\{x\}) \Prb^x(X_1=y)\\
+		&=\sum_{y\in E}\hat{\mu}(\{x\})p(xy)=(\mu P)(y)
+		\end{align*}
+		(und $\mu$ die Zähldichte von $\hat{\mu}$).
+	\end{definition}
+
+	\begin{bem}
+		Invarianz von Verteilungen bedeutet, dass die Zähldichte $\mu$ von $\hat{\mu}$ ein Linkseigenvektor von $P$ ist.\\
+		Nach \ref{0705prop} existiert für $|E|<\infty$ immer irgendein Linkseigenvektor.\\
+		Ist dies auch die Zähldichte einer Verteilung?\\
+		Dazu muss der Linkseigenvektor zusätzlich nur nichtnegative Einträge haben und Zeilensumme 1 haben.\\
+		Der Satz von Perron-Frobenius (\enquote{Sei $A$ eine Matrix mit nichtnegativen Einträgen, $\norm{A}=\sup\{|Av|:|v|=1\}$, dann ist $w$ ein Eigenvektor von $A$ zum Eigenwert $\norm{A}$. Dann kann $w$ nicht-negativ gewählt werden.})
+	\end{bem}
+
+	\begin{bem*}
+		Markovketten sind \enquote{gedächtnislose} Prozesse.\\
+		Ist man zur Zeit $x\in X$, dann spielt es für die weitere Entwicklung keine Rolle, wie man dort hin gekommen ist.
+	\end{bem*}
+
+	\begin{satz}[Markov-Eigenschaft]\label{0708satzMarkov}
+		Sei $X_n$ Markovkette mit Übergangsmatrix $P$. Dann gilt für alle $x,z\in E$, $n\in\N$, $A\in\potset(E)^{\otimes\N_0}$ und $B\in E^n$, falls $\Prb\big((X_1,...,X_n)\in B,X_n=x\big)>0$, dann ist
+		\begin{align*}
+		\Prb^z\big((X_n,X_{n+1},X_{n+2},...)\in A\vert (X_0,...,X_{n-1})\in B,X_n=x\big)&=\Prb^z\big((X_n,X_{n+1},...)\in A\vert X_n=x\big)\\
+		&=\Prb\big((X_1,X_2,...)\in A\big)
+		\end{align*}
+	\end{satz}
+
+	\begin{exm}[Ruin des Spielers]
+		Sei $X_n=$ Gewinng nach dem $n-$tenn Spiel, $E=\{-a,...,0,...,b\}$, $p(n,n+1)=p$, $p(n,n-1)=1-p$, falls $-a<n<b$.
+		\begin{itemize}
+		\item $p(-a,-a)=1$ (\enquote{Ruin})
+		\item $p(b,b)=1$ (\enquote{Gewinnmitnahme})
+		\end{itemize}
+	\end{exm}
+
+	%TODO
+	%TODO Counter
+	\stepcounter{equation}
+	\begin{definition}\label{0710def}
+		$z\in E$ heißt \textbf{absorbierend}, falls $p(z,z)=1$.
+		\[\]
+	\end{definition}
+	
+	\begin{definition}\label{0711def}
+		Inhalt...
+	\end{definition}
+	
+	%VL 18.07.2017
+	\begin{lem}\label{0712lem}
+		Sei $(X_n)$ Markovkette, $\tau_2$ Trefferzeit. Dann ist
+		\[\{\omega\in\Omega:\tau_2=n\}\in\sigma(X_1,...,X_n)\autotag\label{eq:0702}\]
+	\end{lem}
+	\begin{proof}
+		Es gilt\begin{align*}
+		\{\omega\in\Omega:\tau_z(\omega)=n\}&=\{\omega\in\Omega:X_1(\omega)\neq z,...,X_{n-1}(\omega)\neq z,X_n(\omega)=z\}\\
+		&=\bigcap_{k=1}^{n-1}X_k^{-1}\left(E\setminus\{z\}\right)\cap X_n^{-1}\big(\{z\}\big)\in\sigma(X_1,...,X_n)
+		\end{align*}
+	\end{proof}
+
+	\begin{bem*}
+		Die Messbarkeitseigenschaft \ref{eq:0702} macht $\tau_z$ zu einer sogenannten \textbf{Stoppzeit}. Um zu entscheiden, dass \enquote{gestoppt} wird musss man nciht \enquote{in die Zukunft Blicken}.
+	\end{bem*}
+
+	\begin{satz}\label{0713}
+		Sei $(X_n)$ Markovkette, $z\in E$ absorbierend, $x\in E$ beliebig. Dann ist
+		\[h_z(x)=\Prb^x(\tau_z<\infty)=\Prb^x\left(\lim\limits_{n\to\infty}X_n=z\right)\autotag\label{eq:0703}\]
+		und
+		\[h_z=\min\left\{h:E\to\R^+\text{ mit }h(z)=1\text{ und }\sum_{y\in E}p(x,y)h(y)=h(x)\right\} \autotag \label{eq:0704}\]
+		(wobei $h\leq g\Leftrightarrow h(x)\leq g(x)\forall x\in E$)\\
+		Da Minimum ist eindeutig.
+	\end{satz}
+
+	\begin{bem*}
+		$h_z$ ist also Rechts-Eigenvektor von $P$, mit $h_z(z)=1$. Auch $1$ mit $1(x)=1$ ist Rechts-Eigenvektor, aber $h_z$ kann kleiner sein.
+	\end{bem*}
+	\begin{proof}
+		Zu \ref{eq:0703}: 
+	\begin{align*}
+		\Prb^z(X_n=z\forall>\geq 1)&=\lim\limits_{k\to\infty}\Prb^z(X_n=z\forall n\leq k)\intertext{Da $\{X_n=z\forall n\leq k\}_k$ eine Folge absteigender Mengen ist}
+		&=\lim\limits_{k\to\infty}P^k(z,z)?\lim\limits_{k\to\infty}p(z,z)^k=1
+	\end{align*}
+	Also gilt für alle $x\in E$
+	\begin{align*}
+	\Prb^x(X_n=z)&=\Prb^x(X_n=z)\Prb^z(X_i=z\forall i\geq 1)\\
+	&\overset{\ref{0708satzMarkov}}{=}\Prb^x(X_n=zX_{n+1}=z\forall i\geq 1)\\
+	&\xrightarrow{n\to\infty}\Prb\left(\bigcup_{n=1}^\infty\bigcap_{j=n}^\infty\{X_j=z\}\right)=h_z(x)
+	\end{align*}
+	Weiter gilt für alle $k\leq n$
+	\begin{align*}
+	\Prb^x(X_n=z\vert \tau_z=k)&=\Prb^x(X_n=z\vert \tau_z=k,X_k=z)\\
+	&\overset{\ref{0708satzMarkov}}{=}\Prb^x(X_n=z\vert X_k=z)=\Prb^z(X_{n-k}=z)=1
+	\end{align*}
+	Dann folgt mit \ref{0712lem}, dass
+	\begin{align*}
+	\underbrace{\Prb^x(X_n=z)}_{\xrightarrow{n\to\infty}h_z(x)}&=\sum_{k=1}^n\Prb^x(\tau_z=k)\overbrace{\Prb^x(X-n=z\vert \tau_z=k)}^{=1}\\
+	&=\Prb(\tau_n\leq n)\xrightarrow{n\to\infty}\Prb(\tau_z<\infty)
+	\end{align*}
+	\\
+	Zu \ref{eq:0704}:
+	\begin{enumerate}
+		\item $h_z\in\{h:E\to\R^+,h(z)=1,Ph=h\}$, denn $h_z(x)\geq 0$ als Wahrscheinlichkeit, $h(z)=1$ und
+		\begin{align*}
+		\sum_{y\in E}p(x,y)h_z(y)=\sum_{y\in E}\Prb^x(X_1=y)\Prb^y(\{\exists N\in\N:\forall n\geq N:X_n=z\})\\
+		&=\sum_{y\in E}\Prb^x(X_n=y)\Prb(\exists N\in\N_0:\forall n\geq N:X_{n+1}=z\vert X_1=y)\\
+		&\overset{\ref{0304satz}a)}{=}\Prb^x(\exists N\in\N:\forall n\geq N:X_{n+1}=z)=h_z(x)
+		\end{align*}
+		\item $h_z$ ist maximale. Sei $\tilde h>\geq 0$, $\tilde h(x)=1$ und $P\tilde h=\tilde h$, dann ist
+		\[\tilde h(x)=P^n\tilde h(x)=\sum_{x\in E}P^n(x,y)\tilde h(y)\geq ...\] %TODO
+	\end{enumerate}
+	\end{proof}
+	
+	\begin{bem}
+		für $z\in E_0\subset E$ ($\phi$ beliebige Funktion) und $Ph(y)=h(y)\forall y\notin E_0$. 
+	\end{bem}
+	%TODO
+	
+	\begin{exm}[Galton-Watson-Verzweigungsprozess]
+		Sei $n$ die Anzahl der Individuen, jedes davon bekommt $k$ Kinder mit Wahrscheinlichkeit $\rho(k)$ und stirbt dann.
+		Dann ist also $E=\N_0$ und
+		\begin{align*}
+		p(n,m)=\sum_{\substack{k_1,...,k_n=1\\\sum_{i=1}^\infty}k_i=m}^{\infty}\rho(k_1)...\rho(k_n)&=\sum_{k_1=0}^{m}\sum_{k_2=0}^{m-k_1}...\sum_{k_n=0}^{m-\sum_{i=1}^{n-1}k_i}\rho(k_1)...\rho(k_n)
+		\end{align*}
+		Da $\rho(0,0)=1$ ist $0$ absorbierend.\\
+		\\
+		Frage: Wie groß ist $\Prb(\text{Population stibt aus}\mid\text{Anfangspopulation=1})$. Also was ist $\Prb(\tau_0<\infty)$?\\
+		Triviale Fälle:
+		\[\rho(0)=\begin{cases}
+		1&\text{dann ist }\Prb^1(\tau_0<\infty)=1\\
+		0&\text{dann ist }\Prb^1(\tau_0<\infty)=0
+		\end{cases}\]
+		Für $0<\rho(0)<1$ gilt:
+		\begin{enumerate}
+			\item Für alle $k<,n\geq 0$ ist $\Prb^k(X_n=0)=\left[\Prb^1(X_n=0)\right]^k$.
+			\begin{proof}Induktiv
+				\begin{description}
+					\item[$n=0$] stimmt
+					\item[Induktionsschritt]:
+					\begin{align*}
+					%TODO
+					&=\sum_{\substack{l_1,...,l_k=0\\\sum_{i=1}^{k}l_i=l}}^{\infty}\rho(l_1)...\rho(l_k)\underbrace{\Prb^l(X_n=0)}_{\text{IndV.}=\Prb^1(X_n=0)^l}\\
+					&=\sum_{l_1,...,l_k=0}^{\infty}\rho(l_1)...\rho(l_n)\left(\Prb^1(X_n=0)\right)^{l_1+l_2+...+l_k}\\
+					&=\left(\sum_{l=0}^{\infty}p(1,l)\Prb^l(X_n=0)\right)^k\\
+					&=\left(\Prb(X_{n+1}=0)\right)^k
+					\end{align*}
+				\end{description}
+			\end{proof}
+			\item Sei $q(k):=\Prb^k(\tau_0<\infty)$.\\
+			\begin{align*}
+			&=\lim\lim\limits_{n\to\infty}\Prb^k(\tau_0\leq n)=\lim\limits_{n\to\infty}\Prb^k(X_n=0)\\
+			&\overset{a)}{=}\lim\limits_{n\to\infty}\left(\Prb^1(X_n=0)\right)^k=\left[\lim\limits_{n\to\infty}\Prb^1(X_n=0)\right]^k=q(1)^k
+			\end{align*}
+			\item $q(1)=h_0(1)$ ist harmonisch. d.h.
+			\begin{align*}
+			q(1)=Pq(1)&=\sum_{k=0}^{\infty}p(1,k)q(k)\\
+			&\overset{b)}{=}\sum_{k=0}^\infty\rho(k)q(1)^k\\
+			&=\varphi_\rho(q(1))
+			\end{align*}
+			Dabei ist $\varphi$ die erzeugenden FUnktion von $\rho$ (\ref{0432def}).\\
+			Also ist $q(1)$ ein \textbf{Fixpunkt} von $\varphi_\rho$ un zwar der kleinste. Denn falls $s$ ein beliebiger Fixpunkt von $\varphi_\rho$ ist, dann gilt $\tilde h(k):=s^k:P(\tilde h)=\tilde h$.\\
+			Also ist $\tilde h$ harmonisch bezüglich $P$. Da aber $q(1)$ die minimal harmonsiche Funktion ist gilt $s\geq q(1)$.\\
+			Die Funktion $s\mapsto \varphi_\rho(s)=\sum_{k=0}^{\infty}\varrho(k)s^k$ hat immer den Fixpunkt $s=1$.\\
+			Falls $\rho(0)+\rho(1)=1$, dann ist $\varphi_\rho''(x)=0$. Also 
+		\end{enumerate}
+	\end{exm}
 \end{document}
