@@ -43,6 +43,7 @@
 \newcommand{\norm}[1]{\left\|#1\right\|}
 \newcommand{\scp}[1]{\left\langle#1\right\rangle}
 \newcommand{\mapsfrom}{\ensuremath{\mathrel{\reflectbox{\mapsto}}}}
+\newcommand{\cha}{\mathds{1}}
 \newcommand{\Bor}{\mathscr B}
 \newcommand{\indep}{\perp\!\!\!\perp}
 \newcommand{\bigtimes}{\operatornamewithlimits{\times}}
@@ -189,7 +190,7 @@
 			\Prb\left(\bigcap_{n=1}^\infty A_n\right)=\Prb\big(\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}\big)
 			=\sum_{\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}} p(\omega)
 			\]
-			Sei nun $N(\omega)=\sum_{n=1}^{\infty}\chi_{A_n}(\omega)=$\enquote{Anzahl der $A_n$ die  $\omega$ enthalten}. Dann ist 
+			Sei nun $N(\omega)=\sum_{n=1}^{\infty}\cha_{A_n}(\omega)=$\enquote{Anzahl der $A_n$ die  $\omega$ enthalten}. Dann ist 
 			\begin{align*}
 			\sum_{n=1}^\infty\Prb(A_n)=\sum_{n=1}^\infty\sum_{\omega\in A_n}	\tag{2} p(\omega)=\sum_{\{\omega\in\Omega:\text{$\exists n\in\N$ mit $\omega\in A_n$}\}}p(\omega)N(\omega)\\
 			\end{align*}
@@ -199,7 +200,7 @@
 
 	\begin{definition}
 		Für $A\subseteq\Omega$ heißt 
-		\[\chi_A:\Omega\to\{0,1\},\quad \omega\mapsto\begin{cases}
+		\[\cha_A:\Omega\to\{0,1\},\quad \omega\mapsto\begin{cases}
 		1&\omega\in A\\0&\text{sonst}
 		\end{cases}\]
 		die \textbf{Charakteristische Funktion} oder \textbf{Indikator} von $A$. Man schreibt auch $\mathds{1}_A$.
@@ -398,12 +399,12 @@
 \setcounter{theorem}{26}
 
 	\begin{definition}
-		Die Abbildung $\la:\Bor(\R^n)\to[0,\infty], A\mapsto\int_{\R^n}\chi_A(x)~dx=\la(A)$ heißt \textbf{Lebesgue-Maß}
+		Die Abbildung $\la:\Bor(\R^n)\to[0,\infty], A\mapsto\int_{\R^n}\cha_A(x)~dx=\la(A)$ heißt \textbf{Lebesgue-Maß}
 	\end{definition}
 	
 	\begin{exm}\label{0128exm}
 			Sei $\varrho:\R^n\to[0,\infty)$ Borel-messbar und $\int\varrho(x)~dx=1$.\\
-			Dann ist die Abbildung $\Prb_p\varrho:\Bor(\R^n)\to[0,1],A\mapsto\int_A\varrho(x)~dx=\int\chi_A(y)\varrho(x)~dx$ ein Wahrscheinlichkeitsmaß.
+			Dann ist die Abbildung $\Prb_p\varrho:\Bor(\R^n)\to[0,1],A\mapsto\int_A\varrho(x)~dx=\int\cha_A(y)\varrho(x)~dx$ ein Wahrscheinlichkeitsmaß.
 	\end{exm}
 
 	\begin{definition}
@@ -420,7 +421,7 @@
 
 	\begin{definition}
 		Sei $\Omega\in\Bor(\R^n)$ mit $\la(\Omega)<\infty$. Das Wahrscheinlichkeitsmaß auf $\Omega$ mit Dichte $\varrho(y)=\frac{1}{\la(\Omega)}$ heißt \textbf{Gleichverteilung} auf $\Omega$.\\
-		Man fasst dann $\tilde\varrho(x)=\frac{1}{\la(\Omega)}\chi_A\Omega(x)$ als Einbettung in den $\R^n$ auf.
+		Man fasst dann $\tilde\varrho(x)=\frac{1}{\la(\Omega)}\cha_A\Omega(x)$ als Einbettung in den $\R^n$ auf.
 	\end{definition}
 
 	\begin{rem*}[Zufallsvariable]
@@ -582,7 +583,7 @@
 	\begin{exm}
 		In Situation \ref{0205bexm} nammt man an dass man die Anzahl der gezogenenen Kugeln pro ??? von Interesse ist.
 		Das ist ein \enquote{Aspekt} des Experiments, daher eine Zufallsvariable:
-		\[X:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\chi_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\chi_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\chi_{\{a_m\}}(a_{j_k})\right)\]
+		\[X:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\cha_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\cha_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\cha_{\{a_m\}}(a_{j_k})\right)\]
 		(Jede Komponenten entspricht jeweils der Anzahl der gezogenen $a_i$). Nach der Definition des Produktmaßes ist
 		\begin{align*}
 		\Prb\big((n_1,...,n_m)\big)&=\Prb \left(X^{-1}\big(\{(n_1,...,n_m)\}\big)\right)\\
@@ -794,8 +795,8 @@
 	\begin{proof}(nur Fall $a,b\neq 0$ im Fall 2)
 		Integration einer Kugel durch Zerlegen in \enquote{Kreisscheiben}.
 		\begin{align*}
-		h_r(a,b):&=\int_{\R^N}\chi_{x_1^2+...+x_N^2\leq r^2}(x)\chi_{\{a\le x_1\le b\}}~dx\\
-		&=\int_{a}^{b}dz\int_{\R^{N-1}}\chi_{x_1^2+...+x_N^2\leq r^2-z^2}(x)~dx\\
+		h_r(a,b):&=\int_{\R^N}\cha_{x_1^2+...+x_N^2\leq r^2}(x)\cha_{\{a\le x_1\le b\}}~dx\\
+		&=\int_{a}^{b}dz\int_{\R^{N-1}}\cha_{x_1^2+...+x_N^2\leq r^2-z^2}(x)~dx\\
 		&=\int_{a}^b\int_{B_{N-1}(\sqrt{r^2-z^2})}~dx=\int_{a}^{b}(r^2-z^2)^{N-1/2}~dz\underbrace{\int_{B_{N-1}}(1)~dx}_{=V_1(N-1)}\\
 		&=r^{N-1}V_1(N_1)\int_{a}^{b}\left(1-\frac{z^2}{r^2}\right)^{\frac{N-1}{2}}~dz
 		\intertext{Durch Subtitution $y=\frac{z}{r}\sqrt{N-1}$}
@@ -1056,13 +1057,13 @@
 	\begin{kor}
 		Sei $(\Omega,\scF\Prb)$ ein Wahrscheinlichkeitsraum, $I$ eine Menge und für alle $i\in I$ sei $A_i\in\scF$. Dann gilt
 		\begin{enumerate}
-			\item $(A_i)_{i\in I}$ sind unabhängige Mengen $\Leftrightarrow$ $(\chi_{A_i})_{i\in I}$ unabhängige Zufallsvariablen sind.
+			\item $(A_i)_{i\in I}$ sind unabhängige Mengen $\Leftrightarrow$ $(\cha_{A_i})_{i\in I}$ unabhängige Zufallsvariablen sind.
 			\item Insbesondere: Falls $(A_i)_{i\in I}$ unabhängig und $C_i\in\{\emptyset,\Omega,A_i,A_i^C\}$ für alle $i\in I$, dann sind auch $(C_i)_{i\in I}$ unabhängig.
 		\end{enumerate}
 	\end{kor}
 	\begin{proof}
-		Für $a\in\scF$ ist $\chi_A:\Omega\to\{0,1\}, \omega\mapsto\chi_A(\omega)$ eine Zufallsvariable und das einelementige Mengensystem $\big\{\big\}$ ist ein Schnitt-stabiler Erzeuger von $\potset(\{0,1\})$ und $\chi_a^{-1}(\{1\})=A$.\\
-		Daher gilt, dass $(A_i)$ unabhängig $\Leftrightarrow$ \ref{0301}  gilt falls $B_i=\{1\}$ $\overset{\ref{0314satz}}{\Leftrightarrow}$ $\chi_{A_i}$ ist unabhängig. Also gilt 1.\\
+		Für $a\in\scF$ ist $\cha_A:\Omega\to\{0,1\}, \omega\mapsto\cha_A(\omega)$ eine Zufallsvariable und das einelementige Mengensystem $\big\{\big\}$ ist ein Schnitt-stabiler Erzeuger von $\potset(\{0,1\})$ und $\cha_a^{-1}(\{1\})=A$.\\
+		Daher gilt, dass $(A_i)$ unabhängig $\Leftrightarrow$ \ref{0301}  gilt falls $B_i=\{1\}$ $\overset{\ref{0314satz}}{\Leftrightarrow}$ $\cha_{A_i}$ ist unabhängig. Also gilt 1.\\
 		Für 2. Setze
 		\[B_i=\begin{cases}
 		\{1\}&\text{falls $c_i=A$}\\
@@ -1070,7 +1071,7 @@
 		\emptyset&\text{falls $c_i=\emptyset$}\\
 		\{0,1\}&\text{falls $c_i=\Omega$}
 		\end{cases}\]
-		Dann folgt 2 aus der Unabhängigkeit der $\chi_{A_i}$ und aus \ref{0301} mit den so gewählten $B_i$.
+		Dann folgt 2 aus der Unabhängigkeit der $\cha_{A_i}$ und aus \ref{0301} mit den so gewählten $B_i$.
 	\end{proof}
 
 	\begin{exm}
@@ -1260,8 +1261,8 @@
 			\item $\bigcap_{n=1}^\infty A_n\subseteq\liminf_{n\to\infty}A_n\subseteq\limsup_{n\to\infty}A-n\subseteq\bigcap_{n=1}^\infty A_n$
 			\item Für alle $\omega\in\Omega$ gilt 
 			\begin{align*}
-				\liminf_{n\to\infty}\chi_{A_i}(\omega)&=\chi_{\liminf_{n\to\infty}A_i}(\omega)\\
-				\limsup_{n\to\infty}\chi_{A_i}(\omega)&=\chi_{\limsup_{n\to\infty}A_i}(\omega)
+				\liminf_{n\to\infty}\cha_{A_i}(\omega)&=\cha_{\liminf_{n\to\infty}A_i}(\omega)\\
+				\limsup_{n\to\infty}\cha_{A_i}(\omega)&=\cha_{\limsup_{n\to\infty}A_i}(\omega)
 			\end{align*}
 			\item Falls $X_i:(\Omega,\scF)\to(\Omega_i\scG_i)$ Zufallsvariablen sind uns $A_i=X^{-1}(B_i)$ mit $B_i\scG_i$, dann sind $\limsup_{n\to\infty} A_n\in\tau$ und $\liminf_{n\to\infty}A_n\in \tau$.\\
 			(Nicht aber $\bigcap_{n=1}^\infty A_n$ oder $\bigcup_{n=1}^\infty$!)
@@ -1417,7 +1418,7 @@
 		Durch Grenzwertsätze der Maßtheorie:
 	\end{proof}
 
-%TODO COUNTER:
+%TODO COUNTER
 \stepcounter{theorem}
 
 	\begin{satz}[Monotonen Konvergenz]\label{0410monokonv}
@@ -1457,7 +1458,7 @@
 
 %VL 12.06.2017
 	\begin{exm}
-		Sei $(\Omega,\scF,\Prb)=\big((0,1),\Bor\big((0,1)\big),\la_{(0,1)}\big)$ und $X_n=n\chi_{0,\frac{1}{n}}$.\\
+		Sei $(\Omega,\scF,\Prb)=\big((0,1),\Bor\big((0,1)\big),\la_{(0,1)}\big)$ und $X_n=n\cha_{0,\frac{1}{n}}$.\\
 		Dann ist $\Epv(X_n)=1\forall n$, aber $\liminf_{n\to\infty}X_n(\omega)=0$.\\
 		Also kann die Ungleichung in Satz \ref{0415fatou} kann also Strikt sein.
 	\end{exm}
@@ -1471,11 +1472,11 @@
 	\end{satz}
 	\begin{proof}
 		\begin{enumerate}[label=(\roman*)]
-			\item Sei $f(\omega')=\chi_B(\omega')$ mit $B\in\scF'$.\\
-			Dann ist $\Epv(f(X))=\Epv(\chi_B(X))=\Prb(X\in B)=\Prb(X^{-1(B)})=\Prb_X(B)$ nach Definition von $\Prb_X$. Dann gilt die Gleichung aus \ref{0417satz}.
-			\item Sei nun $f(\omega')=\sum_{n=1}^{m}c_n\chi_{B_n}(\omega')$, mit $C_n\in\R$, $B_n\in\scF'$.
+			\item Sei $f(\omega')=\cha_B(\omega')$ mit $B\in\scF'$.\\
+			Dann ist $\Epv(f(X))=\Epv(\cha_B(X))=\Prb(X\in B)=\Prb(X^{-1(B)})=\Prb_X(B)$ nach Definition von $\Prb_X$. Dann gilt die Gleichung aus \ref{0417satz}.
+			\item Sei nun $f(\omega')=\sum_{n=1}^{m}c_n\cha_{B_n}(\omega')$, mit $C_n\in\R$, $B_n\in\scF'$.
 			Dann ist
-			\[\Epv(f(X))\overset{\ref{0409satz}}{=}\sum_{n=1}^{m}c_n\Epv(\chi_{B_n}(X))\overset{(i)}{=}\sum_{n=1}^{m}c_n\Epv_{\Prb_X}(\chi_{B_n})\overset{\ref{0409satz}b)}{=}\Epv_{\Prb_X}\left(\sum_{n=1}^{m}c_n\chi_{B_n}\right)=\Epv_{\Prb_X}(f)\]
+			\[\Epv(f(X))\overset{\ref{0409satz}}{=}\sum_{n=1}^{m}c_n\Epv(\cha_{B_n}(X))\overset{(i)}{=}\sum_{n=1}^{m}c_n\Epv_{\Prb_X}(\cha_{B_n})\overset{\ref{0409satz}b)}{=}\Epv_{\Prb_X}\left(\sum_{n=1}^{m}c_n\cha_{B_n}\right)=\Epv_{\Prb_X}(f)\]
 			\item Sei nun $f(\omega')\geq 0\forall\omega\in\Omega$. Setze 
 			\[f_n(\omega'):=\sup\left\{\frac{1}{n}\lfloor f(\omega')\rfloor,n\right\}\]
 			(Abgeschnittene $\frac{1}{n}$ Approximation.)\\
@@ -1506,7 +1507,7 @@
 	\begin{proof}
 		\begin{description}
 			\item[\enquote{$\Rightarrow$}] Folgt aus \ref{0417satz}.
-			\item[\enquote{$\Leftarrow$}] $\Prb_X(A)=\Epv(\chi_A(X))=\Epv(\chi_A(X))=\Prb_Y(A)$.
+			\item[\enquote{$\Leftarrow$}] $\Prb_X(A)=\Epv(\cha_A(X))=\Epv(\cha_A(X))=\Prb_Y(A)$.
 		\end{description}
 	\end{proof}
 
@@ -1600,6 +1601,16 @@
 			Sei zusätzlich noch $\Epv(|X|)<\infty$ und $\Epv(|\phi(X)|)<\infty$.\\
 			Dann gilt
 			\[\Epv(\phi(X))\geq \phi(\Epv(X))\]
+			
+			%TODO COUNTER
+			\setcounter{enumi}{3}
+			\item \label{chebyshev-markov}
+			\textbf{Chebyshev-Markov-Ungleichung} Sei $X$ reelle Zufallsvariable, $f:[0,\infty)\to[0,\infty)$ sei monoton wachsend. Dann gilt $\forall c>0$ mit $f(c)>0$, dass\[\Prb(|X|\geq c)\leq\frac{\Epv(f(|X|))}{f(c)}\]
+			Insbesondere gilt für $f(x)=x^2$
+			\[\Prb(|X-\Epv(X)|\geq c)\leq\frac{\Var(X)}{c^2}\]
+			
+			%TODO COUNTER
+			\setcounter{enumi}{1}
 			\item\textbf{Hölder Ungleichung} Seine $X,Y$ reelle Zufallsvariablen. Dann gilt für alle $p,q\in[1,\infty]$ mit $\frac{1}{p}+\frac{1}{q}=1$, dass
 			\[\Epv(|XY|)\leq\norm{X}_p\norm{Y}_q\]
 			dabei ist 
@@ -1608,30 +1619,50 @@
 			\sup\{|X(\omega)|:\omega\in\Omega\}&p=\infty
 			\end{cases}\]
 			\item\textbf{Cauchy-Schwarz-Ungleichung} Seien $X,Y\in\scL^2$. Dann ist $XY\in\scL^2$ und\[\Epv(|XY|)^2\leq\Epv(|X|^2)\Epv(|Y|^2)\]
-			(Spezialfall von b) mit $p=q=2$)
-			\item \label{chebyshev-markov}
-			\textbf{Chebyshev-Markov-Ungleichung} Sei $X$ reelle Zufallsvariable, $f:[0,\infty)\to[0,\infty)$ sei monoton wachsend. Dann gilt $\forall c>0$ mit $f(c)>0$, dass\[\Prb(|X|\geq c)\leq\frac{\Epv(f(|X|))}{f(c)}\]
-			Insbesondere gilt für $f(x)=x^2$
-			\[\Prb(|X-\Epv(X)|\geq c)\leq\frac{\Var(X)}{c^2}\]
+			
 		\end{enumerate}
 	\end{satz}
 	\begin{proof}
 		\begin{enumerate}
-			\item Da $\phi$ konvex ist, ist per Definition $A:=\{(x,y)\in\R^2:y\geq\phi(x)\}$ konvexe Menge.\\
+			\item Da $\phi$ konvex ist, ist per Definition $A:=\{(x,y)\in\R^2:y\geq\phi(x)\}$ eine konvexe Menge.\\
 			$\Leftrightarrow$ $\forall x\in\R$ gibt es eine Gerade durch $(x,\phi(X))$, die das Innere $A^0$ von $A$ nicht schneidet.\\
-			$\Leftrightarrow $ $\forall x\in\R\exists a\in\R:l(y):=\phi(x)+a(y-x)\leq \phi(y)$.\\
+			$\Leftrightarrow $ $\forall x\in\R\exists a\in\R:\ell(y):=\phi(x)+a(y-x)\leq \phi(y)$.\\
 			Wähle nun $x=\Epv(X)$. Dann ist 
 			\begin{align*}
-			%TODO!
+			\phi\big(X(\omega)\big)\geq \ell\big(X(\omega)\big)=\phi\big(\Epv(X)\big)+a\big(X(\omega)-\Epv(X)\big)
 			\end{align*}
+			Da der Erwartungswert monoton ist erhält anwenden des Erwartungswerts auf beide Seiten die Ungleichung:
+			\[\Epv\big(\phi(X)\big)\geq \Epv\big(\phi(\Epv(X))+a(X-\Epv(X))\big)
+			=\Epv\big(\phi(\Epv(X))\big)+a\Epv\big(X-\Epv(X)\big)=\phi\big(\Epv(X)\big)\]
+			
+			%TODO COUNTER
 			\setcounter{enumi}{3}
 			\item Es gilt
 			\begin{align*}
 			\Prb(|X|\ge c)&=\Prb(f(|X|)\geq f(c))\\
-			&=\Prb\left(\frac{f(|X|)}{f(c)}\geq 1\right)=\Epv\left(\chi_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}}\right)\\
-			&\leq\Epv\left(\chi_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}\frac{f(|X|)}{f(c)}}\right)\\
+			&=\Prb\left(\frac{f(|X|)}{f(c)}\geq 1\right)=\Epv\left(\cha_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}}\right)\\
+			&\leq\Epv\left(\cha_{\left\{\frac{f(|X|)}{f(c)}\geq 1\right\}\frac{f(|X|)}{f(c)}}\right)\\
 			&\leq\Epv\left(\frac{f(|X|)}{f(c)}\right)=\frac{1}{f(c)}\Epv(f(|X|))
 			\end{align*}
+			
+			%TODO COUNTER
+			\setcounter{enumi}{1}
+			\item Für $p=\infty$ gilt  $\Epv(\abs{XY})\leq\Epv(\norm{X}_\infty \abs{Y})=\norm
+			X_\infty\norm{Y}_1$.\\
+			Für $p<\infty$: Falls $\norm{X}_p=0$, dann folgt für $c>0$ aus d), dass $\Prb(|X|>c)\leq\norm{X}_p^{p}(c^p)=0$. Somit its
+			\[\Prb(\abs{X}>0)=\Prb\left(\bigcap_{n\in\N}\{\omega:X(\omega)>\frac{1}{n}\}\right)\overset{\ref{0122e}}{=}\lim\limits_{n\to\infty}\Prb(X\geq 1/n)=0\]\\
+			Es folgt, dass $\Epv(|XY|)=\Epv(|XY|\cha_{\{\abs{X}>0\}})=0$, sodass die Ungleichung gilt (als Gleichung).\\
+			Sei $\norm{X}_p>0$. Da in der Behauptung nur Beträge vorkommen können wir o.b.d.A. annehmen, dass $X>0$ und $Y\geq 0$ ist. Sei nun das Wahrscheinlichkeitsmaß $\tilde P$ auf $\Omega$ definiert als
+			\[\tilde{P}(A):=\Prb\left(\cha_A\frac{X^p}{\Epv(X^p)}\right).\]
+			Sei außerdem $Z:=Y/X^{p-1}$. Dann ist
+			\[\Epv(XY)=\Epv(X^pZ)=\tilde\Epv\big(Z\Epv(X^p)\big)=\tilde{\Epv}(Z)\Epv(X^p)\tag{\star}\]
+			Anwenden der Jensen Ungleichung a) mit der Funktion $\phi(x)=x^q\cha_{\{q>0\}}$ ergibt
+			\begin{align*}
+			(\star)&\leq \tilde{\Epv}(Z^q)^\frac{1}{q}\Epv(X^p)=\Epv\left(\frac{Y^q}{X^{q(p-1)}\frac{X^p}{\Epv(X^p)}}\right)\Epv(X^p)\\
+			&=\Epv(Y^qX^{p-q(p-1)})^{\frac{1}{q}}\Epv(X^p)^{1-\frac{1}{q}}=\Epv(Y^q)^\frac{1}{q}\Epv(X^p)^\frac{1}{p}
+			\end{align*}
+			(Da $p,q$ konjugierte Exponenten sind ist $p-pq+q=0$.)
+			\item Spezialfall von b) mit $p=q=2$
 		\end{enumerate}
 	\end{proof}
 
@@ -1847,8 +1878,8 @@
 	\end{satz}
 	\begin{proof}
 		Zerlege 
-		\[X_i(\omega)=\underbrace{X_i(\omega)\chi_{\{|X_i(\omega)|<\sqrt[4]{i}\}}(\omega)}_{Y_i(\omega)}
-		+\underbrace{X_i(\omega)\chi_{\{|X_i(\omega)|\geq\sqrt[4]{i}\}}(\omega)}_{Z_i(\omega)}\]
+		\[X_i(\omega)=\underbrace{X_i(\omega)\cha_{\{|X_i(\omega)|<\sqrt[4]{i}\}}(\omega)}_{Y_i(\omega)}
+		+\underbrace{X_i(\omega)\cha_{\{|X_i(\omega)|\geq\sqrt[4]{i}\}}(\omega)}_{Z_i(\omega)}\]
 		Dann gilt
 		\begin{enumerate}
 			\item $\Epv(X_i)=\Epv(Y_i)+\Epv(Z_i)$
@@ -1905,7 +1936,7 @@
 
 %VL 26.07.2017
 	\begin{exm}
-		Sei $\Omega=[0,1)$ mit dem Lebesgue-Maß, Sei $X_i(\omega)=\chi_{I_i}(\omega)$. für $i=1,...,15$ mit
+		Sei $\Omega=[0,1)$ mit dem Lebesgue-Maß, Sei $X_i(\omega)=\cha_{I_i}(\omega)$. für $i=1,...,15$ mit
 		\begin{align*}
 		I_1&=\big[0,\frac{1}{2}\big)&&&I_1&=\big[\frac{1}{2},1\big)\\
 		I_3&=\big[0,\frac{1}{4}\big)&\cdots&&I_6&=\big[\frac{3}{4},1\big)\\
@@ -1941,9 +1972,9 @@
 			$\Prb\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)=1$
 		\end{itemize}
 		Außerdem gilt das Lemma von Fatou \ref{0415fatou}: $\Epv\left(\liminf_{n\to\infty} X_n\right)\leq\liminf_{n\to\infty}\Epv(X_n)$, falls $X_n\geq 0$.\\
-		Setze nun $X_n=\chi_{\{\abs{S_n-c}<\epsilon\}}$. Dann ist
+		Setze nun $X_n=\cha_{\{\abs{S_n-c}<\epsilon\}}$. Dann ist
 		\begin{align*}
-		\liminf_{n\to\infty}(X_n\omega)=1&\Leftrightarrow \exists m\in\N:\forall n>m\chi_{\{\abs{S_n-c}<\epsilon\}}(\omega)=1\\
+		\liminf_{n\to\infty}(X_n\omega)=1&\Leftrightarrow \exists m\in\N:\forall n>m\cha_{\{\abs{S_n-c}<\epsilon\}}(\omega)=1\\
 		&\Leftrightarrow\abs{S_n-c}>\epsilon\text{ unendlich oft}\Leftrightarrow\limsup_{n\to\infty}\abs{S_n-c}<\epsilon
 		\end{align*}
 		Dann folgt (Fatou)
@@ -2023,7 +2054,7 @@
 	\end{definition}
 	
 	\begin{bem*}
-		In \ref{0512satzZentrGrenzw} verwenden wir $f(x)=\chi_{(-\infty,c]}(x)$. Da $f$ unstetig ist, gilt z.b. mit $\mu_n=\delta_{\frac{1}{n}}$, $g=\chi_{(-\infty,0]}$, $\mu=\delta_0$. Dann ist
+		In \ref{0512satzZentrGrenzw} verwenden wir $f(x)=\cha_{(-\infty,c]}(x)$. Da $f$ unstetig ist, gilt z.b. mit $\mu_n=\delta_{\frac{1}{n}}$, $g=\cha_{(-\infty,0]}$, $\mu=\delta_0$. Dann ist
 		\[\int f~d\mu_n=f\left(\frac{1}{n}\right)\xrightarrow{n\to\infty}f(0)\]
 		falls $f$ stetig differenzierbar bei $0$, aber $\int g~d\mu_n=0$, $\int g~d\mu=1$.
 	\end{bem*}
@@ -2048,7 +2079,7 @@
 			\item Zu $\epsilon>0$, $c\in\R$ wähle $f(x)=1\forall x\leq c$.\\
 			Dann ist
 			
-			\[\Prb_{\mu_n}\big((-\infty,c]\big)-\Prb_\mu\big((-\infty,c]\big)=\Epv_{\mu_n}\left(\chi_{(-\infty,c]-f}\right)\tag{\star}+\Epv_{\mu_n}(f)-\Epv_{\mu}(f)-\Epv_\mu\underbrace{\left(\chi_{(-\infty,c]}-f\right)}_{|\cdot|\leq\chi_{(-\infty,c]}}\]
+			\[\Prb_{\mu_n}\big((-\infty,c]\big)-\Prb_\mu\big((-\infty,c]\big)=\Epv_{\mu_n}\left(\cha_{(-\infty,c]-f}\right)\tag{\star}+\Epv_{\mu_n}(f)-\Epv_{\mu}(f)-\Epv_\mu\underbrace{\left(\cha_{(-\infty,c]}-f\right)}_{|\cdot|\leq\cha_{(-\infty,c]}}\]
 			Mit (i) folgt, $\delta$ existiert, sodass $|(\star)|\leq 2\epsilon+\abs{\Epv_{\mu_n}(f)-\Epv_{\Prb_X}\mu(f)}$.
 			Also ist $\limsup_{n\to\infty}\abs{(\star)}\leq 2\epsilon\forall\epsilon>0$.
 		\end{enumerate}
@@ -2200,7 +2231,7 @@
 	\end{bem*}
 
 	\begin{exm}
-		Sei $\Omega=[0,\infty)$, $\Prb_{(X,Y)}\theta=\frac{1}{\theta}\chi_{[0,\theta]}\cdot\la$. (Gleichverteilung auf $[0,\theta]$).\\
+		Sei $\Omega=[0,\infty)$, $\Prb_{(X,Y)}\theta=\frac{1}{\theta}\cha_{[0,\theta]}\cdot\la$. (Gleichverteilung auf $[0,\theta]$).\\
 		Modell: $(\Omega^n,\scF^{\otimes n},\Prb_\theta^{\otimes n})$. Schätze $\theta$ aus Daten $x_1,...,x_n$.\\
 		Mögliche Sätzer
 		\begin{enumerate}
@@ -2360,17 +2391,17 @@
 		&=\Prb_\theta\left(\frac{n-1}{\sigma^2}S^2>q_{1-\al/2}\right)\\
 		&=\Prb_{\chi^2_{n-1}}\left(Y>q_{1-\al/2}\right)=\al/2
 		\end{align*}
-		und $\Prb_\theta\big(f(\theta)>(n-1)^2\frac{S^2}{q_{\al/2}}\big)=...=\Prb_{\chi_{n-1}^2}(Y<q_{\al/2})=\frac{\al}{2}$.
+		und $\Prb_\theta\big(f(\theta)>(n-1)^2\frac{S^2}{q_{\al/2}}\big)=...=\Prb_{\cha_{n-1}^2}(Y<q_{\al/2})=\frac{\al}{2}$.
 	\end{proof}
 
 	\begin{bem}
 		\ref{0628prop} erscheint so also ob das Konfidenzintervall mit wachsendem $n$ größer wird. Kontraintuitiv!\\
 		Es gilt
-		\[\Prb_{\chi_n^2}(\mathrm{id}\leq c)=\Prb\left(\sum_{j=1}^{n}X_i\leq c\right)\]
+		\[\Prb_{\cha_n^2}(\mathrm{id}\leq c)=\Prb\left(\sum_{j=1}^{n}X_i\leq c\right)\]
 		mit $X-i\sim\Gamma_{\frac{1}{2},\frac{1}{2}}$ (siehe \ref{0327???}c).\\
 		Dann gilt $\Epv(X_i)=1$, $\Epv(X_i^2)=3$, also $\Var(X_i)=2$. Somit ist
 		\begin{align*}
-		\Prb_{\chi_{n-1}^2}\left((-\infty,c]\right)&=\Prb\left(\sum_{j=1}^{n}(X_j-1)\leq c-(n-1)\right)\\
+		\Prb_{\cha_{n-1}^2}\left((-\infty,c]\right)&=\Prb\left(\sum_{j=1}^{n}(X_j-1)\leq c-(n-1)\right)\\
 		&=\Prb\left(\frac{1}{\sqrt{n-1}}\sum_{j=1}^{n}(X_j)\leq\frac{c}{\sqrt{n-1}}-\sqrt{n-1}\right)
 		\end{align*}
 		ist nach dem Gesetz der Großen Zahlen $\sim\Nv(0,2)$ für große $n$.
