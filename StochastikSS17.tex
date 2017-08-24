@@ -65,6 +65,9 @@
 \newcommand{\scL}{\mathscr L}
 \newcommand{\scO}{\mathscr O}
 
+\newcommand{\Mltn}{\operatorname{M}}
+\newcommand{\Bin}{\operatorname{B}}
+\newcommand{\Hypg}{\operatorname{H}}
 \newcommand{\Ber}{\operatorname{Ber}}
 \newcommand{\Poi}{\operatorname{Poi}}
 \newcommand{\Exp}{\operatorname{Exp}}
@@ -552,20 +555,20 @@
 \setcounter{theorem}{4}
 
 \subsection{Urnenmodelle mit Reihenfolge, mit Zurücklegen}
-	\begin{exmlist}\label{0205exm}
+	\begin{exmlist}\label{0205aexm}
 		\begin{exm}[Einmal zeihen:]
 			 Bsp: Tulpenzwiebeln, $N$ Stück: $k_r$ rote, $k_g$ gelbe, $k_o$ orange.\\
 			 Dann ist $\Prb(\text{rot})=\frac{k_r}{N}$,...\\
 			 Allgemein: Menge der Merkmale $A=(a_1,...,a_m)$ mit $p_i=$Bruchteil der  \enquote{Kugeln} mit Merkmal $a_i$, sodass$\Prb(\{a_i\})=p_i$.\\
-			 Dann ist $\P$ eine Zähldichte mit $\sum_{i=1}^mp_i=1$.
-		\end{exm}
+			 Dann ist $\Prb$ eine Zähldichte mit $\sum_{i=1}^mp_i=1$.
+		\end{exm}\label{0205bexm}
 		\begin{exm}[$N$-Mal ziehen]\label{0205Bexm}
-			Anzahl der Ziehungen $N\in\N$, $\Omega=A^N$, $\P\big((a_{j_1},....,a_{j_N})\big):=p_{j_1}\cdot...\cdot p_{j_N}$, für $j_1,..., j_N\in\{1,...,m\}$ mit $p_1,...,p_m$ wie in 1.\\
+			Anzahl der Ziehungen $N\in\N$, $\Omega=A^N$, $\Prb\big((a_{j_1},....,a_{j_N})\big):=p_{j_1}\cdot...\cdot p_{j_N}$, für $j_1,..., j_N\in\{1,...,m\}$ mit $p_1,...,p_m$ wie in 1.\\
 			Modelliert $N$-mal \enquote{unabhängig} (siehe Kapitel 3) ziehen mit Zurücklegen.
 		\end{exm}
 	\end{exmlist}
 	\begin{definition}
-		Spezialfall von \ref{0205exm}: $A=\{0,1\}$, $p_1=p,p_0=1-p$.\\
+		Spezialfall von \ref{0205aexm}: $A=\{0,1\}$, $p_1=p,p_0=1-p$.\\
 		$1\hat{=}$\enquote{Erfolg}, $p_1\hat{=}$\enquote{Erfolgswahrscheinlichkeit}.\\
 		Dann kann für $\omega\in A^N$, $\omega=(\omega_1,...,\omega_N)$ schreiben:
 		\[\Prb(\{\omega\})=p^{\sum_{i=1}^N\omega_i}(1-p)^{\sum_{i=1}^N(1-\omega_i)}\]
@@ -576,26 +579,89 @@
 		Das zugehörige Wahrscheinlichkeitsmaß heißt $N$-faches \textbf{Produktmaß} von $\P$.
 	\end{definition}
 	\subsection{Urnenmodelle, ohne Reihenfolge, mit Zurücklegen}
-	\begin{exm*}
-		In Situation %TODO
+	\begin{exm}
+		In Situation \ref{0205bexm} nammt man an dass man die Anzahl der gezogenenen Kugeln pro ??? von Interesse ist.
 		Das ist ein \enquote{Aspekt} des Experiments, daher eine Zufallsvariable:
-		\[C:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\chi_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\chi_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\chi_{\{a_m\}}(a_{j_k})\right)\]
-		und
-		%TODO Rest der VL
-	\end{exm*}
-	
-	\begin{definition}
-		Sei $\la>0$. Das Wahrscheinlichkeitsmaß auf $\N_0$ mit Zähldichte $p_\la(k)=e^{-\la}\frac{\la^k}{k!}$ heißt \textbf{Poisson-Verteilung} zum Parameter $\la$. Schreibe $\Poi(\{k\}):=\Prb_{p_k}(\{k\})$.
+		\[X:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\chi_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\chi_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\chi_{\{a_m\}}(a_{j_k})\right)\]
+		(Jede Komponenten entspricht jeweils der Anzahl der gezogenen $a_i$). Nach der Definition des Produktmaßes ist
+		\begin{align*}
+		\Prb\big((n_1,...,n_m)\big)&=\Prb \left(X^{-1}\big(\{(n_1,...,n_m)\}\big)\right)\\
+		&=p_1^{n_1}p_2^{n_2}...p_m^{n_m}\cdot\text{\enquote{Anzahl der $N$-Tupel von Elementen aus $A$ mit $n_1$ mal $a_1$ und $n_2$ mal $a_2$ und...}}\\
+		&=\prod_{i=1}^{m}p_i^{n_i}\binom{N}{(n_1,...,n_m)}
+		\end{align*}
+		Dabei ist $\binom{N}{(n_1,...,n_m)}=\frac{N!}{n_1!n_2!...n_m!}$, falls $\sum_{i=1}^{m}n_i=N$ und $=0$ sonst.\\
+		Man nennt $X$ auch \enquote{\textbf{Histogramm}}.
+		%TODO Bild Histogramm
+	\end{exm}
+	\begin{definition}\label{0209adef}
+		Sei $p$ Zähldichte auf $A=\{a_1,...,a_m\}$. Dann heißt das Wahrscheinlichkeitsmaß $\Mltn_{n,p}$ auf $(\N^m,\potset(\N^m))$ mit
+		\[\Mltn\big(\{k_1,...,k_m\}\big)=\begin{cases}
+		0&\text{falls $k_1,...,k_m\neq N$}\\
+		\binom{N}{(k_1,...,k_m)}\prod_{i=1}^mp(a_i)^{k_i}&\text{sonst}
+		\end{cases}\]
+		\textbf{Multinormalverteilung} für $N$ Stichproben mit Ereigniswahrscheinlichkeiten $p(a_1),...,p(a_n)$ aus der Menge $\{a_1,...,a_m\}$.
+	\end{definition}
+	%TODO Counter
+	\addtocounter{theorem}{-1}
+	\begin{definition}\label{0209bdef}
+		Falls in \ref{0209adef} gilt, dass $A=\{0,1\}$ und $p(1)=p$, $p(0)=1-p$. \\
+		In diesem Fall heißt das Wahrscheinlichkeitsmaß $\Bin_{N,p}$ auf $\{0,1,...,N\}$ (oder auf $\N_0$) mit
+		\[B_{N,p}(\{k\})=\binom{N}{k}p^k(1-p)^{N-k}\]
+		\textbf{Binomialverteilung} für $N$ Vrsuche mit Erfolgswahrscheinlichkeit $p$.
 	\end{definition}
 	
+	\begin{exm}[Einfache Irrfahrt]
+		Sei $d=1$, es wird $N$ Schritte gegangen. Nach rechts mit Wahrscheinlichkeit $p$, nach links mit Wahrscheinlichkeit $1-p$.\\
+		Dann ist $X_n$ der Ort der Irrfahrt nach $n$ Schritten.\\
+		Die Sitation lässt sich Modellieren mit $\Omega=\{0,1\}^N$, 
+		\[\Prb\big((\omega_1,...,\omega_n)\big)=p^{\sum_{i=1}^N\omega_i}(1-p)^{\sum_{i=1}^{N}(1-\omega_i)}\]
+		Mit Bernoulli-Verteilung:
+		\[X_n(\omega)=2\sum_{i=1}^{N}\omega_i-N\]
+		Also ist $\frac{1}{2}(X_n+N)$ eine $B_{N,p}$ verteilte Zufallsvariable. Dann ist
+		\[\Prb(X_N=2k-N)=\Prb\big(\frac{1}{2}(X_n+N)=k\big)=\binom{N}{k}p^k(1-p)^{N-k}
+		\]
+		falls $0\leq l\leq N$.\\
+		Im Speziell für $p=1/2$ gilt
+		\[\Prb(X_n=2k-N)=\binom{N}{k}2^{-N}\]
+		Eine Gute Veranschaulichung ist das sogenannte \enquote{Galton-Brett},
+	\end{exm}
+
+
+	\subsection{Urnenmodelle ohne Zurücklegen}
+	\begin{exm}
+		Hierfür sei auf den Georgii verwiesen.
+	\end{exm}
+
+	\begin{definition}\label{0212def}
+		Sei $\Omega_0=\{1,...,m\}$ die Menge der \enquote{Merkmale} 
+		$k_1,...,k_m\in \N$ mit $\sum_{j=1}^{m}k_j=M\in\N$.\\
+		Modelliert man nun eine Urne mit $M$ Kugeln, davon $k_j$ mit Merkmal $j$, dann heißt für $N\in\N_0,N\leq M$ das Wahrscheinlichkeitsmaß auf
+		\[\ol{\Omega}=\left\{(n_1,...,n_m),n_i\leq k_i\forall i,\sum_{i=1}^{m}n_i=N\right\}\subseteq\N_0^m\]
+		mit der Zähldichte
+		\[\Hypg_{N,(k_1,...,k_m)}\big((n_1,...,n_m)\big)=\frac{1}{\binom{M}{N}}\prod_{i=1}^m\binom{k_i}{n_i}\]
+		\textbf{Hypergeometrische Verteilung} zu $N$ und $(k_1,...,k_m)$.\\
+		Modelliert man $N$-mal Ziehen ohne zurück legen mit $k_j$ Kugeln der Farbe $j$, dann bedeutet das Ereignis $\{n_1,...,n_m\}$, dass $n_i$ Kugeln der Farbe $k_i$ gezogen wurden.\\
+		Falls $\Omega_0=\{0,1\}$, dan ist $\ol{\Omega}=\{0,1,...,n\}$ und
+		\[\Hypg_{N,k_1,k_0}\big(\{n\}\big)=\frac{\binom{k_1}{n}\binom{k_0}{N-n}}{\binom{k_1+k_0}{N}}\]
+		Dabei ist $N$ die Anzahl der Ziehungen, $k_1$ die Anzahl der \enquote{Gewinne}, $k_0$ die Anzahl der \enquote{Nieten} im Topf und $n$ die Anzahl der gezogenen \enquote{Gewinne}.
+	\end{definition}
+
+	\begin{exm}[Lotto (6 aus 49)]
+		Sei $k_1=6$ die \enquote{angekreuzten Zahlen}, $k_0=43$. Dann gilt bei $6$-maligem Ziehen:
+		\[\Prb(\enquote{\text{4 richtige}})=\Hypg_{6,6,49}(4)=\frac{\binom{6}{4}\binom{43}{2}}{\binom{49}{6}}\approx9.686\cdot10^{-4}\]
+	\end{exm}
+
+	\begin{definition}\label{0214def}
+		Sei $\la>0$. Das Wahrscheinlichkeitsmaß auf $\N_0$ mit Zähldichte $p_\la(k)=e^{-\la}\frac{\la^k}{k!}$ heißt \textbf{Poisson-Verteilung} zum Parameter $\la$. Schreibe $\Poi(\{k\}):=\Prb_{p_k}(\{k\})$.
+	\end{definition}
+
+
 %VL 15.05.2017
-\setcounter{theorem}{14}
 
 	\begin{bem*}[Bedeutung der Poisson-Verteilung]
 		Modelliert die Anzahl der Erfolge, wenn $N=$Anzahl der Versuche $\to\infty$, $\Prb(\text{Erfolg pro Versuch})\xrightarrow{N\to\infty}0$, sodass $N\Prb(\text{Erfolg})\xrightarrow{N\to\infty}\la$.
 	\end{bem*}
-	%TODO COUNTER
-	\stepcounter{theorem}
+
 	\begin{definition}
 		Seien $(a_n),(b_n)\subseteq\R^+$ Folgen, dann heißen $(a_n),(b_n)$ zueinander \textbf{asymptotisch äquivalent}, falls $\lim\limits_{n\to\infty}\dfrac{a_n}{b_n}=1$.
 	\end{definition}
@@ -2519,6 +2585,16 @@
 		&=\Prb\big((X_1,X_2,...)\in A\big)
 		\end{align*}
 	\end{satz}
+%TODO Ist das der Beweis zu 7.8?
+	\begin{proof}
+		Sei $k\in\N$, $y_1,...,y_k\in E$. Dann ist \begin{align*}
+		&\Prb\big((x_0,...,x_{n-1})\in B,\,x_n=x,\, x_{n+1}=y_i\, \text{für alle $i\geq k$}\big)\\
+		=&\sum_{\omega_1,...,\omega_{n-1}\in B}p(z,\omega_1)p(\omega_1,\omega_2)...p(\omega_{n-2},\omega_{n-1})p(\omega_{n-1},x)p(x_1,y_1)p(y_1,y_2)....p(y_{k-1},y_k)\\
+		=&\Prb^k\big((x_1,...,x_{n-1})\in B,\,x_n=x\big)\Prb^x\big((x_1,...,x_k)=(y_1,...,y_k)\big)
+		\end{align*}
+		Daraus folgt die Behauptung für $A=\{v\in E^{\N_0}:(v_1,...=y_1,...,v_{k-1})\}$.\\
+		Nach der Definition der bedingten Wahrscheinlichkeit sind das alle Zylindermengen. Es folgt mit \ref{0112satz} die Behauptung.
+	\end{proof}
 
 	\begin{exm}[Ruin des Spielers]
 		Sei $X_n=$ Gewinng nach dem $n-$tenn Spiel, $E=\{-a,...,0,...,b\}$, $p(n,n+1)=p$, $p(n,n-1)=1-p$, falls $-a<n<b$.
