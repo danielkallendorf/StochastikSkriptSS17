@@ -152,24 +152,24 @@
 		\end{exm}
 	\end{exmlist}
 	
-	\begin{definition}
+	\begin{definition}\label{0103def}
 		Sei $\Omega$ eine abzählbare Menge.\\
 		Eine Abbildung $p:\Omega\to[0,1]$ mit $\sum_{\omega\in\Omega}p(\omega)=1$ heißt \textbf{Zähldichte} oder \textbf{Wahrscheinlichkeitsdichte} auf $\Omega$.
 	\end{definition}
 
-	\begin{definition}
+	\begin{definition}\label{0104def}
 		Man nennt dann $\Omega$ den \enquote{Ergebnisraum}, die \enquote{Grundmenge} oder \enquote{Grundgesamtheit}.\\
 		Ein spezielles $A\in\potset(\Omega)$ nennt man \enquote{Ergebnis} und falls $A=\{\omega\}$ \textbf{Elementarereignis}.
 	\end{definition}
 
-	\begin{definition}
+	\begin{definition}\label{0105def}
 		Sei $\Omega$ eine abzählbare Menge und $\potset(\Omega)$ die Potenzmenge, $p$ sei eine Zähldichte.\\
 		Dann heißt die Abbildung 
 		\[\Prb:\potset(\Omega)\to[0,1],A\mapsto \sum_{\omega\in A}p(\omega)\]
 		 das von $p$ erzeugte \textbf{Wahrscheinlichkeitsmaß} (kurz W-Maß).
 	\end{definition}
 	
-	\begin{bem}
+	\begin{bem}\label{0106bem}
 		Beachte: $p$ wird in der Notation unterdrückt. Alternativ schreibe $\Prb_p$.\\
 		Außerdem: Statt $\Prb(\{\omega\})$ wird oft $\Prb(\omega)$ geschrieben.
 	\end{bem}
@@ -219,7 +219,8 @@
 
 %VL 24.04.2017
 	\begin{exmlist}
-		\begin{exm}[Einfache Irrfahrt] Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
+		\begin{exm}[Einfache Irrfahrt]\label{0111aexm}
+			 Dimension $d$, $N$ Schritte. $\Omega=\{(x_0,x_1,...,x_N):X_j\in\Z^d\forall j, x_0=0,|x_{j+1}-x_j|=1\forall j\}$.\\
 			Also ist $|\Omega_N|=(2d)^N$, Setze $p(\omega=\frac{1}{(2d)^N})\forall\omega\in\Omega$.\\\\
 			Man kann nu folgende Fragestellungen formulieren:
 			\begin{enumerate}
@@ -354,7 +355,7 @@
 	\end{definition}
 
 %VL 25.04.2017
-	\begin{definition}
+	\begin{definition}\label{0120def}
 		Sei $\Omega,\scF$ ein messabere Raum. Eine Abbildung $\Prb:\scF\to [0,1]$ heiß \textbf{Wahrscheinlichkeitsmaß} (W-Maß) auf $\scF$ (teilweise auch \enquote{auf $\Omega$}), falls
 		\begin{enumerate}[label=\alph*)]
 			\item $\Prb(\Omega)=1$
@@ -363,14 +364,14 @@
 	Dann heißt $\Omega,\scF,\Prb$ \textbf{Wahrscheinlichkeitsraum}.
 	\end{definition}
 
-	\begin{exm}
-		Sei $(\Omega,\scF,\P)=(\R,\Bor(\R),\delta_x)$. Dabei ist $\Prb(A)=\begin{cases}
+	\begin{exm}\label{0122exm}
+		Sei $(\Omega,\scF,\Prb)=(\R,\Bor(\R),\delta_x)$. Dabei ist $\Prb(A)=\begin{cases}
 		1;&\text{falls $x\in A$}\\0,&\text{sonst}.
 		\end{cases}$ ein Wahrscheinlichkeitsmaß auf $\Bor(\R)$. \\
 		Es Modelliert ein \enquote{Zufalls}-Experiment, welches sicher $x$ ergibt.
 	\end{exm}
 
-	\begin{satz}[Eigenschaften von Wahrscheinlichkeitsmaßen]
+	\begin{satz}[Eigenschaften von Wahrscheinlichkeitsmaßen]\label{0122satz}
 	Sei $(\Omega,\scF,\Prb)$ ein Wahrscheinlichkeitsraum und $A,B,A_1,A_2,...\in\scF$. Dann ist
 	\begin{enumerate}[label=\alph*)]
 		\item $\Prb(\emptyset)=0$
@@ -387,17 +388,111 @@
 	\begin{proof}
 		\begin{enumerate}[label=\alph*)]
 			\item $\Prb(\emptyset)=\Prb\left(\bigcup_{n=1}^\infty \emptyset\right)=\sum_{n=1}^{\infty}\Prb(\infty)$. Also $\Prb(\emptyset)=0$
-			\item Falls $A\cap B=\emptyset$, dann ist $\Phi(A\cup B)=\Prb(A)+\Prb(B)-\Prb(\emptyset)=\Prb(A)+\Prb(B)$.\\
-			Sei nun $A\cap B\neq\emptyset$. 
+			
+			\item Falls $A\cap B=\emptyset$, dann ist 
+			\[\Prb(A\cup B)=\Prb(A\cup B\cup\emptyset\cup...\cup\emptyset)=\Prb(A)+\Prb(B)+0\]
+			Sei nun $A\cap B\neq 0$. Allgemein gilt
+			\begin{align*}
+			\Prb(A)&=\Prb(A\setminus B)+\Prb(A\cap B)\\
+			\Prb(B)&=\Prb(B\setminus A)+\Prb(B\cap A)
+			\end{align*}
+			Außerdem gilt für disjunkte $A,B$
+			\begin{align*}
+			\Prb(A\cup B)&=\Prb\big((A\setminus B)\cup(B\setminus A)\cup(A\cap B)\big)\\
+			\text{disjunkte Mengen}\,&=\Prb(A\setminus B)+\Prb(B\setminus A)+\Prb(A\cap B)\\
+			&=\Prb(A)-\Prb(A\cap B)+\Prb(B)-\Prb(B\cap A)+\Prb(A\cap B)\\
+			&=\Prb(A+\Prb(B)-\Prb(A\cap B)
+			\end{align*}
+			
+			\item Aus $A\subseteq B$ folgt, dass 
+			\[\Prb(B)=\Prb(A)+\Prb(B\setminus A)\]
+			Dabei ist $\Prb(B\setminus A)\geq 0$, also $\Prb(B)\geq \Prb(A)$.
+			
+			\item Sei $B_i:= A_I\setminus\left(\bigcup_{j=1}^{i-1}A_j\right)$.\\
+			Dann gilt für alle $N\in\N$, dass
+			\begin{align*}
+			\bigcup_{i=1}^N A_i=\bigcup_{i=1}^N B_i
+			\end{align*}
+			Da die $B_i$ disjunkt sind gilt
+			\[\Prb\left(\bigcap_{i=1}^\infty A_i\right)=\Prb\left(\bigcap_{i=1}^\infty B_i\right)\overset{\ref{0120def}b)}{=}\sum_{i=1}^{\infty}\Prb(B_i)\overset{B_i\subseteq A_i}{\leq}\sum_{i=1}^{\infty}\Prb(A_i)\]
+			
+			\item Aus $A_n\nearrow$ folgt, dass $A_n=\bigcup_{i=1}^nA_i\setminus A_{i-1}$ als disjunkte Vereinigung darstellen lässt. Somit ist
+			\begin{align*}
+			\Prb(A)&=\sum_{i=1}^{\infty}A_i\setminus A_{i-1}
+			=\liminf_{n\to\infty}\sum_{i=1}^{n}\Prb(A_i\setminus A_{i-1})\\
+			\text{mit \ref{0120def}b)}&=\liminf_{n\to\infty}\Prb\left(\bigcup_{i=1}^n A_i\setminus A_{i-1}\right)=\liminf_{n\to\infty}\Prb(A_n).
+			\end{align*}
+			Falls $A_n\searrow A$ analog durch betrachten der Komplemente.
 		\end{enumerate}
-		%TODO
 	\end{proof}
+	
+	\begin{bem*}[Frage]
+		Wie kann man überprüfen ob zwei Wahrscheinlichkeitsmaße $\Prb,\tilde{\Prb}$ gleich sind?\\
+		Nach Definition ist $\Prb=\tilde{\Prb}\Leftrightarrow\Prb(A)=\tilde\Prb(A)$ für alle $A\in\scF$.\\
+		Da $\scF$ oft sehr groß ist eigene sich die folgenden Sätz besser:
+	\end{bem*}
 
-%TODO
+	\begin{definition}\label{0123adef}
+		Sei $\scF$ eine $\sigma$-Algebra, $\scG\subset\scF$ ein Mengensystem.\\
+		$\scG$ heißt \textbf{Erzeuger} von $\scF$, falls $\sigma(\scG)=\scF$.
+	\end{definition}
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{definition}\label{0123bdef}
+		Ein Mengensystem $\scG$ heißt \textbf{schnitt-stabil} ($\cap$-stabil), falls für alle $A,B\in\scG$ auch $A\cap B\in \scG$.
+	\end{definition}
+
+	\begin{satz}\label{0124satz}
+		Sei $\scF$ eine $\sigma$-Algebra, $\scG\subset \scF$ ein $\cap$-stabiler Erzeuger von $\scF$. Dann gilt für zwei Wahrscheinlichkeitsmaße $\Prb,\tilde\Prb$ auf $\scF$:\\
+		Falls $\Prb(A)=\tilde\Prb(A)$ für alle $A\in\scG$, dann gilt $\Prb(A)=\tilde\Prb(A)$ für alle $A\in\scF$, also $\Prb=\tilde\Prb$.
+	\end{satz}
+
+	\begin{exmlist}
+		\begin{exm}
+			Sei $\scF=\Bor(\R)$, $\Prb,\tilde\Prb$ Wahrscheinlichkeitsmaße auf $\scF$. Dann folgt aus $\Prb\big((-\infty,x]\big)=\tilde\Prb\big((-\infty,x]\big)$ für alle $x\in\R$, dass $\Prb=\tilde\Prb$.
+		\end{exm}
+	
+		\begin{exm}\label{0125bexm}
+			Seien $\scE_j$ $\digamma$-Algebren und sei $\scF=\bigotimes_{j=1}^\infty\scE_j$.\\
+			Nach Definition ist das System der Zylindermengen $Z$ ein Erzeuger von $\scF$, aber nicht $\cap$-stabil.\\
+			Das System $\tilde Z$ der Mengen der Form
+			\[A=\left\{w=(e_1,e_2,...,)\mid e_{j_1}\in B_{j_1},..., e_{j_m}\in B_{j_m}\right\}=(\star)\]
+			mit $m\in\N$, $j_1,...,j_m\in\N$, $B_{j_1}\in \scE_{j_1},...,B_{j_m}\in\scE_{j_m}$ beliebig.
+			Dann ist
+			\[\left\{\{\underbrace{\omega=(e_1,e_2,...)}_{=(\star)}\}\mid m\in\N,j_1,...,j_m\N,B_{j_1}\in\scE_{j_1},...,B_{j_m}\in\scE_{j_m}\right\}\]
+			ein $\cap$-stabiler Erzeuger (heißt auch \textbf{Zylindermenge}).\\
+			$\tilde Z$ entsteht aus $Z$ durch bildung aller endlichen Schnitte. auf $\tilde Z$ gilt daher \ref{0124satz}.
+		\end{exm}
+	
+		\begin{exm}[Unendlich oft wiederholter Münzwurf]
+			Sei 
+		\begin{align*}
+			\Omega&=\bigtimes_{i=1}^\infty\{0,1\}=\big\{(a_1,a_2,...),a_i\in\{0,1\big\}\\
+			\scF&=\bigotimes_{i=1}^\infty\potset\big(\{0,1\}\big)\\
+			\tilde Z&=\left\{\left\{(a_1,a_2,...)\mid a_{j_1}=\ol{a_1},...,a_m=\ol{a_{j_m}}\right\}\mid m\in\N,j_1,...,j_m\in\N,\ol{a_1},...,\ol{a_m}\in\{0,1\}\right\}\\
+			&=\text{\enquote{Kenntnis endlich vieler Ergebnisse}}
+		\end{align*}
+		und $\Prb,\tilde \Prb$ Wahrscheinlichkeitsmaße auf $\scF$.\\
+		Dann gilt $\Prb=\tilde\Prb$ genau dann wenn $\Prb(A)=\tilde{\Prb}(A)$ für alle $A\in\tilde Z$.
+		\end{exm}
+	
+		\begin{exm*}[Verallgemeinerung von \ref{0125bexm}]
+			Jeder Erzeuger $\scG$ kann zu einem $\cap$-stabiler Erzeuger vergrößert werden, indem man alle Durchschnitte $A_1\cap...\cap A_m$ für alle $A_i\in\scG$ und für alle $m\in\N$ hinzu nimmt.
+		\end{exm*}
+	\end{exmlist}
+
+	\begin{bem}\label{0126bem}
+		Sei $f:\R^n\to[0,\infty]$ eine Funktion und es gelte $\{x\in\R^n,f(x)\leq c\}\in\Bor(\R^n)$. (Dabei ist $\Bor(\R^n)=\bigotimes_{i=1}^n\Bor(\R)$.)\\
+		Dann nennt man $f$ Borel-Messbar und das Lebesguq-Intgeral $\int f(x)dx\in\R$ existiert.\\
+		Es gilt
+		\begin{enumerate}
+			\item $\int_{\R^n}f(x) dx$ ist gleich dem Riemann-Integral, falls $f$ Riemann integrierbar ist.
+			\item Für eine Folge $(f_k)_{k\in\N}$ Borel-Messbarer Funktionen mit $f_{k+1}(x)\geq f_k(x)$ für alle $x$ (monotone Folge) gilt
+			\[\int_{\R^n}\lim_{k\to\infty}f_k(x)~dx=\lim_{k\to\infty}\int_{\R^n}f_n(x)~dx\]
+		\end{enumerate}
+	\end{bem}
 
 %VL 02.05.2017
-\setcounter{theorem}{26}
-
 	\begin{definition}
 		Die Abbildung $\la:\Bor(\R^n)\to[0,\infty], A\mapsto\int_{\R^n}\cha_A(x)~dx=\la(A)$ heißt \textbf{Lebesgue-Maß}
 	\end{definition}
@@ -432,7 +527,7 @@
 	\end{rem*}
 
 	\begin{exmlist}
-		\begin{exm}[2 mal Würfeln, Würfelsumme]
+		\begin{exm}[2 mal Würfeln, Würfelsumme]\label{0132aexm}
 			Sei $\Omega:\{1,2,3,4,5,6\}\times\{1,2,4,5,6\}$. $\omega=(\omega_1,\omega_2)$. Der zu betrachtende Aspekt: $S(\omega_1,\omega_2)=\omega_1+\omega_2\in\{2,3,...,12\}\neq \Omega$.
 		\end{exm}
 		\begin{exm}
@@ -469,7 +564,7 @@
 
 	\begin{exm*}
 		In 1.32.1 \ref{0132a} ist $S^{-1}(\{4\})=\{(1,3),(2,2),(3,1)\}$.\\
-		In 1.32.1 \ref{0132a} ist $Y_1^{-1}(\{3,7\})=[0,3,0,4)\cup[0,7,0,8)$ %TODO ???
+		In 1.32.1 \ref{0132a} ist $Y_1^{-1}(\{3,7\})=[0,3,0,4)\cup[0,7,0,8)$
 	\end{exm*}
 
 	\begin{bem*}
@@ -549,7 +644,7 @@
 	\end{bem}
 
 %VL 08.05.2017
-%TODO
+%TODO VL 08.05.2017
 
 %VL 09.05.2017
 \setcounter{section}{2}
@@ -562,8 +657,8 @@
 			 Dann ist $\Prb(\text{rot})=\frac{k_r}{N}$,...\\
 			 Allgemein: Menge der Merkmale $A=(a_1,...,a_m)$ mit $p_i=$Bruchteil der  \enquote{Kugeln} mit Merkmal $a_i$, sodass$\Prb(\{a_i\})=p_i$.\\
 			 Dann ist $\Prb$ eine Zähldichte mit $\sum_{i=1}^mp_i=1$.
-		\end{exm}\label{0205bexm}
-		\begin{exm}[$N$-Mal ziehen]\label{0205Bexm}
+		\end{exm}
+		\begin{exm}[$N$-Mal ziehen]\label{0205bexm}
 			Anzahl der Ziehungen $N\in\N$, $\Omega=A^N$, $\Prb\big((a_{j_1},....,a_{j_N})\big):=p_{j_1}\cdot...\cdot p_{j_N}$, für $j_1,..., j_N\in\{1,...,m\}$ mit $p_1,...,p_m$ wie in 1.\\
 			Modelliert $N$-mal \enquote{unabhängig} (siehe Kapitel 3) ziehen mit Zurücklegen.
 		\end{exm}
@@ -577,11 +672,11 @@
 	\end{definition}
 	\begin{definition}
 		Die Zähldichte $\ol p:A\times ...\times A\to [0,1]$, $\ol p(a_1,...,a_n)\mapsto \Prb(\{a_1\})\cdot...\cdot\Prb(\{a_n\})=p_1\cdot...\cdot p_n$ aus \ref{0205Bexm} heißt $N$-fache \textbf{Produktdichte} der Zähldichte $p:A\to[0,1], a_j\mapsto p(a_j)=p_j$.\\
-		Das zugehörige Wahrscheinlichkeitsmaß heißt $N$-faches \textbf{Produktmaß} von $\P$.
+		Das zugehörige Wahrscheinlichkeitsmaß heißt $N$-faches \textbf{Produktmaß} von $\Prb$.
 	\end{definition}
 	\subsection{Urnenmodelle, ohne Reihenfolge, mit Zurücklegen}
 	\begin{exm}
-		In Situation \ref{0205bexm} nammt man an dass man die Anzahl der gezogenenen Kugeln pro ??? von Interesse ist.
+		In Situation \ref{0205bexm} nimmt man an dass man die Anzahl der gezogenen Kugeln pro Merkmal von Interesse ist.
 		Das ist ein \enquote{Aspekt} des Experiments, daher eine Zufallsvariable:
 		\[X:A^N\mapsto \N_0^m,\quad (a_{j_1},....,a_{j_N})\mapsto\left(\sum_{k=1}^{N}\cha_{\{a_1\}}(a_{j_k}),\sum_{k=1}^{N}\cha_{\{a_2\}}(a_{j_k}),...,\sum_{k=1}^{N}\cha_{\{a_m\}}(a_{j_k})\right)\]
 		(Jede Komponenten entspricht jeweils der Anzahl der gezogenen $a_i$). Nach der Definition des Produktmaßes ist
@@ -822,7 +917,7 @@
 		Für festes $B\in\scF$ heißt die Zahl $\Prb(B|A):=\Prb_A(B)=\frac{\Prb(A\cap B)}{\Prb(A)}$ die \textbf{bedingte Wahrscheinlichkeit} von $B$ unter der Bedingung $A$.
 	\end{definition}
 
-	\begin{prop}
+	\begin{prop}\label{0302prop}
 		$\Prb_A$ ist das eindeutige Wahrscheinlichkeitsmaß auf $(\Omega,\scF)$ mit den Eigenschaften 
 		\begin{enumerate}[label=(\roman*)]
 			\item $\Prb_A(A)=1$
@@ -841,7 +936,7 @@
 	\end{proof}
 
 	\begin{bem}
-		$\Prb_A$ modelliert die Situation, dass wir wissen, dass $A$ sicher eintritt. $\Prb_A$ beschreibt das Modell welches diese Information berücksichtigt (\ref{0302}(i)), aber sonst möglichst wenig ändert (\ref{0302}(ii)).
+		$\Prb_A$ modelliert die Situation, dass wir wissen, dass $A$ sicher eintritt. $\Prb_A$ beschreibt das Modell welches diese Information berücksichtigt (\ref{0302prop}(i)), aber sonst möglichst wenig ändert (\ref{0302prop}(ii)).
 	\end{bem}
 	
 	\begin{exm*}
@@ -1075,7 +1170,7 @@
 	\end{proof}
 
 	\begin{exm}
-		Punkt auf Kreisscheibe: Winkel und Radius unabhängig %TODO
+		Punkt auf Kreisscheibe: Winkel und Radius unabhängig %TODO Bsp 3.17: 23.05.2017
 	\end{exm}
 	
 	\begin{figure}[h]
@@ -1214,9 +1309,10 @@
 	\begin{exmlist}
 		\begin{exm}
 			Sei $X\sim\Nv_{\mu,\nu}$ und $Y\sim\Nv_{\mu',\nu'}$, dann ist $X+Y\sim\Nv_{\mu+\mu',\nu+\nu'}$
+			%TODO Bsp 3.27: 29.05.2017
 		\end{exm}
 	\end{exmlist}
-	%TODO
+	
 	%TODO COUNTER
 	
 	\begin{exm}
@@ -1275,9 +1371,9 @@
 		für alle $a\leq b$.
 	\end{exm}
 	
-%TODO Kolmogorov
-	\begin{satz}
-		
+
+	\begin{satz}[Kolmogorov]
+		%TODO Satz 3.34: 30.05.2017
 	\end{satz}
 
 	\begin{bem*}
@@ -1650,7 +1746,7 @@
 			\item Für $p=\infty$ gilt  $\Epv(\abs{XY})\leq\Epv(\norm{X}_\infty \abs{Y})=\norm
 			X_\infty\norm{Y}_1$.\\
 			Für $p<\infty$: Falls $\norm{X}_p=0$, dann folgt für $c>0$ aus d), dass $\Prb(|X|>c)\leq\norm{X}_p^{p}(c^p)=0$. Somit its
-			\[\Prb(\abs{X}>0)=\Prb\left(\bigcap_{n\in\N}\{\omega:X(\omega)>\frac{1}{n}\}\right)\overset{\ref{0122e}}{=}\lim\limits_{n\to\infty}\Prb(X\geq 1/n)=0\]\\
+			\[\Prb(\abs{X}>0)=\Prb\left(\bigcap_{n\in\N}\{\omega:X(\omega)>\frac{1}{n}\}\right)\overset{\ref{0122satz}e)}{=}\lim\limits_{n\to\infty}\Prb(X\geq 1/n)=0\]\\
 			Es folgt, dass $\Epv(|XY|)=\Epv(|XY|\cha_{\{\abs{X}>0\}})=0$, sodass die Ungleichung gilt (als Gleichung).\\
 			Sei $\norm{X}_p>0$. Da in der Behauptung nur Beträge vorkommen können wir o.b.d.A. annehmen, dass $X>0$ und $Y\geq 0$ ist. Sei nun das Wahrscheinlichkeitsmaß $\tilde P$ auf $\Omega$ definiert als
 			\[\tilde{P}(A):=\Prb\left(\cha_A\frac{X^p}{\Epv(X^p)}\right).\]
@@ -1848,7 +1944,7 @@
 	\begin{satz}[Schwache Gesetz der großen Zahlen (GGZ), Basisversion]\label{0502satzGGZschwach}
 		Seien $(X_i)$ uiv, reelle Zufallsvariable mit $\Var(X_i)<\infty$.\\
 		Dann ist für alle $\epsilon>0$
-		\[\lim\limits_{n\to\infty}\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}\geq \epsilon\right)=0\]
+		\[\lim\limits_{n\to\infty}\Prb\left(\abs{\frac{1}{n}\sum_{i=1}^{n}X_i-\Epv(X_1)}\geq \epsilon\right)=0 \autotag\label{eq:0501}\]
 	\end{satz}
 	\begin{proof}
 		Setze $Y_n=\frac{1}{n}\sum_{i=1}^{n}X_i$, dann ist 
@@ -1897,7 +1993,7 @@
 	\underbrace{\left\{\omega\in\Omega:\abs{\frac{1}{n}\sum_{i=1}^{n}Z_i(\omega)-\Epv(Z_i)}\geq\frac{\epsilon}{2}\right\}}_{C_n}
 	\end{align*}
 	und damit $\Prb(A_n)\leq\Prb(B_n)+\Prb(C_n)$.\\
-	Wegen \ref[a)]{0318satz} sind auch die $Y_i$ paarweise unabhängig. Sei nun $\ol{Y}_n:=\frac{1}{n}\sum_{i=1}^{n}Y_i$, dann ist
+	Wegen \ref{0318satz}a) sind auch die $Y_i$ paarweise unabhängig. Sei nun $\ol{Y}_n:=\frac{1}{n}\sum_{i=1}^{n}Y_i$, dann ist
 	\begin{align*}
 	\Prb(B_n)&=\Prb\left(\abs{\ol{Y}_n-\Epv(\ol{Y}_n)}\geq \frac{\epsilon}{2}\right)\overset{\ref{0428intUngl}d)}{\leq}\frac{4}{\epsilon^2}\Var(\ol{Y}_n)=\frac{4}{\epsilon^2}\frac{1}{n^2}\sum_{i=1}^{n}\Var(Y_i)\\
 	&\leq\frac{4}{n^2\epsilon^2}\sum_{i=1}^{n}\Epv(Y_i^2)\leq\frac{4}{n^2\epsilon^2}\sum_{i=1}^{n}\sqrt{i}\leq\frac{4}{\epsilon^2n^2}n\sqrt{n}=4\frac{\epsilon^2}{\sqrt{n}}\xrightarrow{n\to\infty}0
@@ -1931,11 +2027,16 @@
 	\end{exm}
 	
 	\begin{bem*}
-		%TODO
+		Bisher haben wir immer $\Prb(\abs{\ol S_n-m}>\epsilon)\xrightarrow{n\to\infty}0$ gezeigt (Für $\ol S_n=\frac{1}{n}\sum_{j=1}^{n}X_j$ und $m=\Epv(X_j)$). Wir schreiben nun $X_N\xrightarrow{\Prb}Y$ genau dann wenn frü alle $\epsilon>0$ $\lim\limits_{n\to\infty}\Prb(\abs{X_1-Y}>\epsilon)=0$. Man spricht von \textbf{Stochastischer Konvergenz} oder \textbf{Konvergenz in der Wahrscheinlichkeit}.\\
+		Dan bedeutet, zu jedem \enquote{Zeitpunkt} $n\in\N$ hat $B_n:=\{\omega\in\Omega:\abs{\ol S_n-m}>\epsilon\}$ Maß welches mit $n\to\infty$ verschwindet.\\
+		\\
+		In der Praxis (z.B. Glücksspiel) verfolgen wir aber oft die ZEitliche entwocklung für \underline{ein} $\omega\in\Omega$.\\
+		Es ist möglich, dass $\lim\limits_{n\to\infty}\Prb(B_n)>0$ ist aber troztdem $\limsup_{n\to\infty}\abs{\ol S_n(\omega)-m}=1$ für alle $\omega\in\Omega$:
+		
 	\end{bem*}
 
 %VL 26.07.2017
-	\begin{exm}
+	\begin{exm}[Wandernder Dorn]
 		Sei $\Omega=[0,1)$ mit dem Lebesgue-Maß, Sei $X_i(\omega)=\cha_{I_i}(\omega)$. für $i=1,...,15$ mit
 		\begin{align*}
 		I_1&=\big[0,\frac{1}{2}\big)&&&I_1&=\big[\frac{1}{2},1\big)\\
@@ -1953,8 +2054,6 @@
 	\end{exm}
 
 	\begin{definition}\label{0507def}
-		%TODO Counter (5.1 markieren)
-		\stepcounter{equation}
 		Seien $(S_n)$ Zufallsvariablen. Man sagt für $c\in\R$, dass $S_n$ \underline{konvergiert $\Prb$ fast sicher} ($S_n\xrightarrow{n\to\infty}c$), wenn \[\Prb\left(\lim\limits_{n\to\infty} S_n=c\right)=1\autotag\label{eq:0502}\]
 	\end{definition}
 	
@@ -1962,7 +2061,7 @@
 		Setze $\Omega_m:=\{\omega\in\Omega:\limsup_{n\to\infty}\abs{S-n-c}<\frac{1}{m}\}$.\\
 		Da $\Omega_{m+1}\subseteq\Omega_m$, also 
 		\[\Omega_\infty:=\left\{\omega\in\Omega:\limsup_{n\to\infty}S_n=c\right\}\]
-		mit \ref{0122}e). Dann gilt
+		mit \ref{0122satz}e). Dann gilt
 		\[\Prb\left(\limsup_{n\to\infty} S_n=c\right)=1\Leftrightarrow \forall\epsilon>=:\Prb\left(\limsup_{n\to\infty}\abs{S_n-c}<\epsilon\right)=1\tag{\star\star\star}\label{0507defEq}\]\\
 		\\
 		Daher besteht der Unterschied zwischen \ref{eq:0501} und \ref{eq:0502} in der Platzierung der Grenzwerts: $\forall\epsilon,c>0$
@@ -2106,7 +2205,7 @@
 		&-f\big(\ol S_n(\omega)\big)-f\big(\ol T_n\big)\\
 		=&\sum_{i=1}^{n}\left[f\left (\frac{1}{\sqrt{n}}\left(\sum_{j=1}^{i}X_j(\omega)+\sum_{j=i+1}^{n}Y_j(\omega)\right)\right)
 		-f\left(\frac{1}{\sqrt{n}}\left(\sum_{j=1}^{i-1}X_j(\omega)+\sum_{j=i}^{Y_j(\omega)}\right)\right)\right]\\
-		=&\sum_{i=1}^{n}f %TODO
+		=&\sum_{i=1}^{n}f %TODO Ende VL 27.06.2017
 		\end{align*}
 	\end{proof}
 
@@ -2332,7 +2431,7 @@
 		\end{enumerate}
 	\end{lem}
 	
-	%VL 10.07.2017
+%VL 10.07.2017
 	\begin{prop}\label{0625prop}
 		Sei $\big(\Omega^n,\scF^{\otimes n},(\Prb_\theta^{\otimes n})_{\theta\in\R}\big)$ statistisches Modell mit $\Prb_\theta=\Nv(\theta,\sigma^2)$, wobei $\sigma^2$ bekannt und fest. Sei $q_{1-\frac{\al}{2}}$ das $1-\frac{\al}{2}$-Quantil von $\Nv(0,1)$. Dann ist die Abbildung
 		\[K:\Omega^n\to\potset(\R):x\mapsto
@@ -2366,12 +2465,13 @@
 	\end{exm}
 
 	\begin{definition}
-		Inhalt...
+		%TODO Def 6.27: VL 10.07.2017
 	\end{definition}
-	%COUNTER
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
 	\begin{satz}
 		Seien $X-1,...,X_n$ uiv und $X_1\sim\Nv(\mu,\sigma)$. Dann ist $M(x)=\dfrac{1}{n}\sum_{i=1}^{n}X_i(\omega)$, $S^2(\omega)=\dfrac{1}{1-n}\sum_{i=1}^{n}\big(X_i(\omega)-M(\omega)\big)$.
-		%TODO
+		%TODO Satz 6.27: VL 10.07.2017
 	\end{satz}
 
 	\begin{bem*}
@@ -2405,7 +2505,7 @@
 		&=\Prb\left(\frac{1}{\sqrt{n-1}}\sum_{j=1}^{n}(X_j)\leq\frac{c}{\sqrt{n-1}}-\sqrt{n-1}\right)
 		\end{align*}
 		ist nach dem Gesetz der Großen Zahlen $\sim\Nv(0,2)$ für große $n$.
-		%TODO
+		%TODO Rest der VL 10.07.2017
 	\end{bem}
 
 %VL 11.07.2017
@@ -2710,14 +2810,14 @@
 		&\overset{\ref{0304satz}a)}{=}\Prb^x(\exists N\in\N:\forall n\geq N:X_{n+1}=z)=h_z(x)
 		\end{align*}
 		\item $h_z$ ist maximale. Sei $\tilde h>\geq 0$, $\tilde h(x)=1$ und $P\tilde h=\tilde h$, dann ist
-		\[\tilde h(x)=P^n\tilde h(x)=\sum_{x\in E}P^n(x,y)\tilde h(y)\geq ...\] %TODO
+		\[\tilde h(x)=P^n\tilde h(x)=\sum_{x\in E}P^n(x,y)\tilde h(y)\geq ...\] %TODO Bew Gl 7.5: VL 18.07.2017
 	\end{enumerate}
 	\end{proof}
 	
 	\begin{bem}
 		für $z\in E_0\subset E$ ($\phi$ beliebige Funktion) und $Ph(y)=h(y)\forall y\notin E_0$. 
 	\end{bem}
-	%TODO
+	%TODO Bem 7.14 VL 18.07.2017
 	
 	\begin{exm}[Galton-Watson-Verzweigungsprozess]
 		Sei $n$ die Anzahl der Individuen, jedes davon bekommt $k$ Kinder mit Wahrscheinlichkeit $\rho(k)$ und stirbt dann.
@@ -2741,7 +2841,7 @@
 					\item[$n=0$] stimmt
 					\item[Induktionsschritt]:
 					\begin{align*}
-					%TODO
+					%TODO Bew 7.15 VL 18.07.2017
 					&=\sum_{\substack{l_1,...,l_k=0\\\sum_{i=1}^{k}l_i=l}}^{\infty}\rho(l_1)...\rho(l_k)\underbrace{\Prb^l(X_n=0)}_{\text{IndV.}=\Prb^1(X_n=0)^l}\\
 					&=\sum_{l_1,...,l_k=0}^{\infty}\rho(l_1)...\rho(l_n)\left(\Prb^1(X_n=0)\right)^{l_1+l_2+...+l_k}\\
 					&=\left(\sum_{l=0}^{\infty}p(1,l)\Prb^l(X_n=0)\right)^k\\
