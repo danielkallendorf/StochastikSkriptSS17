@@ -51,7 +51,7 @@
 \newcommand{\Kern}{\operatorname{Kern}}
 \newcommand{\Img}{\operatorname{Im}}
 
-\newcommand{\potset}{\mathscr P}
+\newcommand{\Potset}{\mathscr P}
 \newcommand{\Prb}{\mathbb P}
 \newcommand{\Epv}{\ensuremath{\mathbb{E}}}
 \newcommand{\Var}{\mathbb{V}}
@@ -127,15 +127,15 @@
 		Konzept & mathematisches Objekt & Symbol\\ \hline
 		\enquote{Alle denkbaren Ergebnisse eines zufälligen Geschehens} & Menge & $\Omega$\\
 		Wahrscheinlichkeit,dass $\omega\in\Omega$ beobachtet wird & Abbildung $\Omega\to[0,1]$ &\\
-		Alle denkbaren Ja-Nein-Fragen, die zum zufälligen Geschehen gestellt werden können & Potenzmenge von $\Omega$ & $\potset(\Omega)$\\
-		Wahrscheinlichkeit, dass die zu $a\in\potset(\Omega)$ gehörige Frage mit ``ja'' beantwortet wird. & Abbildung $\potset(\Omega)\to [0,1]$ & $\Prb$
+		Alle denkbaren Ja-Nein-Fragen, die zum zufälligen Geschehen gestellt werden können & Potenzmenge von $\Omega$ & $\Potset(\Omega)$\\
+		Wahrscheinlichkeit, dass die zu $a\in\Potset(\Omega)$ gehörige Frage mit ``ja'' beantwortet wird. & Abbildung $\Potset(\Omega)\to [0,1]$ & $\Prb$
 	\end{tabularx}
 	\end{rem}
 	
 	\begin{exmlist}
 		\begin{exm}[6-Seitiger Würfel]
 			$\Omega=\{1,2,3,4,5,6\}$ und $\foreach \i in {1,...,6} {p(\i)=}\frac{1}{6}$.\\
-			Ein Beispiel für eine Ja-Nein-Frage: \enquote{Ist die gewürfelte Zahl durch $3$ teilbar?} dann ist $A\in\potset(\Omega):A=\{3,6\}$ und $\Prb(A)=\frac{1}{3}$.
+			Ein Beispiel für eine Ja-Nein-Frage: \enquote{Ist die gewürfelte Zahl durch $3$ teilbar?} dann ist $A\in\Potset(\Omega):A=\{3,6\}$ und $\Prb(A)=\frac{1}{3}$.
 		\end{exm}
 		\begin{exm}
 			Speziell zufälllige natürliche Zahl: $\Omega=\N$, $p(1)=\frac{1}{2},p(2)=\frac{1}{4},...,p(n)=2^{-n}$.\\
@@ -159,13 +159,13 @@
 
 	\begin{definition}\label{0104def}
 		Man nennt dann $\Omega$ den \enquote{Ergebnisraum}, die \enquote{Grundmenge} oder \enquote{Grundgesamtheit}.\\
-		Ein spezielles $A\in\potset(\Omega)$ nennt man \enquote{Ergebnis} und falls $A=\{\omega\}$ \textbf{Elementarereignis}.
+		Ein spezielles $A\in\Potset(\Omega)$ nennt man \enquote{Ergebnis} und falls $A=\{\omega\}$ \textbf{Elementarereignis}.
 	\end{definition}
 
 	\begin{definition}\label{0105def}
-		Sei $\Omega$ eine abzählbare Menge und $\potset(\Omega)$ die Potenzmenge, $p$ sei eine Zähldichte.\\
+		Sei $\Omega$ eine abzählbare Menge und $\Potset(\Omega)$ die Potenzmenge, $p$ sei eine Zähldichte.\\
 		Dann heißt die Abbildung 
-		\[\Prb:\potset(\Omega)\to[0,1],A\mapsto \sum_{\omega\in A}p(\omega)\]
+		\[\Prb:\Potset(\Omega)\to[0,1],A\mapsto \sum_{\omega\in A}p(\omega)\]
 		 das von $p$ erzeugte \textbf{Wahrscheinlichkeitsmaß} (kurz W-Maß).
 	\end{definition}
 	
@@ -275,13 +275,13 @@
 		\begin{description}
 			\item[Ein möglicher Ausweg]
 			Definiere $\Prb([a,b])=\Prb((a,b))=\Prb([a,b))=\Prb((a,b])$.\\
-			Die Erweiterung, sodass $\forall A\in\potset([0,1])$ $\Prb(A)$ definiert ist, ist nicht möglich.
-			\item[Lösung] Definiere $\Prb$ nicht auf allen Mengen $\potset([0,1])$.
+			Die Erweiterung, sodass $\forall A\in\Potset([0,1])$ $\Prb(A)$ definiert ist, ist nicht möglich.
+			\item[Lösung] Definiere $\Prb$ nicht auf allen Mengen $\Potset([0,1])$.
 		\end{description}
 	\end{exm}
 	\begin{definition}
 		Sei $\Omega$ eine nichtleere Menge.\\
-		Ein Mengensystem $\mathscr F\subset \potset(\Omega)$heißt \textbf{$\sigma$-Algebra}, falls
+		Ein Mengensystem $\mathscr F\subset \Potset(\Omega)$heißt \textbf{$\sigma$-Algebra}, falls
 		\begin{enumerate}
 			\item $\Omega\in\mathscr F$
 			\item Falls $A\in\mathscr F$, dann auch $A^C\in\mathscr F$.
@@ -307,12 +307,12 @@
 			Die Frage ``Ist $\omega\ge \frac{1}{2}$'' ist hier \underline{nicht} beantwortbar!
 			\item $A_{j,n}:=\left[\frac{j}{n},\frac{j+1}{n}\right)$, $n$ ist fest, $j\ge n$.\\
 			$\mathscr F_2=\left\{\bigcup_{k=1}^{n}B_{k,n}:B_{k,n}\in\{\emptyset,A_{k,n}\}\right\}$
-			\item $\mathscr F_3=\potset(\Omega)$ ist ebenfalls eine $\sigma$-Algebra.
+			\item $\mathscr F_3=\Potset(\Omega)$ ist ebenfalls eine $\sigma$-Algebra.
 		\end{enumerate}
 	\end{exm}
 	
 	\begin{satz}
-		Sei $\mathscr G\subset\potset(\Omega)$ ein Mengensystem. Sei $\Sigma:=\{\mathscr A\subset \potset(\Omega):\text{$\mathscr A$ ist $\sigma$-Algebra und $\mathscr G\subset\mathscr A$}$.\\
+		Sei $\mathscr G\subset\Potset(\Omega)$ ein Mengensystem. Sei $\Sigma:=\{\mathscr A\subset \Potset(\Omega):\text{$\mathscr A$ ist $\sigma$-Algebra und $\mathscr G\subset\mathscr A$}$.\\
 		Dann ist auch $\bigcap_{\mathscr A\in\Sigma}\mathscr A$ eine $\sigma$-Algebra.
 	\end{satz}
 	%TODO counter
@@ -329,7 +329,7 @@
 	\begin{bem}
 		\begin{enumerate}
 			\item $\mathscr B$ enthält alle offenen Mengen, alle abbgeschlossen Mengen und alle halboffenen Intervalle.
-			\item $\mathscr B\subsetneqq \potset (\Omega)$.
+			\item $\mathscr B\subsetneqq \Potset (\Omega)$.
 			\item $\mathscr B$kann nicht abzählbar konstruiert werden.
 			\item $\mathscr B=\sigma(\{(-\infty,c]\}:c\in\R)$.
 			\item Falls $\Omega_o
@@ -468,7 +468,7 @@
 			Sei 
 		\begin{align*}
 			\Omega&=\bigtimes_{i=1}^\infty\{0,1\}=\big\{(a_1,a_2,...),a_i\in\{0,1\big\}\\
-			\scF&=\bigotimes_{i=1}^\infty\potset\big(\{0,1\}\big)\\
+			\scF&=\bigotimes_{i=1}^\infty\Potset\big(\{0,1\}\big)\\
 			\tilde Z&=\left\{\left\{(a_1,a_2,...)\mid a_{j_1}=\ol{a_1},...,a_m=\ol{a_{j_m}}\right\}\mid m\in\N,j_1,...,j_m\in\N,\ol{a_1},...,\ol{a_m}\in\{0,1\}\right\}\\
 			&=\text{\enquote{Kenntnis endlich vieler Ergebnisse}}
 		\end{align*}
@@ -514,7 +514,7 @@
 		Wenn $\varrho$ Dichte ist schreibt man auch $\Prb_p\varrho\equiv\varrho(x)~dx$
 	\end{bem*}
 
-	\begin{definition}
+	\begin{definition}\label{0131def}
 		Sei $\Omega\in\Bor(\R^n)$ mit $\la(\Omega)<\infty$. Das Wahrscheinlichkeitsmaß auf $\Omega$ mit Dichte $\varrho(y)=\frac{1}{\la(\Omega)}$ heißt \textbf{Gleichverteilung} auf $\Omega$.\\
 		Man fasst dann $\tilde\varrho(x)=\frac{1}{\la(\Omega)}\cha_A\Omega(x)$ als Einbettung in den $\R^n$ auf.
 	\end{definition}
@@ -559,7 +559,7 @@
 	\end{definition}
 
 	\begin{bem}
-		Die Urbild-Abbildung bilte Mengen in $\scF'$ (d.h.erlaube Ja-Nein-Fragen) auf Mengen  in $\potset(\Omega)$ (d.h. Ja-Nein-Fragen) ab.
+		Die Urbild-Abbildung bilte Mengen in $\scF'$ (d.h.erlaube Ja-Nein-Fragen) auf Mengen  in $\Potset(\Omega)$ (d.h. Ja-Nein-Fragen) ab.
 	\end{bem}
 
 	\begin{exm*}
@@ -575,7 +575,7 @@
 		Dann ist $X^{-1}(\scF'):=\{X^{-1}(A')\mid A'\in \scF'\}$ die von $X$ erzeugt $\sigma$-Algebra.
 	\end{bem*}
 	\begin{bem*}
-		Falls $\scF=\potset(\Omega)$, dann ist jede Abbildung eine Zufallsvariable.
+		Falls $\scF=\Potset(\Omega)$, dann ist jede Abbildung eine Zufallsvariable.
 	\end{bem*}
 
 	\begin{lem}\label{0135lem}
@@ -616,7 +616,7 @@
 	\end{definition}
 	\begin{proof}
 		Da $X$ eine Zufallsvariable ist, ist $X^{-1}(A')\in\scF\forall A'\in\scF'$, daher im Definitionsbereich von $\Prb$.\\
-		Also ist $\Prb'$ wohldefiniert. Prüfe Definition 1.20 \ref{0112def}.
+		Also ist $\Prb'$ wohldefiniert. Prüfe Definition \ref{0120def}.
 		\begin{enumerate}[label=\alph*)]
 			\item $\Prb'(\Omega')=\Prb(X^{-1}(\Omega'))=\Prb(\Omega)=1$
 			\item $A_1',A_2',...\in \scF'$ seien paarweise disjunkt. Dann sind $X^{-1}(A_1'),X^{-1}(A_2'),...$ auch paarweise disjunkt.
@@ -644,11 +644,148 @@
 	\end{bem}
 
 %VL 08.05.2017
-%TODO VL 08.05.2017
+%TODO COUNTER ASYNC
+\addtocounter{theorem}{-1}
+	\begin{definition}\label{0140def}
+		Sei $\Prb$ ein Wahrscheinlichkeitsmaß auf $(\R,\Bor(\R))$. Dann heißt die Abbildung $F=F_\R:\R\to[0,1]$ mit $x\mapsto\Prb\big((-\infty,x]\big)$ \textbf{Verteilungsfunktion} von $\Prb$.\\
+		Für eine reelle Zufallsvariable heißt $X$ auf $(\Omega,\scF,\tilde{\Prb})$ heißt $F_X:\R\to[0,1]$ mit $x\mapsto\Prb(X\leq x)$ Verteilungsfunktion von $X$.
+	\end{definition}
+
+	\begin{satz}\label{0141satz}
+		Sei $X$ eine Reelle Zufallsvariable und $F=F_X$ die zugehörige Verteilungsfunktion. Es gilt
+		\begin{enumerate}
+			\item $F$ wächst monoton
+			\item $\lim\limits_{x\to\infty}F(x)=1$, $\lim\limits_{x\to-\infty}F(x)=0$.
+			\item $F$ ist steig von rechts (d.h. $\lim\limits_{x\searrow y})F(x)=F(y)$.\\
+			Äquivalent dazu: Sei $x_n$ eine monoton wachsende Folge mit $\lim\limits_{n\to\infty}x_n=y$, dann ist $\lim\limits_{n\to\infty}F(x_n)=F(y)$.
+			\item Für alle $y\in\R$ existiert der Grenzwert $F(y-):=\lim\limits_{x\nearrow}F(x)$ und $F(y-)=\Prb(X<y)$.
+			\item Für alle $y\in\R$ ist $F(y)-F(y-)=\Prb(X=y)$
+		\end{enumerate}
+	\end{satz}
+	\begin{proof}
+		Übung %TODO 1.41 Beweis Übung
+	\end{proof}
+	
+	\begin{exm}
+		Sei $X:\Omega\to\R$ mit $\Prb(X=-3/4)$ und $\Prb\big(x\in[a,b]\big)=16\int_{a}^{b}y^2~dy$ falls $0\leq a\leq b\leq 1/2$.\\
+		Dann ist $\Prb(X\in\R\setminus\{-3/4\}\cup [0,1/2])=0$.
+		%TODO Graph 1.42, Graph F_X
+	\end{exm}
+
+	\begin{bem*}[Lesen einer Verteilungsfunktion]
+		\begin{enumerate}
+			\item Wenn bei $x\in\R$ eine Sprungstelle liegt, so ist $\Prb(X=x)>0$ die \enquote{Höhe der Sprungstelle}.
+			\item Wenn $F$ auf $(a,b]$ konstant ist, dann ist $\Prb(x\in(a,b])=0$.
+			\item Wenn $F$ streng monton und stetig bei $x$ ist, dann ist $\Prb(X=\{x\})=0$, aber $\Prb(X\in(x-\epsilon,x+\epsilon))>0$ für alle $\epsilon>0$ (und proportional zu $F'(x)^\epsilon$, falls $F'$ existiert.)
+		\end{enumerate}
+	\end{bem*}
+
+	\begin{satz}\label{0143satz}
+		Sei $F$ eine Funktion die \ref{0141satz}a)-c) erfülle, dann existiert eine Zufallsvariable $X$ (und ein Wahrscheinlichkeitsraum $(\Omega,\scF,\Prb)$), mit $X:\Omega\to \R$, sodass $F$ die Verteilungsfunktion von $X$ ist.
+	\end{satz}
+	\begin{bem*}
+		Eine mögliche Wahl ist immer $(\Omega,\scF,\Prb)=((0,1),\Bor\big((0,1)\big),\la)$ und $X(a)=\inf\left\{c\in\R:F(c)\geq a\right\}$ für alle $a\in(0,1)$.\\
+		Man nennt dies auch \enquote{Quantiltransformation} oder \enquote{Verallgemeinerte Umkehrfunktion}.
+		%TODO Graph 1.43
+	\end{bem*}
+	\begin{proof}
+		\begin{enumerate}
+			\item Aus der Eigenschaft \ref{0141satz}b) folgt:\\
+			Für alle $u>0$ gibt es ein $c\in\R$, sodass $F(c)<u$ und für alle $u<1$ gibt es ein $c\in\R$, sodass $F(c)>u$.\\
+			Also ist $X(u)<\infty$ für alle $u$.
+			\item Es gilt nach Definition:
+			\[X(u)\leq c\Leftrightarrow \inf\{\tilde c\in\R:F(\tilde c)\geq u\}\leq c\]
+			Und da $F$ rechtsstetig ist:
+			\[\Leftrightarrow\min\{\tilde c\in\R:F(\tilde c)\geq u\}\leq c\Leftrightarrow F(c)\geq u\]
+			Daher ist 
+			\[\{u\in(0,1):X\leq c\}=\{u\in(0,1):F(c)\geq u\}=(0,F(c))\cap(0,1)\in\Bor\big(0,1\big)\]
+			Also ist $X$ messbar, also Zufallsvariable.\\
+			Außerdem ist $\Prb(x\leq c)=\la\big(X^{-1}\big((-\infty,c]\big)\big)=\la\big((0,F(c)]\big)=F(c)$.\\
+			Also ist $F$ die Verteilungsfunktion von $X$.
+		\end{enumerate}
+	\end{proof}
+
+	\begin{definition}\label{0144def}
+		Sei $X$ eine Zufallsvariable und $F$ die Verteilungsfunktion von $X$. Und es gelte $F_X(c)=\int_{-\infty}^{c}\rho(z)~dz$ für alle $c\in\R$.\\
+		Dann heißt $\rho$ die Verteilungsdichte von $X$.
+	\end{definition}
+	%TODO COUNTER
+	\addtocounter{theorem}{-1}
+	\begin{satz}\label{0144satz}
+		$\rho$ ist genau dann Verteilungsdichte von $X$, wenn das Bildmaß $\Prb_X$ die Dichte $\rho$ hat.
+	\end{satz}
+	\begin{proof}
+		Übung %TODO 1.44 Beweis Übung
+	\end{proof}
+
+	\begin{prop}\label{0145prop}
+		In der Situation von \ref{0144satz} gilt $X$ hat genau dann eine stetige Verteilungsdichte $\rho$, wenn  $c\mapsto F_X(c)$ stetig differenzierbar ist.\\
+		Dann gilt $\rho(c)=F_X'(c)$ für alle $c\in\R$.
+	\end{prop}
+
+
+
+
+
+
+\section{Stochastische Standardmodelle}
+		In diesem Kapitel werden wir wichtige Wahrscheinlichkeitsmaße (bzw. Zufallsvariable) behandeln, welche die GRundlgene Bausteine für Anwendungen darstellen.
+		
+	\begin{definition}\label{0201def}
+		Sei $\Omega$ endlich, $\scF=\Potset(\Omega)$.\\
+		Das Maß $u_\Omega$ mit $u_\Omega(A):=\frac{|A|}{|\Omega|}$ heißt \textbf{Gleichverteilung} auf $\Omega$.
+	\end{definition}
+	
+	\begin{exmlist}
+		\begin{exm}[Würfel]
+			$\Omega=\{1,...,6\}$, $u_\Omega(k)=\frac{1}{6}$ gleichverteilt
+		\end{exm}
+		\begin{exm}[Einfach Irrfahrt]
+			$\Omega=\Omega_N$, $u_{\Omega_N}(\omega)=(2d)^{-N}$ für Pfade $\omega$ der und Tiefe $d$.
+		\end{exm}
+		\begin{exm}[Bose-Einstein Verteilung]
+			Man betrachte $n$ Bosonen (Elementarteilchen). Jedes Teilchen kann einen (quantisierten) Zustand einnehmen: z.B. einen Impuls $p\in \Z^3\cap[-k,k]^3$.\\
+			Die Teilchen sind ununterscheidbar, d.h. $x_1=(0,01)$, $x_2=(1,1,1)$, $x_3=(0,0,1)$ oder $x_1=x_2=(0,0,1)$, $x_3=(1,1,1)$ müssen identifiziert werden.\\
+			Wir definieren die Besetzungszahl $k_p$ für $p\in\Lambda=\Z^3\cap[-k,k]^3$. Diiese gibt an wieviel Teilchen sich bei Impuls $p$ befinden.\\
+			\underline{Bedingung} Es muss gelten, dass $\sum_{p\in\Lambda}k_p=n$ der Gesamtzahl der Teilchen entspricht.\\
+			\underline{Modell} Sei 
+			\[\Omega=\{(k_p)_{p\in\Lambda}\subset\N_0,\sum_{p\in\Lambda}k_p=n\}\]
+			Dann ist 
+			\[|\Omega|=\binom{(n+|\Lambda|-1)}{n}\]
+			und die Zustände sind Gleichverteilt.
+		\end{exm}
+	\end{exmlist}
+	
+	\begin{definition}
+		Die Gleichverteilung im $\R^n$ wurde in \ref{0131def} definiert.
+	\end{definition}
+
+	\begin{exmlist}
+		\begin{exm}[Richtung eines Glücksrads]
+			$\Omega=[0,2\pi)$, $\Prb\big((a,b)\big)=\frac{|b-a|}{2\pi}=\int_{a}^{b}\frac{1}{2\pi}~dx$ für $0\leq a\leq b< 2\pi$.
+		\end{exm}
+		\begin{exm}[Bertrand-Paradoxon]
+			Sei $B_r(0)$ der Kreis mit Radius $r$ um 0.\\
+			Sei $S$ eine Zufällig Sehne in$B_r(0)$ (Gleichverteilt).
+			\underline{Frage} Wie groß ist $\Prb(A):=\Prb(S\cap B_{r/2}(0)\neq\emptyset)$?
+			\underline{Mögliche Modellierungen:}
+			\begin{enumerate}
+				\item Der Sehnenmittelpunkt ist gleichverteilt in $B_r(0)$:
+				\[\Prb(A)=\Prb(x\in B_{r/2})=\frac{\la(B_{r/2}(0))}{\la(B_r(0))}=\frac{1}{4}\]
+				
+				\item Länge des Kreissegments: gleichverteilt in $[0,2\pi]$
+				\[\Prb(A)=\Prb\left(\al\in\left[\frac{2\pi}{3},\frac{4\pi}{4}\right]\right)=\frac{1}{3}\]
+				
+				\item Abstand der Sehne vom Ursprung (gleichverteilt in $[-r,r]$)
+				\[\Prb(A)=\Prb\left(d\in\left[\frac{-r}{2},\frac{r}{2}\right]\right)=\frac{1}{2}\]
+			\end{enumerate}
+			Fazit: Modellierung in der ursprünglichen Fassung war zu ungenau.
+		\end{exm}
+		
+	\end{exmlist}
+
 
 %VL 09.05.2017
-\setcounter{section}{2}
-\setcounter{theorem}{4}
 
 \subsection{Urnenmodelle mit Reihenfolge, mit Zurücklegen}
 	\begin{exmlist}\label{0205aexm}
@@ -690,7 +827,7 @@
 		%TODO Bild Histogramm
 	\end{exm}
 	\begin{definition}\label{0209adef}
-		Sei $p$ Zähldichte auf $A=\{a_1,...,a_m\}$. Dann heißt das Wahrscheinlichkeitsmaß $\Mltn_{n,p}$ auf $(\N^m,\potset(\N^m))$ mit
+		Sei $p$ Zähldichte auf $A=\{a_1,...,a_m\}$. Dann heißt das Wahrscheinlichkeitsmaß $\Mltn_{n,p}$ auf $(\N^m,\Potset(\N^m))$ mit
 		\[\Mltn\big(\{k_1,...,k_m\}\big)=\begin{cases}
 		0&\text{falls $k_1,...,k_m\neq N$}\\
 		\binom{N}{(k_1,...,k_m)}\prod_{i=1}^mp(a_i)^{k_i}&\text{sonst}
@@ -1047,7 +1184,7 @@
 	
 	\begin{exmlist}
 		\begin{exm}[unendlich oft wiederholter Münzwurf]
-			Sei $\Omega=\{-1,1\}^N$ und $\scF=\bigotimes_{i=1}^\infty\potset({-1,1})$.\\
+			Sei $\Omega=\{-1,1\}^N$ und $\scF=\bigotimes_{i=1}^\infty\Potset({-1,1})$.\\
 			($\scF$ wird also von den Mengen 
 			\[\big\{\{\omega\in\Omega:\omega_1=k_1,...,\omega_n=k_n\}:K_i\in\{-1,1\}\forall i\leq nnn\in\N\big\}\]
 			erzeugt. und $\Prb(\omega_1=k_1,...,\omega_n=k_n)=2^{-n}$.\\
@@ -1157,7 +1294,7 @@
 		\end{enumerate}
 	\end{kor}
 	\begin{proof}
-		Für $a\in\scF$ ist $\cha_A:\Omega\to\{0,1\}, \omega\mapsto\cha_A(\omega)$ eine Zufallsvariable und das einelementige Mengensystem $\big\{\big\}$ ist ein Schnitt-stabiler Erzeuger von $\potset(\{0,1\})$ und $\cha_a^{-1}(\{1\})=A$.\\
+		Für $a\in\scF$ ist $\cha_A:\Omega\to\{0,1\}, \omega\mapsto\cha_A(\omega)$ eine Zufallsvariable und das einelementige Mengensystem $\big\{\big\}$ ist ein Schnitt-stabiler Erzeuger von $\Potset(\{0,1\})$ und $\cha_a^{-1}(\{1\})=A$.\\
 		Daher gilt, dass $(A_i)$ unabhängig $\Leftrightarrow$ \ref{0301}  gilt falls $B_i=\{1\}$ $\overset{\ref{0314satz}}{\Leftrightarrow}$ $\cha_{A_i}$ ist unabhängig. Also gilt 1.\\
 		Für 2. Setze
 		\[B_i=\begin{cases}
@@ -2250,7 +2387,7 @@
 
 	\begin{exm}
 		In Beispiel \ref{0602exm} alternativ:
-		\[\Omega=\{0,1\}^{100},\quad\scF=\potset(\{0,1\})^{\otimes 100},\quad\Prb_{\theta}=\big(\Ber_{\{0,1\},\theta}\big)\]
+		\[\Omega=\{0,1\}^{100},\quad\scF=\Potset(\{0,1\})^{\otimes 100},\quad\Prb_{\theta}=\big(\Ber_{\{0,1\},\theta}\big)\]
 		Typische Daten: $x=(0,0,1,0,...,1)$. Interssant ist die Anzahl der Einsen.
 	\end{exm}
 
@@ -2363,7 +2500,7 @@
 
 	\begin{definition}
 		Sei $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $f:\Theta\to\Omega'$ messbar, $\al>0$.\\
-		Eine Abbildung $K:\Omega\to\potset(\Omega')$ heißt \textbf{Konfidenzbereich für $f$} zum \textbf{Irrtumsniveau} $\al$ (\textbf{Sicherheitsniveau} $1-\al$), wenn gilt
+		Eine Abbildung $K:\Omega\to\Potset(\Omega')$ heißt \textbf{Konfidenzbereich für $f$} zum \textbf{Irrtumsniveau} $\al$ (\textbf{Sicherheitsniveau} $1-\al$), wenn gilt
 		\begin{enumerate}[label=(\roman*)]
 			\item $\{\omega\in\Omega:f(\theta)\in K(\omega)\}\in\scF$
 			\item $\Prb_\theta\big(f(\theta\in K(\cdot))\big)\geq 1-\al$
@@ -2382,7 +2519,7 @@
 	\end{bem}
 
 	\begin{definition}
-		Sei (vgl \ref{0618def}) $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $f:\Theta\to\Omega'$ messbar, $\Omega'=\R$ und $K:\Omega\to\potset(\Omega')$. Dann heißt die Abbildung $x\mapsto K(x)$ \textbf{Konfidenzintervall}.
+		Sei (vgl \ref{0618def}) $(\Omega,\scF,(\Prb_\theta)_{\theta\in\Theta})$ statistisches Modell, $f:\Theta\to\Omega'$ messbar, $\Omega'=\R$ und $K:\Omega\to\Potset(\Omega')$. Dann heißt die Abbildung $x\mapsto K(x)$ \textbf{Konfidenzintervall}.
 	\end{definition}
 
 	\begin{satz}[Berechnung von Konfidenzintervallen]
@@ -2434,7 +2571,7 @@
 %VL 10.07.2017
 	\begin{prop}\label{0625prop}
 		Sei $\big(\Omega^n,\scF^{\otimes n},(\Prb_\theta^{\otimes n})_{\theta\in\R}\big)$ statistisches Modell mit $\Prb_\theta=\Nv(\theta,\sigma^2)$, wobei $\sigma^2$ bekannt und fest. Sei $q_{1-\frac{\al}{2}}$ das $1-\frac{\al}{2}$-Quantil von $\Nv(0,1)$. Dann ist die Abbildung
-		\[K:\Omega^n\to\potset(\R):x\mapsto
+		\[K:\Omega^n\to\Potset(\R):x\mapsto
 		\left[M(x)-\frac{\sigma}{\sqrt{n}}q_{1-\frac{\al}{2}},M(x)+\frac{\sigma}{\sqrt{n}}q_{1-\frac{\al}{2}}\right]
 		=\left[M(x)+\frac{\sigma}{\sqrt{n}}q_{\al/2},M(x)+\frac{\sigma}{\sqrt{n}}q_{1-\al/2}\right]\]
 		(Dabei ist $M(x):=\frac{1}{n}\sum_{i=1}^{n}x_i$ der Mittelwert) ein Konfindenzintervall zum Irrtumniveau $\al$.
@@ -2710,7 +2847,7 @@
 	\end{bem*}
 
 	\begin{satz}[Markov-Eigenschaft]\label{0708satzMarkov}
-		Sei $X_n$ Markovkette mit Übergangsmatrix $P$. Dann gilt für alle $x,z\in E$, $n\in\N$, $A\in\potset(E)^{\otimes\N_0}$ und $B\in E^n$, falls $\Prb\big((X_1,...,X_n)\in B,X_n=x\big)>0$, dann ist
+		Sei $X_n$ Markovkette mit Übergangsmatrix $P$. Dann gilt für alle $x,z\in E$, $n\in\N$, $A\in\Potset(E)^{\otimes\N_0}$ und $B\in E^n$, falls $\Prb\big((X_1,...,X_n)\in B,X_n=x\big)>0$, dann ist
 		\begin{align*}
 		\Prb^z\big((X_n,X_{n+1},X_{n+2},...)\in A\vert (X_0,...,X_{n-1})\in B,X_n=x\big)&=\Prb^z\big((X_n,X_{n+1},...)\in A\vert X_n=x\big)\\
 		&=\Prb\big((X_1,X_2,...)\in A\big)
